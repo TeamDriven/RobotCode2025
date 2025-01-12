@@ -16,4 +16,8 @@ public class Controls {
   public static DoubleSupplier driveOmega =
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
+
+  // Climber
+  public static Trigger climberUp = driver.pov(0);
+  public static Trigger climberDown = driver.pov(180);
 }

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
@@ -74,6 +75,9 @@ public class RobotContainer {
                         new Pose2d(
                             robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
+    
+    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
   }
 
   /** Updates the alerts for disconnected controllers. */
