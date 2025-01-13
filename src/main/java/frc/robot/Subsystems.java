@@ -10,6 +10,9 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -21,6 +24,8 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 public final class Subsystems {
   public static final Drive drive;
   public static final Vision visionOne;
+
+  public static final Elevator elevator;
 
   static {
     // Create subsystems
@@ -35,6 +40,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          elevator = new Elevator(new ElevatorIOKraken(15, 16));
         }
         case DEVBOT -> {
           drive =
@@ -45,6 +51,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          elevator = new Elevator(new ElevatorIOKraken(15, 16));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -62,6 +69,7 @@ public final class Subsystems {
               new ModuleIO() {},
               new ModuleIO() {});
       visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
+      elevator = new Elevator(new ElevatorIO() {});
     }
   }
 }
