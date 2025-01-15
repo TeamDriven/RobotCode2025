@@ -36,12 +36,12 @@ public final class DriveConstants {
             0, // Max Angular Velocity
             0); // Max Angular Acceleration
         case DEVBOT -> new DriveConfig(
-          Units.inchesToMeters(1.9368816932422894), // Get from Wheel Radius Characterization
-          Units.inchesToMeters(18.625), // Track width X
-          Units.inchesToMeters(18.625), // Track width Y
-          Units.inchesToMeters(30), // Bumper width X
-          Units.inchesToMeters(30.75), // Bumper width Y
-          Units.feetToMeters(15.0), // Max Linear Velocity
+          Units.inchesToMeters(1.958795080364683), // Get from Wheel Radius Characterization
+          Units.inchesToMeters(22.75), // Track width X
+          Units.inchesToMeters(22.75), // Track width Y
+          Units.inchesToMeters(34), // Bumper width X
+          Units.inchesToMeters(34), // Bumper width Y
+          5.641, // Max Linear Velocity
           Units.feetToMeters(75.0), // Max Linear Acceleration
           12.0, // Max Angular Velocity
           6.0); // Max Angular Acceleration
@@ -73,16 +73,16 @@ public final class DriveConstants {
   public static final ModuleConfig[] moduleConfigs =
       switch (Constants.getRobot()) {
         case COMPBOT -> new ModuleConfig[] {
-          new ModuleConfig(1, 2, 3, new Rotation2d(-0.017), true),
-          new ModuleConfig(4, 5, 6, new Rotation2d(3.135), true),
-          new ModuleConfig(7, 8, 9, new Rotation2d(0.018), true),
-          new ModuleConfig(10, 11, 12, new Rotation2d(3.14), true)
-        };
-        case DEVBOT -> new ModuleConfig[] {
           new ModuleConfig(1, 2, 3, new Rotation2d(0), true),
           new ModuleConfig(4, 5, 6, new Rotation2d(0), true),
           new ModuleConfig(7, 8, 9, new Rotation2d(0), true),
           new ModuleConfig(10, 11, 12, new Rotation2d(0), true)
+        };
+        case DEVBOT -> new ModuleConfig[] {
+          new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true), 
+          new ModuleConfig(4, 5, 6, new Rotation2d(1.575398), true), 
+          new ModuleConfig(7, 8, 9, new Rotation2d(0.013806), true), 
+          new ModuleConfig(10, 11, 12, new Rotation2d(-1.547787), true) 
         };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];
@@ -105,13 +105,13 @@ public final class DriveConstants {
             Mk4iReductions.L3_16T.reduction, // L3 16 tooth
             Mk4iReductions.TURN.reduction);
         case DEVBOT -> new ModuleConstants(
-            0.014,
-            0.134,
+            3.51413,
+            0.05551,
+            1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp,
+            35.0,
             0.0,
-            0.1,
-            0.0,
-            10.0,
-            0.0,
+            2000.0,
+            50.0,
             Mk4iReductions.L3_16T.reduction,
             Mk4iReductions.TURN.reduction);
         case SIMBOT -> new ModuleConstants(

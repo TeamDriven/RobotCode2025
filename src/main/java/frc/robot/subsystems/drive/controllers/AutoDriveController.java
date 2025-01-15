@@ -16,9 +16,9 @@ import frc.robot.RobotState;
 
 /** Drive controller for outputting {@link ChassisSpeeds} from driver joysticks. */
 public class AutoDriveController {
-  private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
-  private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-  private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+  private final PIDController xController = new PIDController(5.0, 0.0, 0.0);
+  private final PIDController yController = new PIDController(5.0, 0.0, 0.0);
+  private final PIDController headingController = new PIDController(2.75, 0.0, 0.0);
 
   private SwerveSample sample;
 

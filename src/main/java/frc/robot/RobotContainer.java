@@ -8,6 +8,9 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
+
+import org.littletonrobotics.junction.Logger;
+
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
 
@@ -22,7 +25,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.StaticCharacterization;
+import frc.robot.commands.WheelRadiusCharacterization;
+import frc.robot.commands.autos.TestAuto;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -124,7 +134,7 @@ public class RobotContainer {
     //     .andThen(new SlippageCalculator(drive))
     //     .withName("Slippage Calculator");
 
-    return null;
+    return new SequentialCommandGroup(new InstantCommand(() -> Logger.recordOutput("Debug/PathActive", 0)), new TestAuto().getAuto().cmd());
     // return new RepeatCommand(drive.getAutoPath("TestAuto"));
     // return autoChooser.getSelected();
   }
