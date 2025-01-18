@@ -79,10 +79,10 @@ public final class DriveConstants {
           new ModuleConfig(10, 11, 12, new Rotation2d(0), true)
         };
         case DEVBOT -> new ModuleConfig[] {
-          new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true), 
-          new ModuleConfig(4, 5, 6, new Rotation2d(1.575398), true), 
-          new ModuleConfig(7, 8, 9, new Rotation2d(0.013806), true), 
-          new ModuleConfig(10, 11, 12, new Rotation2d(-1.547787), true) 
+          new ModuleConfig(1, 2, 3, new Rotation2d(0.061359), true), 
+          new ModuleConfig(4, 5, 6, new Rotation2d(1.578466), true), 
+          new ModuleConfig(7, 8, 9, new Rotation2d(0.010738), true), 
+          new ModuleConfig(10, 11, 12, new Rotation2d(-1.507903), true) 
         };
         case SIMBOT -> {
           ModuleConfig[] configs = new ModuleConfig[4];

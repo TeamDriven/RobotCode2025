@@ -30,6 +30,9 @@ import frc.robot.util.SwerveDriveWheelPositions;
 import frc.robot.util.swerve.ModuleLimits;
 import frc.robot.util.swerve.SwerveSetpoint;
 import frc.robot.util.swerve.SwerveSetpointGenerator;
+
+import static frc.robot.Constants.sysIDMode;
+
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.Lock;
@@ -97,6 +100,7 @@ public class Drive extends SubsystemBase {
   private DriveMode currentDriveMode = DriveMode.TELEOP;
 
   private double characterizationInput = 0.0;
+  private Rotation2d[] characterizationWheelPositions = null;
   private boolean modulesOrienting = false;
   private final Timer lastMovementTimer = new Timer();
 
@@ -291,8 +295,14 @@ public class Drive extends SubsystemBase {
       }
       case CHARACTERIZATION -> {
         // Run characterization
-        for (Module module : modules) {
-          module.runCharacterization(0.0, characterizationInput);
+        if (characterizationWheelPositions == null) {
+          for (Module module : modules) {
+            module.runCharacterization(0.0, characterizationInput);
+          }
+        } else {
+          for (int i = 0; i < modules.length; i++) {
+            modules[i].runCharacterization(characterizationWheelPositions[i].getRadians(), characterizationInput);
+          }
         }
       }
       case WHEEL_RADIUS_CHARACTERIZATION -> {
@@ -339,6 +349,12 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/SetpointSpeeds", currentSetpoint.chassisSpeeds());
     Logger.recordOutput("Drive/DriveMode", currentDriveMode);
     Logger.recordOutput("Drive/CoastRequest", coastRequest);
+
+    if (sysIDMode) {
+      Logger.recordOutput("Drive/FLVel", modules[0].getVelocityMetersPerSec());
+      Logger.recordOutput("Drive/FLPos", modules[0].getPositionMeters());
+      Logger.recordOutput("Drive/RotRad", gyroInputs.yawPosition.getRadians());
+    }
   }
 
   /** Pass controller input into teleopDriveController in field relative input */
@@ -413,6 +429,13 @@ public class Drive extends SubsystemBase {
   public void runCharacterization(double input) {
     currentDriveMode = DriveMode.CHARACTERIZATION;
     characterizationInput = input;
+    characterizationWheelPositions = null;
+  }
+
+  public void runCharacterization(double input, Rotation2d[] wheelPositions) {
+    currentDriveMode = DriveMode.CHARACTERIZATION;
+    characterizationInput = input;
+    characterizationWheelPositions = wheelPositions;
   }
 
   /** Disables the characterization mode. */

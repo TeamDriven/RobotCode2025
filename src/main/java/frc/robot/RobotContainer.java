@@ -26,8 +26,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.StaticCharacterization;
 import frc.robot.commands.WheelRadiusCharacterization;
@@ -35,6 +38,7 @@ import frc.robot.commands.autos.TestAuto;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.swerve.SysIDCharacterization;
 
 public class RobotContainer {
   private final RobotState robotState = RobotState.getInstance();
@@ -49,7 +53,12 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure autos and buttons
-    configureButtonBindings(false);
+    if (sysIDMode) {
+      enableSysID();
+    } else {
+      configureButtonBindings(false);
+    }
+
 
     // Alerts for constants
     if (Constants.tuningMode) {
@@ -137,5 +146,31 @@ public class RobotContainer {
     return new SequentialCommandGroup(new InstantCommand(() -> Logger.recordOutput("Debug/PathActive", 0)), new TestAuto().getAuto().cmd());
     // return new RepeatCommand(drive.getAutoPath("TestAuto"));
     // return autoChooser.getSelected();
+  }
+
+  public void enableSysID() {
+    SysIDCharacterization characterization = new SysIDCharacterization(drive);
+
+    driver.x().and(driver.pov(0)).whileTrue(characterization.runDriveQuasiTest(Direction.kForward));
+    driver.x().and(driver.pov(180)).whileTrue(characterization.runDriveQuasiTest(Direction.kReverse));
+
+    driver.y().and(driver.pov(0)).whileTrue(characterization.runDriveDynamTest(Direction.kForward));
+    driver.y().and(driver.pov(180)).whileTrue(characterization.runDriveDynamTest(Direction.kReverse));
+
+    driver.a().and(driver.pov(0)).whileTrue(characterization.runSteerQuasiTest(Direction.kForward));
+    driver.a().and(driver.pov(180)).whileTrue(characterization.runSteerQuasiTest(Direction.kReverse));
+
+    driver.b().and(driver.pov(0)).whileTrue(characterization.runSteerDynamTest(Direction.kForward));
+    driver.b().and(driver.pov(180)).whileTrue(characterization.runSteerDynamTest(Direction.kReverse));
+
+    drive.setDefaultCommand(driveCommand());
+
+    resetPose.onTrue(
+        Commands.runOnce(
+                () ->
+                    robotState.resetPose(
+                        new Pose2d(
+                            robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
+            .ignoringDisable(true));
   }
 }
