@@ -24,7 +24,7 @@ public class TeleopDriveController {
   private static final LoggedTunableNumber controllerDeadband =
       new LoggedTunableNumber("TeleopDrive/Deadband", 0.1);
   private static final LoggedTunableNumber maxAngularVelocityScalar =
-      new LoggedTunableNumber("TeleopDrive/MaxAngularVelocityScalar", 0.65);
+      new LoggedTunableNumber("TeleopDrive/MaxAngularVelocityScalar", 1.0);
 
   private static double velocityScalar = 1.0;
 
