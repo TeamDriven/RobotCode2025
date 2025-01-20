@@ -25,7 +25,7 @@ public final class Constants {
 
   public static final double loopPeriodSecs = 0.02;
   private static RobotType robotType = RobotType.DEVBOT;
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
 
   public static RobotType getRobot() {
     if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {

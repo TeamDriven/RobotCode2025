@@ -28,7 +28,7 @@ public class TestAuto implements AutoBase {
 
         // test1.atTime(0.1).onTrue(new PrintCommand("0.1 has passed"));
 
-        test1.done().onTrue(Commands.runOnce(() -> {drive.acceptSimpleInput(0, 0, 0, false);}).andThen(new InstantCommand(() -> Logger.recordOutput("Debug/PathActive", 2))));
+        test1.done().onTrue(Commands.runOnce(() -> {drive.acceptSimpleInput(0, 0, 0, false);}));
 
         return routine;
     }
