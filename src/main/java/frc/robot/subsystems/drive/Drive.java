@@ -248,9 +248,10 @@ public class Drive extends SubsystemBase {
                 Math.abs(module.getVelocityMetersPerSec()) > coastMetersPerSecThreshold.get())) {
       lastMovementTimer.reset();
     }
-    // if (DriverStation.isEnabled() && !lastEnabled) {
-    //   coastRequest = CoastRequest.AUTOMATIC;
-    // }
+
+    if (DriverStation.isEnabled() && !lastEnabled) {
+      coastRequest = CoastRequest.AUTOMATIC;
+    }
 
     lastEnabled = DriverStation.isEnabled();
     switch (coastRequest) {
@@ -337,6 +338,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/DesiredSpeeds", desiredSpeeds);
     Logger.recordOutput("Drive/SetpointSpeeds", currentSetpoint.chassisSpeeds());
     Logger.recordOutput("Drive/DriveMode", currentDriveMode);
+    Logger.recordOutput("Drive/CoastRequest", coastRequest);
   }
 
   /** Pass controller input into teleopDriveController in field relative input */

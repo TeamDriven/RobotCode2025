@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
+
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
 
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.autos.TestAuto;
+import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -34,18 +37,23 @@ public class RobotContainer {
 
   private static SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  // Dashboard inputs
-  // private final AutoSelector autoSelector = new AutoSelector("Auto");
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure autos and buttons
+    setupAutos();
     configureButtonBindings(false);
 
     // Alerts for constants
     if (Constants.tuningMode) {
       new Alert("Tuning mode enabled", AlertType.INFO).set(true);
     }
+  }
+
+  private void setupAutos() {
+    autoChooser.setDefaultOption("Test Auto", new TestAuto().getAuto().cmd());
+    autoChooser.addOption("Place 2 right side", new Place2RightSide().getAuto().cmd());
+
+    SmartDashboard.putData(autoChooser);
   }
 
   private Command driveCommand() {
@@ -128,8 +136,6 @@ public class RobotContainer {
     //     .andThen(new SlippageCalculator(drive))
     //     .withName("Slippage Calculator");
 
-    return null;
-    // return new RepeatCommand(drive.getAutoPath("TestAuto"));
-    // return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }
