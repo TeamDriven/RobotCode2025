@@ -1,4 +1,4 @@
-// Copyright (c) 2024 FRC 6328
+// Copyright (c) 2025 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by an MIT-style
@@ -10,60 +10,37 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.FieldConstants;
 
-/** Utility functions for flipping from the blue to red alliance. */
 public class AllianceFlipUtil {
-  /** Flips an x coordinate to the correct side of the field based on the current alliance color. */
-  public static double apply(double xCoordinate) {
-    if (shouldFlip()) {
-      return FieldConstants.fieldLength - xCoordinate;
-    } else {
-      return xCoordinate;
-    }
+  public static double fieldWidth = Units.feetToMeters(26.0) + Units.inchesToMeters(5.0);
+  public static double fieldLength = Units.feetToMeters(57.0) + Units.inchesToMeters(6.875);
+
+  public static double applyX(double x) {
+    return shouldFlip() ? fieldLength - x : x;
   }
 
-  /** Flips a translation to the correct side of the field based on the current alliance color. */
+  public static double applyY(double y) {
+    return shouldFlip() ? fieldWidth - y : y;
+  }
+
   public static Translation2d apply(Translation2d translation) {
-    if (shouldFlip()) {
-      return new Translation2d(apply(translation.getX()), translation.getY());
-    } else {
-      return translation;
-    }
+    return new Translation2d(applyX(translation.getX()), applyY(translation.getY()));
   }
 
-  /** Flips a rotation based on the current alliance color. */
   public static Rotation2d apply(Rotation2d rotation) {
-    if (shouldFlip()) {
-      return new Rotation2d(-rotation.getCos(), rotation.getSin());
-    } else {
-      return rotation;
-    }
+    return shouldFlip() ? rotation.rotateBy(Rotation2d.kPi) : rotation;
   }
 
-  /** Flips a pose to the correct side of the field based on the current alliance color. */
   public static Pose2d apply(Pose2d pose) {
-    if (shouldFlip()) {
-      return new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()));
-    } else {
-      return pose;
-    }
-  }
-
-  public static Translation3d apply(Translation3d translation3d) {
-    if (shouldFlip()) {
-      return new Translation3d(
-          apply(translation3d.getX()), translation3d.getY(), translation3d.getZ());
-    } else {
-      return translation3d;
-    }
+    return shouldFlip()
+        ? new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()))
+        : pose;
   }
 
   public static boolean shouldFlip() {
     return DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red;
+        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
   }
 }
