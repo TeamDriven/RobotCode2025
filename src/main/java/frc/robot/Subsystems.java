@@ -20,7 +20,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
  */
 public final class Subsystems {
   public static final Drive drive;
-  public static final Vision visionOne;
+  public static final Vision leftVision;
 
   static {
     // Create subsystems
@@ -34,7 +34,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
-          visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
         }
         case DEVBOT -> {
           drive =
@@ -44,7 +44,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
-          visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -61,7 +61,7 @@ public final class Subsystems {
               new ModuleIO() {},
               new ModuleIO() {},
               new ModuleIO() {});
-      visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
+      leftVision = new Vision("Left Vision", new VisionIO() {}, drive::getSpeeds);
     }
   }
 }
