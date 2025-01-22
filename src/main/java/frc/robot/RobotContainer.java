@@ -8,7 +8,8 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
-
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.intakeVelocity;
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.outtakeVelocity;
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.Place2RightSide;
@@ -82,6 +84,15 @@ public class RobotContainer {
                         new Pose2d(
                             robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
+
+    //intake
+    intake.whileTrue(
+      new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+
+    outtake.whileTrue(
+      new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
   }
 
   /** Updates the alerts for disconnected controllers. */

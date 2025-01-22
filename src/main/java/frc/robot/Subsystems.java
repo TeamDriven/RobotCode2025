@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.coralIntake.CoralIntake;
+import frc.robot.subsystems.coralIntake.CoralIntakeIO;
+import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -22,6 +25,8 @@ public final class Subsystems {
   public static final Drive drive;
   public static final Vision visionOne;
 
+  public static final CoralIntake coralIntake;
+
   static {
     // Create subsystems
     if (Constants.getMode() != Constants.Mode.REPLAY) {
@@ -34,6 +39,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
         }
         case DEVBOT -> {
@@ -44,6 +50,7 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
         }
         case SIMBOT -> {
@@ -61,6 +68,7 @@ public final class Subsystems {
               new ModuleIO() {},
               new ModuleIO() {},
               new ModuleIO() {});
+      coralIntake = new CoralIntake(new CoralIntakeIO() {});
       visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
     }
   }

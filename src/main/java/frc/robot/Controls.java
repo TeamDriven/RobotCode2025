@@ -16,4 +16,8 @@ public class Controls {
   public static DoubleSupplier driveOmega =
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
+
+  //coralIntake
+  public static Trigger intake = driver.x();
+  public static Trigger outtake = driver.b();
 }
