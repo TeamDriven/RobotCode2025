@@ -11,8 +11,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.zoning.CircleZone;
+import frc.robot.util.zoning.PolygonZone;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are in meters, and sets
@@ -123,6 +124,28 @@ public class FieldConstants {
       for (int i = 0; i < rightChuteLocations.length; i++) {
         rightChuteLocations[i] = new Pose3d(leftChuteX[i], fieldLength-leftChuteY[i], chuteHeight, new Rotation3d(rightRot));
       }
+    }
+  }
+
+  public class Zones {
+    public static PolygonZone climbZone;
+
+    public static CircleZone reefZone;
+
+    static {
+      climbZone = new PolygonZone(
+        new Translation2d(Units.inchesToMeters(368.438), 0),
+        new Translation2d(Units.inchesToMeters(368.438), fieldWidth),
+        new Translation2d(Units.inchesToMeters(322.438), fieldWidth),
+        new Translation2d(Units.inchesToMeters(322.438), 0)
+      );
+
+      reefZone = new CircleZone(
+        new Translation2d(
+          Units.inchesToMeters(176.746),
+          Units.inchesToMeters(158.499)
+        ), 
+        Units.inchesToMeters(55)); // 55
     }
   }
 }

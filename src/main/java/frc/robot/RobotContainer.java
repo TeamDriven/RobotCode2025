@@ -17,14 +17,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
+import frc.robot.FieldConstants.Zones;
 import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
@@ -84,6 +90,12 @@ public class RobotContainer {
                         new Pose2d(
                             robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
+
+    // new Trigger(() -> Zones.climbZone.isRobotInZone(RobotState.getInstance().getEstimatedPose()))
+    //     .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+
+    // new Trigger(() -> Zones.reefZone.isRobotInZone(RobotState.getInstance().getEstimatedPose()))
+    //     .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
   }
 
   /** Updates the alerts for disconnected controllers. */
