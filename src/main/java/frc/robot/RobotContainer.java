@@ -42,6 +42,8 @@ public class RobotContainer {
 
   private static SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  public static boolean shouldUseZones = true;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -90,12 +92,12 @@ public class RobotContainer {
                         new Pose2d(
                             robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
+    
+    new Trigger(RobotState.getInstance()::isInClimbZone)
+        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
 
-    // new Trigger(() -> Zones.climbZone.isRobotInZone(RobotState.getInstance().getEstimatedPose()))
-    //     .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
-
-    // new Trigger(() -> Zones.reefZone.isRobotInZone(RobotState.getInstance().getEstimatedPose()))
-    //     .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+    new Trigger(RobotState.getInstance()::isInReefZone)
+        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
   }
 
   /** Updates the alerts for disconnected controllers. */
