@@ -25,7 +25,7 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         configs.CurrentLimits.SupplyCurrentLimitEnable = true;
-        configs.CurrentLimits.SupplyCurrentLimit = 30;
+        configs.CurrentLimits.SupplyCurrentLimit = 40;
 
         configs.Slot0.kP = 4;
         configs.Slot0.kI = 0.0;
@@ -35,8 +35,8 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
         // Rotation per second
 
         // Peak output of 6 volts
-        configs.Voltage.PeakForwardVoltage = 6;
-        configs.Voltage.PeakReverseVoltage = -6;
+        configs.Voltage.PeakForwardVoltage = 8;
+        configs.Voltage.PeakReverseVoltage = -8;
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
