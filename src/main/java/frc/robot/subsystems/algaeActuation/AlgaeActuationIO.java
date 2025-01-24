@@ -17,7 +17,7 @@ public interface AlgaeActuationIO {
      */
     default void moveToPos(double pos) {}
 
-    default void runVoltage(double voltage, double acceleration) {}
+    default void runVoltage(double voltage) {}
 
     default void stopMotors() {}
 }

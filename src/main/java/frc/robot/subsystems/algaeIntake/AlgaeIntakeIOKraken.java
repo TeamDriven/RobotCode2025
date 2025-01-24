@@ -49,15 +49,18 @@ public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
         }
     }
 
+    @Override
     public void updateInputs(AlgaeIntakeIOInputs inputs) {
         inputs.motorPos = intakeMotor.getPosition().getValueAsDouble();
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
     }
 
+    @Override
     public void runVelocity(double velocity) {
         intakeMotor.setControl(velocityControl.withVelocity(velocity));
     }
 
+    @Override
     public void stopMotors() {
         intakeMotor.setControl(StopMode);
     }

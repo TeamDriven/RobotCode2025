@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,14 +16,14 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO{
     public TalonFX actuationMotor;
 
     private MotionMagicVoltage motionMagicControl;
-    private VelocityVoltage voltageControl;
+    private VoltageOut voltageControl;
     private NeutralOut StopMode;
 
     public AlgaeActuationIOKraken(int motorID) {
         actuationMotor = new TalonFX(motorID);
 
       motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
-      voltageControl = new VelocityVoltage(0);
+      voltageControl = new VoltageOut(0).withEnableFOC(true);
       StopMode = new NeutralOut();
 
       TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -57,20 +58,24 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO{
         System.out.println("Could not apply configs, error code: " + status.toString());
       }
     }
-
+    
+    @Override
     public void updateInputs(AlgaeActuationIOInputs inputs) {
         inputs.motorPos = actuationMotor.getPosition().getValueAsDouble();
         inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
     }
 
+    @Override
     public void moveToPos(double pos) {
         actuationMotor.setControl(motionMagicControl.withPosition(pos / rotationsToDegrees));
     }
 
-    public void runVoltage(double voltage, double acceleration) {
-        actuationMotor.setControl(voltageControl.withVelocity(voltage).withAcceleration(acceleration));
+    @Override
+    public void runVoltage(double voltage) {
+        actuationMotor.setControl(voltageControl.withOutput(voltage));
     }
 
+    @Override
     public void stopMotors() {
         actuationMotor.setControl(StopMode);
     }

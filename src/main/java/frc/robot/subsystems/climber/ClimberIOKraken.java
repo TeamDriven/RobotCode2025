@@ -62,19 +62,21 @@ public class ClimberIOKraken implements ClimberIO {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
   }
-
   
+  @Override
   public void updateInputs(ClimberIOInputs inputs) {
     inputs.position = leftMotor.getPosition().getValueAsDouble();
     inputs.velocity = leftMotor.getVelocity().getValueAsDouble();
   }
 
+  @Override
   public void runClimberMotors(double velocity) {
     leftMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
     rightMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
   }
 
-  public void stopMotor() {
+  @Override
+  public void stopClimber() {
     leftMotor.setControl(StopMode);
     rightMotor.setControl(StopMode);
   }

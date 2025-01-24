@@ -37,7 +37,7 @@ public class AlgaeActuation extends SubsystemBase {
     if (isPositionControl == true) {
       activationIO.moveToPos(position);
     } else {
-      activationIO.runVoltage(voltage, 100);
+      activationIO.runVoltage(voltage);
     }
   }
 

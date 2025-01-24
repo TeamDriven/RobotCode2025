@@ -71,6 +71,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     }
   }
 
+  @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.leftMotorPos = elevatorLeftMotor.getPosition().getValueAsDouble();
     inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
@@ -79,16 +80,19 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightMotorVel = elevatorRightMotor.getVelocity().getValueAsDouble();
   }
 
+  @Override
   public void moveToPos(double pos) {
     elevatorLeftMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
     elevatorRightMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
   }
 
+  @Override
   public void runVelocity(double speed) {
     elevatorLeftMotor.setControl(velocityControl.withVelocity(speed));
     elevatorRightMotor.setControl(velocityControl.withVelocity(speed));
   }
 
+  @Override
   public void stopMotors() {
     elevatorLeftMotor.setControl(StopMode);
     elevatorRightMotor.setControl(StopMode);
