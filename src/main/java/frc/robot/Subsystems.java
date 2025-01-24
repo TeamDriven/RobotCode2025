@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.algaeActuation.AlgaeActuation;
+import frc.robot.subsystems.algaeActuation.AlgaeActuationIO;
+import frc.robot.subsystems.algaeActuation.AlgaeActuationIOKraken;
+import frc.robot.subsystems.algaeIntake.AlgaeIntake;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeIO;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeIOKraken;
 import frc.robot.subsystems.coralActuation.CoralActuation;
 import frc.robot.subsystems.coralActuation.CoralActuationIO;
 import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
@@ -30,6 +36,8 @@ public final class Subsystems {
 
   public static final CoralIntake coralIntake;
   public static final CoralActuation coralActuation;
+  public static final AlgaeActuation algaeActuation;
+  public static final AlgaeIntake algaeIntake;
 
   static {
     // Create subsystems
@@ -46,6 +54,8 @@ public final class Subsystems {
           coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
         }
         case DEVBOT -> {
           drive =
@@ -58,6 +68,8 @@ public final class Subsystems {
           coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -77,6 +89,8 @@ public final class Subsystems {
       coralIntake = new CoralIntake(new CoralIntakeIO() {});
       coralActuation = new CoralActuation(new CoralActuationIO() {});
       visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
+      algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
+      algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
     }
   }
 }
