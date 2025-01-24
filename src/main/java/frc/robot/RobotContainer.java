@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.Place2RightSide;
@@ -120,6 +121,9 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> elevator.stop()));
     elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10)))
         .onFalse(new InstantCommand(() -> elevator.stop()));
+    
+    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
   }
 
   /** Updates the alerts for disconnected controllers. */

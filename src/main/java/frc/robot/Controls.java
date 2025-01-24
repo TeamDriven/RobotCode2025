@@ -34,4 +34,8 @@ public class Controls {
   
   public static Trigger elevatorUp = driver.y();
   public static Trigger elevatorDown = driver.a();
+
+  // Climber
+  public static Trigger climberUp = driver.pov(0);
+  public static Trigger climberDown = driver.pov(180);
 }

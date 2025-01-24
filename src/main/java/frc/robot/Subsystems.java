@@ -16,6 +16,9 @@ import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
 import frc.robot.subsystems.coralIntake.CoralIntake;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO;
 import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -43,6 +46,7 @@ public final class Subsystems {
   public static final AlgaeIntake algaeIntake;
 
   public static final Elevator elevator;
+  public static final Climber climber;
 
   static {
     // Create subsystems
@@ -62,6 +66,7 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
+          climber = new Climber(new ClimberIOKraken(13, 14));
         }
         case DEVBOT -> {
           drive =
@@ -77,6 +82,7 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
+          climber = new Climber(new ClimberIOKraken(13, 14));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -99,6 +105,7 @@ public final class Subsystems {
       algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
       algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
       elevator = new Elevator(new ElevatorIO() {});
+      climber = new Climber(new ClimberIO() {});
     }
   }
 }
