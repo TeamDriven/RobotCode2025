@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.Place2RightSide;
@@ -114,6 +115,9 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
     algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
+    
+    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10))).onFalse(new InstantCommand(() -> elevator.stop()));
+    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10))).onFalse(new InstantCommand(() -> elevator.stop()));
   }
 
   /** Updates the alerts for disconnected controllers. */

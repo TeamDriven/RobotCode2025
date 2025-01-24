@@ -22,6 +22,9 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -38,6 +41,8 @@ public final class Subsystems {
   public static final CoralActuation coralActuation;
   public static final AlgaeActuation algaeActuation;
   public static final AlgaeIntake algaeIntake;
+
+  public static final Elevator elevator;
 
   static {
     // Create subsystems
@@ -56,6 +61,7 @@ public final class Subsystems {
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
+          elevator = new Elevator(new ElevatorIOKraken(15, 16));
         }
         case DEVBOT -> {
           drive =
@@ -70,6 +76,7 @@ public final class Subsystems {
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
+          elevator = new Elevator(new ElevatorIOKraken(15, 16));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -91,6 +98,7 @@ public final class Subsystems {
       visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
       algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
       algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
+      elevator = new Elevator(new ElevatorIO() {});
     }
   }
 }

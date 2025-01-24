@@ -31,4 +31,7 @@ public class Controls {
   // Algae Intake
   public static Trigger algaeIntakeIn = new Trigger(() -> false);
   public static Trigger algaeIntakeOut = new Trigger(() -> false);
+  
+  public static Trigger elevatorUp = driver.y();
+  public static Trigger elevatorDown = driver.a();
 }
