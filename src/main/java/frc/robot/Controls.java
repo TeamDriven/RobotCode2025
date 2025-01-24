@@ -32,10 +32,10 @@ public class Controls {
   public static Trigger algaeIntakeIn = new Trigger(() -> false);
   public static Trigger algaeIntakeOut = new Trigger(() -> false);
   
-  public static Trigger elevatorUp = driver.y();
-  public static Trigger elevatorDown = driver.a();
+  public static Trigger elevatorUp = new Trigger(() -> false);
+  public static Trigger elevatorDown = new Trigger(() -> false);
 
   // Climber
-  public static Trigger climberUp = driver.pov(0);
-  public static Trigger climberDown = driver.pov(180);
+  public static Trigger climberUp = new Trigger(() -> false);
+  public static Trigger climberDown = new Trigger(() -> false);
 }
