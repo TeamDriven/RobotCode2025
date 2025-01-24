@@ -115,9 +115,11 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
     algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
-    
-    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10))).onFalse(new InstantCommand(() -> elevator.stop()));
-    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10))).onFalse(new InstantCommand(() -> elevator.stop()));
+
+    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10)))
+        .onFalse(new InstantCommand(() -> elevator.stop()));
+    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10)))
+        .onFalse(new InstantCommand(() -> elevator.stop()));
   }
 
   /** Updates the alerts for disconnected controllers. */
