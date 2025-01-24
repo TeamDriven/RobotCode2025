@@ -20,4 +20,7 @@ public class Controls {
   //coralIntake
   public static Trigger intake = driver.x();
   public static Trigger outtake = driver.b();
+
+  public static Trigger coralActuationUp = driver.pov(270);
+  public static Trigger coralActuationDown = driver.pov(90);
 }
