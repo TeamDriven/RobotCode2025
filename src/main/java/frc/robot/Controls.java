@@ -21,14 +21,14 @@ public class Controls {
   public static Trigger intake = driver.x();
   public static Trigger outtake = driver.b();
 
-  public static Trigger coralActuationUp = driver.pov(270);
-  public static Trigger coralActuationDown = driver.pov(90);
+  public static Trigger coralActuationUp = new Trigger(() -> false);
+  public static Trigger coralActuationDown = new Trigger(() -> false);
 
   // Algae Actuation
-  public static Trigger algaeActuationUp = driver.leftBumper();
-  public static Trigger algaeActuationDown = driver.rightBumper();
+  public static Trigger algaeActuationUp = new Trigger(() -> false);
+  public static Trigger algaeActuationDown = new Trigger(() -> false);
 
   // Algae Intake
-  public static Trigger algaeIntakeIn = driver.x();
-  public static Trigger algaeIntakeOut = driver.b();
+  public static Trigger algaeIntakeIn = new Trigger(() -> false);
+  public static Trigger algaeIntakeOut = new Trigger(() -> false);
 }
