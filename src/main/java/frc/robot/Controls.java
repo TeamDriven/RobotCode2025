@@ -16,4 +16,12 @@ public class Controls {
   public static DoubleSupplier driveOmega =
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
+
+  // Algae Actuation
+  public static Trigger algaeActuationUp = driver.leftBumper();
+  public static Trigger algaeActuationDown = driver.rightBumper();
+
+  // Algae Intake
+  public static Trigger algaeIntakeIn = driver.x();
+  public static Trigger algaeIntakeOut = driver.b();
 }

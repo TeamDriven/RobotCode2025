@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.algaeActuation.AlgaeActuation;
+import frc.robot.subsystems.algaeActuation.AlgaeActuationIO;
+import frc.robot.subsystems.algaeActuation.AlgaeActuationIOKraken;
+import frc.robot.subsystems.algaeIntake.AlgaeIntake;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeIO;
+import frc.robot.subsystems.algaeIntake.AlgaeIntakeIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -21,6 +27,8 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 public final class Subsystems {
   public static final Drive drive;
   public static final Vision visionOne;
+  public static final AlgaeActuation algaeActuation;
+  public static final AlgaeIntake algaeIntake;
 
   static {
     // Create subsystems
@@ -35,6 +43,8 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
         }
         case DEVBOT -> {
           drive =
@@ -45,6 +55,8 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
           visionOne = new Vision("VisionOne", new VisionIOLimelight("limelight"), drive::getSpeeds);
+          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -62,6 +74,8 @@ public final class Subsystems {
               new ModuleIO() {},
               new ModuleIO() {});
       visionOne = new Vision("VisionOne", new VisionIO() {}, drive::getSpeeds);
+      algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
+      algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
     }
   }
 }
