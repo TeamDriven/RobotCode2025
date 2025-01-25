@@ -5,9 +5,10 @@ import org.littletonrobotics.junction.AutoLog;
 public interface CoralIntakeIO {
     @AutoLog
     public class CoralIntakeIOInputs {
-        public double velocity = 0;
-        public double appliedVolts = 0;
-        public double supplyCurrentAmps = 0;
+        public double motorVoltage = 0;
+        public double motorCurrent = 0;
+        public double motorVel = 0;
+        public double motorAccel = 0;
     }
 
     default void updateInputs(CoralIntakeIOInputs inputs) {}

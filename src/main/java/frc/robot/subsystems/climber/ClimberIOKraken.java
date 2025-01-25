@@ -9,15 +9,13 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ClimberIOKraken implements ClimberIO {
-  public TalonFX leftMotor;
-  public TalonFX rightMotor; 
+  public TalonFX ClimberMotor;
 
   private VelocityTorqueCurrentFOC VelMode;
   private NeutralOut StopMode;
 
-  public ClimberIOKraken(int lMotorID, int rMotorID) {
-    leftMotor = new TalonFX(lMotorID);
-    rightMotor = new TalonFX(rMotorID);
+  public ClimberIOKraken(int lMotorID) {
+    ClimberMotor = new TalonFX(lMotorID);
 
     VelMode = new VelocityTorqueCurrentFOC(0).withSlot(0);
     StopMode = new NeutralOut();
@@ -43,19 +41,7 @@ public class ClimberIOKraken implements ClimberIO {
 
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
-      status = leftMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
-
-    configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    
-
-    status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = rightMotor.getConfigurator().apply(configs);
+      status = ClimberMotor.getConfigurator().apply(configs);
       if (status.isOK()) break;
     }
     if (!status.isOK()) {
@@ -65,19 +51,20 @@ public class ClimberIOKraken implements ClimberIO {
   
   @Override
   public void updateInputs(ClimberIOInputs inputs) {
-    inputs.position = leftMotor.getPosition().getValueAsDouble();
-    inputs.velocity = leftMotor.getVelocity().getValueAsDouble();
+    inputs.motorPos = ClimberMotor.getPosition().getValueAsDouble();
+    inputs.motorCurrent = ClimberMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.motorVoltage = ClimberMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.stallCurrent = ClimberMotor.getMotorStallCurrent().getValueAsDouble();
+    inputs.torqueCurrent = ClimberMotor.getTorqueCurrent().getValueAsDouble();
   }
 
   @Override
   public void runClimberMotors(double velocity) {
-    leftMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
-    rightMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
+    ClimberMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
   }
 
   @Override
   public void stopClimber() {
-    leftMotor.setControl(StopMode);
-    rightMotor.setControl(StopMode);
+    ClimberMotor.setControl(StopMode);
   }
 }

@@ -8,7 +8,6 @@ import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.tuckPo
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeActuation extends SubsystemBase {

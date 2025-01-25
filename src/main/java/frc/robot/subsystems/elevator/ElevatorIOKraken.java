@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorIOKraken implements ElevatorIO {
@@ -74,10 +75,21 @@ public class ElevatorIOKraken implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.leftMotorPos = elevatorLeftMotor.getPosition().getValueAsDouble();
-    inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
-    
+    inputs.leftMotorCurrent = elevatorLeftMotor.getSupplyCurrent().getValueAsDouble();
     inputs.leftMotorVel = elevatorLeftMotor.getVelocity().getValueAsDouble();
+    inputs.leftMotorVoltage = elevatorLeftMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.leftMotorAccel = elevatorLeftMotor.getAcceleration().getValueAsDouble();
+    inputs.leftIsMotionMagic = elevatorLeftMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
+    inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
+
+    inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
+    inputs.rightMotorCurrent = elevatorRightMotor.getSupplyCurrent().getValueAsDouble();
     inputs.rightMotorVel = elevatorRightMotor.getVelocity().getValueAsDouble();
+    inputs.rightMotorVoltage = elevatorRightMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.rightMotorAccel = elevatorRightMotor.getAcceleration().getValueAsDouble();
+    inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
+    inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
+
   }
 
   @Override

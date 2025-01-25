@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
-    public TalonFX intakeMotor;
+    private TalonFX intakeMotor;
 
     private VelocityVoltage velocityControl;
     private NeutralOut StopMode;
@@ -51,8 +51,10 @@ public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
 
     @Override
     public void updateInputs(AlgaeIntakeIOInputs inputs) {
-        inputs.motorPos = intakeMotor.getPosition().getValueAsDouble();
+        inputs.motorCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
+        inputs.motorVoltage = intakeMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.motorAccel = intakeMotor.getAcceleration().getValueAsDouble();
     }
 
     @Override

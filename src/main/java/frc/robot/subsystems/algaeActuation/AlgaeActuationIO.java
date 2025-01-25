@@ -6,6 +6,8 @@ public interface AlgaeActuationIO {
     @AutoLog
     public class AlgaeActuationIOInputs {
         public double motorPos = 0;
+        public double motorVoltage = 0;
+        public double motorCurrent = 0;
         public double motorVel = 0;
     }
     

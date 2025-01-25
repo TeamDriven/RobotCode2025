@@ -6,7 +6,6 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -62,7 +61,9 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO{
     @Override
     public void updateInputs(AlgaeActuationIOInputs inputs) {
         inputs.motorPos = actuationMotor.getPosition().getValueAsDouble();
+        inputs.motorCurrent = actuationMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
+        inputs.motorVoltage = actuationMotor.getSupplyVoltage().getValueAsDouble();
     }
 
     @Override
