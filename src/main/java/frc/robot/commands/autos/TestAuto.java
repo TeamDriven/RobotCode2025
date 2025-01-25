@@ -7,7 +7,6 @@ import org.littletonrobotics.junction.Logger;
 import choreo.auto.AutoRoutine;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public class TestAuto implements AutoBase {
     @Override

@@ -2,8 +2,6 @@ package frc.robot.commands.autos;
 
 import static frc.robot.Subsystems.drive;
 
-import org.littletonrobotics.junction.Logger;
-
 import choreo.auto.AutoRoutine;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
