@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.FieldConstants.Zones;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.util.SwerveDriveWheelPositions;
 import frc.robot.util.swerve.ModuleLimits;
@@ -173,5 +174,44 @@ public class RobotState {
   @AutoLogOutput(key = "RobotState/OdometryPose")
   public Pose2d getOdometryPose() {
     return odometryPose;
+  }
+
+  private boolean inReefZone = false;
+  private boolean inLeftPickupZone = false;
+  private boolean inRightPickupZone = false;
+  private boolean inProcessorZone = false;
+  private boolean inClimbZone = false;
+  
+  @AutoLogOutput(key = "RobotState/ReefZone")
+  public boolean isInReefZone() {
+    return inReefZone;
+  }
+
+  @AutoLogOutput(key = "RobotState/LeftPickupZone")
+  public boolean isInLeftPickupZone() {
+    return inLeftPickupZone;
+  }
+
+  @AutoLogOutput(key = "RobotState/RightPickupZone")
+  public boolean isInRightPickupZone() {
+    return inRightPickupZone;
+  }
+
+  @AutoLogOutput(key = "RobotState/ProcessorZone")
+  public boolean isInProcessorZone() {
+    return inProcessorZone;
+  }
+
+  @AutoLogOutput(key = "RobotState/ClimbZone")
+  public boolean isInClimbZone() {
+    return inClimbZone;
+  }
+
+  public void updateZones() {
+    inReefZone = Zones.reefZone.isRobotInZone(estimatedPose);
+    inLeftPickupZone = false;
+    inRightPickupZone = false;
+    inProcessorZone = false;
+    inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
   }
 }
