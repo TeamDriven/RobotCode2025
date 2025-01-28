@@ -128,9 +128,14 @@ public class FieldConstants {
   }
 
   public class Zones {
+    private static final double pickupZoneLength = 40;
+
     public static PolygonZone climbZone;
 
     public static CircleZone reefZone;
+
+    public static PolygonZone leftPickupZone;
+    public static PolygonZone rightPickupZone;
 
     static {
       climbZone = new PolygonZone(
@@ -146,6 +151,20 @@ public class FieldConstants {
           Units.inchesToMeters(158.499)
         ), 
         Units.inchesToMeters(55)); // 55
+
+      leftPickupZone = new PolygonZone(
+        new Translation2d(0, Units.inchesToMeters(48.7015)),
+        new Translation2d(0, Units.inchesToMeters(48.7015 + pickupZoneLength)),
+        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength), 0),
+        new Translation2d(Units.inchesToMeters(66.6745), 0)
+      );
+
+      rightPickupZone = new PolygonZone(
+        new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),
+        new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015 + pickupZoneLength)),
+        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength), fieldWidth),
+        new Translation2d(Units.inchesToMeters(66.6745), fieldWidth)
+      );
     }
   }
 }
