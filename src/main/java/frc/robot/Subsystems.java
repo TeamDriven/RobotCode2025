@@ -38,6 +38,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
  */
 public final class Subsystems {
   public static final Drive drive;
+
   public static final Vision leftVision;
   public static final Vision rightVision;
 
@@ -45,7 +46,6 @@ public final class Subsystems {
   public static final CoralActuation coralActuation;
   public static final AlgaeActuation algaeActuation;
   public static final AlgaeIntake algaeIntake;
-
   public static final Elevator elevator;
   public static final Climber climber;
 
@@ -61,8 +61,10 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+
           leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
           rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
+
           coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
@@ -78,8 +80,10 @@ public final class Subsystems {
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
                   new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+
           leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
           rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
+
           coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
@@ -102,8 +106,10 @@ public final class Subsystems {
               new ModuleIO() {},
               new ModuleIO() {},
               new ModuleIO() {});
+
       leftVision = new Vision("Left Vision", new VisionIO() {}, drive::getSpeeds);
       rightVision = new Vision("Right Vision", new VisionIO() {}, drive::getSpeeds);
+
       coralIntake = new CoralIntake(new CoralIntakeIO() {});
       coralActuation = new CoralActuation(new CoralActuationIO() {});
       algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
