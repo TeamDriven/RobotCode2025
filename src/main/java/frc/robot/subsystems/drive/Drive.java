@@ -522,7 +522,7 @@ public class Drive extends SubsystemBase {
   public Rotation2d[] getAbsoluteModuleRotations() {
     Rotation2d[] rots = new Rotation2d[modules.length];
     for (int i = 0; i < modules.length; i++) {
-      rots[i] = modules[i].getAngle().plus(DriveConstants.moduleConfigs[i].absoluteEncoderOffset());
+      rots[i] = modules[i].getAbsoluteAngle().plus(DriveConstants.moduleConfigs[i].absoluteEncoderOffset());
     }
     return rots;
   }
