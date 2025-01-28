@@ -12,7 +12,7 @@ import frc.robot.util.AllianceFlipUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-public class AutoTowardsPOI extends Command {
+public class AutoTurnTowardsPOI extends Command {
 
   protected Supplier<Rotation2d> angleSupplier;
   private DoubleSupplier offset;
@@ -23,7 +23,7 @@ public class AutoTowardsPOI extends Command {
    * @param POISupplier The location of the point of interest
    * @param offset The offset from facing straight forward
    */
-  public AutoTowardsPOI(Supplier<Translation2d> POISupplier, DoubleSupplier offset) {
+  public AutoTurnTowardsPOI(Supplier<Translation2d> POISupplier, DoubleSupplier offset) {
     this.offset = offset;
     this.POISupplier = POISupplier;
     addRequirements(drive);

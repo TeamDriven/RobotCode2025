@@ -44,10 +44,9 @@ import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 
 public class Drive extends SubsystemBase {
-  private static final LoggedTunableNumber coastWaitTime =
-      new LoggedTunableNumber("Drive/CoastWaitTimeSeconds", 0.5);
-  private static final LoggedTunableNumber coastMetersPerSecThreshold =
-      new LoggedTunableNumber("Drive/CoastMetersPerSecThreshold", 0.05);
+  private static final LoggedTunableNumber coastWaitTime = new LoggedTunableNumber("Drive/CoastWaitTimeSeconds", 0.5);
+  private static final LoggedTunableNumber coastMetersPerSecThreshold = new LoggedTunableNumber(
+      "Drive/CoastMetersPerSecThreshold", 0.05);
 
   public enum DriveMode {
     /** Driving with input from driver joysticks. (Default) */
@@ -59,7 +58,10 @@ public class Drive extends SubsystemBase {
     /** Driving to a location on the field automatically. */
     AUTO_ALIGN,
 
-    /** Characterizing (modules oriented forwards, motor outputs supplied externally). */
+    /**
+     * Characterizing (modules oriented forwards, motor outputs supplied
+     * externally).
+     */
     CHARACTERIZATION,
 
     /** Running wheel radius characterization routine (spinning in circle) */
@@ -83,8 +85,7 @@ public class Drive extends SubsystemBase {
   public static final Lock odometryLock = new ReentrantLock();
   public static final Queue<Double> timestampQueue = new ArrayBlockingQueue<>(20);
 
-  private final OdometryTimestampInputsAutoLogged odometryTimestampInputs =
-      new OdometryTimestampInputsAutoLogged();
+  private final OdometryTimestampInputsAutoLogged odometryTimestampInputs = new OdometryTimestampInputsAutoLogged();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4];
@@ -110,15 +111,14 @@ public class Drive extends SubsystemBase {
 
   private ChassisSpeeds desiredSpeeds = new ChassisSpeeds();
 
-  private SwerveSetpoint currentSetpoint =
-      new SwerveSetpoint(
-          new ChassisSpeeds(),
-          new SwerveModuleState[] {
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState()
-          });
+  private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
+      new ChassisSpeeds(),
+      new SwerveModuleState[] {
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState()
+      });
   private final SwerveSetpointGenerator setpointGenerator;
 
   private final TeleopDriveController teleopDriveController;
@@ -138,28 +138,26 @@ public class Drive extends SubsystemBase {
     lastMovementTimer.start();
     setBrakeMode(true);
 
-    setpointGenerator =
-        new SwerveSetpointGenerator(DriveConstants.kinematics, DriveConstants.moduleTranslations);
+    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.kinematics, DriveConstants.moduleTranslations);
     teleopDriveController = new TeleopDriveController();
     autoDriveController = new AutoDriveController();
     simpleDriveController = new SimpleDriveController();
 
     autoFactory = new AutoFactory(
-                        RobotState.getInstance()::getEstimatedPose, 
-                        RobotState.getInstance()::resetPose, 
-                        this::acceptAutoInput, 
-                        true, 
-                        this);
+        RobotState.getInstance()::getEstimatedPose,
+        RobotState.getInstance()::resetPose,
+        this::acceptAutoInput,
+        true,
+        this);
   }
 
   public void periodic() {
     // Update & process inputs
     odometryLock.lock();
     // Read timestamps from odometry thread and fake sim timestamps
-    odometryTimestampInputs.timestamps =
-        timestampQueue.stream().mapToDouble(Double::valueOf).toArray();
+    odometryTimestampInputs.timestamps = timestampQueue.stream().mapToDouble(Double::valueOf).toArray();
     if (odometryTimestampInputs.timestamps.length == 0) {
-      odometryTimestampInputs.timestamps = new double[] {Timer.getFPGATimestamp()};
+      odometryTimestampInputs.timestamps = new double[] { Timer.getFPGATimestamp() };
     }
     timestampQueue.clear();
     Logger.processInputs("Drive/OdometryTimestamps", odometryTimestampInputs);
@@ -173,15 +171,14 @@ public class Drive extends SubsystemBase {
     ModuleLimits currentModuleLimits = RobotState.getInstance().getModuleLimits();
 
     // Calculate the min odometry position updates across all modules
-    int minOdometryUpdates =
-        IntStream.of(
-                odometryTimestampInputs.timestamps.length,
-                Arrays.stream(modules)
-                    .mapToInt(module -> module.getModulePositions().length)
-                    .min()
-                    .orElse(0))
+    int minOdometryUpdates = IntStream.of(
+        odometryTimestampInputs.timestamps.length,
+        Arrays.stream(modules)
+            .mapToInt(module -> module.getModulePositions().length)
             .min()
-            .orElse(0);
+            .orElse(0))
+        .min()
+        .orElse(0);
     if (gyroInputs.connected) {
       minOdometryUpdates = Math.min(gyroInputs.odometryYawPositions.length, minOdometryUpdates);
     }
@@ -191,23 +188,20 @@ public class Drive extends SubsystemBase {
       Rotation2d yaw = gyroInputs.connected ? gyroInputs.odometryYawPositions[i] : null;
       // Get all four swerve module positions at that odometry update
       // and store in SwerveDriveWheelPositions object
-      SwerveDriveWheelPositions wheelPositions =
-          new SwerveDriveWheelPositions(
-              Arrays.stream(modules)
-                  .map(module -> module.getModulePositions()[odometryIndex])
-                  .toArray(SwerveModulePosition[]::new));
+      SwerveDriveWheelPositions wheelPositions = new SwerveDriveWheelPositions(
+          Arrays.stream(modules)
+              .map(module -> module.getModulePositions()[odometryIndex])
+              .toArray(SwerveModulePosition[]::new));
       // Filtering based on delta wheel positions
       boolean includeMeasurement = true;
       if (lastPositions != null) {
         double dt = odometryTimestampInputs.timestamps[i] - lastTime;
         for (int j = 0; j < modules.length; j++) {
-          double velocity =
-              (wheelPositions.positions[j].distanceMeters
-                      - lastPositions.positions[j].distanceMeters)
-                  / dt;
-          double omega =
-              wheelPositions.positions[j].angle.minus(lastPositions.positions[j].angle).getRadians()
-                  / dt;
+          double velocity = (wheelPositions.positions[j].distanceMeters
+              - lastPositions.positions[j].distanceMeters)
+              / dt;
+          double omega = wheelPositions.positions[j].angle.minus(lastPositions.positions[j].angle).getRadians()
+              / dt;
           // Check if delta is too large
           if (Math.abs(omega) > currentModuleLimits.maxSteeringVelocity() * 5.0
               || Math.abs(velocity) > currentModuleLimits.maxDriveVelocity() * 5.0) {
@@ -229,10 +223,9 @@ public class Drive extends SubsystemBase {
 
     // Update current velocities use gyro when possible
     ChassisSpeeds robotRelativeVelocity = getSpeeds();
-    robotRelativeVelocity.omegaRadiansPerSecond =
-        gyroInputs.connected
-            ? gyroInputs.yawVelocityRadPerSec
-            : robotRelativeVelocity.omegaRadiansPerSecond;
+    robotRelativeVelocity.omegaRadiansPerSecond = gyroInputs.connected
+        ? gyroInputs.yawVelocityRadPerSec
+        : robotRelativeVelocity.omegaRadiansPerSecond;
     RobotState.getInstance()
         .addVelocityData(
             new Twist2d(
@@ -244,8 +237,7 @@ public class Drive extends SubsystemBase {
     // Reset movement timer if moved
     if (Arrays.stream(modules)
         .anyMatch(
-            module ->
-                Math.abs(module.getVelocityMetersPerSec()) > coastMetersPerSecThreshold.get())) {
+            module -> Math.abs(module.getVelocityMetersPerSec()) > coastMetersPerSecThreshold.get())) {
       lastMovementTimer.reset();
     }
 
@@ -301,23 +293,27 @@ public class Drive extends SubsystemBase {
       case SIMPLE -> {
         desiredSpeeds = simpleDriveController.update();
       }
-      default -> {}
+      default -> {
+      }
     }
 
     // Run modules
     if (currentDriveMode != DriveMode.CHARACTERIZATION && !modulesOrienting) {
       // Run robot at desiredSpeeds
       // Generate feasible next setpoint
-      currentSetpoint =
-          setpointGenerator.generateSetpoint(
-              currentModuleLimits, currentSetpoint, desiredSpeeds, Constants.loopPeriodSecs);
+      currentSetpoint = setpointGenerator.generateSetpoint(
+          currentModuleLimits, currentSetpoint, desiredSpeeds, Constants.loopPeriodSecs);
       SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
       SwerveModuleState[] optimizedSetpointTorques = new SwerveModuleState[4];
 
       for (int i = 0; i < modules.length; i++) {
         // Optimize setpoints
-        optimizedSetpointStates[i] =
-            SwerveModuleState.optimize(currentSetpoint.moduleStates()[i], modules[i].getAngle());
+        optimizedSetpointStates[i] = new SwerveModuleState(currentSetpoint.moduleStates()[i].speedMetersPerSecond,
+            currentSetpoint.moduleStates()[i].angle);
+        optimizedSetpointStates[i].optimize(modules[i].getAngle());
+
+        // optimizedSetpointStates[i] = SwerveModuleState.optimize(currentSetpoint.moduleStates()[i],
+        //     modules[i].getAngle());
 
         optimizedSetpointTorques[i] = new SwerveModuleState(0.0, optimizedSetpointStates[i].angle);
 
@@ -440,7 +436,9 @@ public class Drive extends SubsystemBase {
     return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
   }
 
-  /** Set brake mode to {@code enabled} doesn't change brake mode if already set. */
+  /**
+   * Set brake mode to {@code enabled} doesn't change brake mode if already set.
+   */
   private void setBrakeMode(boolean enabled) {
     if (brakeModeEnabled != enabled) {
       Arrays.stream(modules).forEach(module -> module.setBrakeMode(enabled));
@@ -449,37 +447,37 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Returns command that orients all modules to {@code orientation}, ending when the modules have
+   * Returns command that orients all modules to {@code orientation}, ending when
+   * the modules have
    * rotated.
    */
   public Command orientModules(Rotation2d orientation) {
-    return orientModules(new Rotation2d[] {orientation, orientation, orientation, orientation});
+    return orientModules(new Rotation2d[] { orientation, orientation, orientation, orientation });
   }
 
   /**
-   * Returns command that orients all modules to {@code orientations[]}, ending when the modules
+   * Returns command that orients all modules to {@code orientations[]}, ending
+   * when the modules
    * have rotated.
    */
   public Command orientModules(Rotation2d[] orientations) {
     return run(() -> {
-          SwerveModuleState[] states = new SwerveModuleState[4];
-          for (int i = 0; i < orientations.length; i++) {
-            modules[i].runSetpoint(
-                new SwerveModuleState(0.0, orientations[i]),
-                new SwerveModuleState(0.0, new Rotation2d()));
-            states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
-          }
-          currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
-        })
+      SwerveModuleState[] states = new SwerveModuleState[4];
+      for (int i = 0; i < orientations.length; i++) {
+        modules[i].runSetpoint(
+            new SwerveModuleState(0.0, orientations[i]),
+            new SwerveModuleState(0.0, new Rotation2d()));
+        states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
+      }
+      currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
+    })
         .until(
-            () ->
-                Arrays.stream(modules)
-                    .allMatch(
-                        module ->
-                            EqualsUtil.epsilonEquals(
-                                module.getAngle().getDegrees(),
-                                module.setpointState.angle.getDegrees(),
-                                2.0)))
+            () -> Arrays.stream(modules)
+                .allMatch(
+                    module -> EqualsUtil.epsilonEquals(
+                        module.getAngle().getDegrees(),
+                        module.setpointState.angle.getDegrees(),
+                        2.0)))
         .beforeStarting(() -> modulesOrienting = true)
         .finallyDo(() -> modulesOrienting = false)
         .withName("Orient Modules");
@@ -504,13 +502,18 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
+  /**
+   * Returns the module states (turn angles and drive velocities) for all of the
+   * modules.
+   */
   @AutoLogOutput(key = "Drive/SwerveStates/Measured")
   public SwerveModuleState[] getModuleStates() {
     return Arrays.stream(modules).map(Module::getState).toArray(SwerveModuleState[]::new);
   }
 
-  /** Returns the measured speeds of the robot in the robot's frame of reference. */
+  /**
+   * Returns the measured speeds of the robot in the robot's frame of reference.
+   */
   @AutoLogOutput(key = "Drive/MeasuredSpeeds")
   public ChassisSpeeds getSpeeds() {
     return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
@@ -519,7 +522,7 @@ public class Drive extends SubsystemBase {
   public Rotation2d[] getAbsoluteModuleRotations() {
     Rotation2d[] rots = new Rotation2d[modules.length];
     for (int i = 0; i < modules.length; i++) {
-      rots[i] = modules[i].getAngle().plus(DriveConstants.moduleConfigs[i].absoluteEncoderOffset());
+      rots[i] = modules[i].getAbsoluteAngle().plus(DriveConstants.moduleConfigs[i].absoluteEncoderOffset());
     }
     return rots;
   }
