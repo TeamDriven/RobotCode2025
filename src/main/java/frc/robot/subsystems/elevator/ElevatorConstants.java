@@ -1,8 +1,8 @@
 package frc.robot.subsystems.elevator;
 
 public class ElevatorConstants {
-    private static final double gearRatio = 7; // Is subject to change
-    private static final double pulleyRadius = 0; // if 36t pulley 0.6765
+    private static final double gearRatio = 17; // Is subject to change
+    private static final double pulleyRadius = 0.6765; // if 36t pulley 0.6765
 
     public static final double rotationsToInches = gearRatio / (pulleyRadius * 2 * Math.PI);
     
