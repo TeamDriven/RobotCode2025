@@ -9,6 +9,8 @@ package frc.robot;
 
 import static frc.robot.subsystems.drive.DriveConstants.driveConfig;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +19,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.FieldConstants.Reef.ReefFace;
 import frc.robot.util.zoning.CircleZone;
 import frc.robot.util.zoning.PolygonZone;
 
@@ -195,8 +198,8 @@ public class FieldConstants {
   }
 
   public class CoralStations {
-    private static final Pose3d[] leftChuteLocations = new Pose3d[9];
-    private static final Pose3d[] rightChuteLocations = new Pose3d[9];
+    public static final Pose3d[] leftChuteLocations = new Pose3d[9];
+    public static final Pose3d[] rightChuteLocations = new Pose3d[9];
 
     private static final double chuteHeight = Units.inchesToMeters(37.5);
 
@@ -252,5 +255,30 @@ public class FieldConstants {
           new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength), fieldWidth),
           new Translation2d(Units.inchesToMeters(66.6745), fieldWidth));
     }
+  }
+
+  public static void logFieldConstants() {
+    Logger.recordOutput("FieldConstants/coralMarkers", coralMarkers.markerTranslations);
+
+    Logger.recordOutput("FieldConstants/processor", processor);
+
+    Logger.recordOutput("FieldConstants/cageTranslations", cageLocations.cageTranslations);
+
+    Logger.recordOutput("FieldConstants/reefCenter", Reef.center);
+
+    Logger.recordOutput("FieldConstants/placePoses", Reef.placePoses);
+
+    // Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Branches", i), new Pose3d());
+
+    for (int i = 0; i < Reef.reefFaces.length; i++) {
+      Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/facePose", i), Reef.reefFaces[i].facePos);
+      Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/algaeHeight", i), Reef.reefFaces[i].algaeHeight);
+      Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Positions", i), Reef.reefFaces[i].L2Positions);
+      Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L3Positions", i), Reef.reefFaces[i].L3Positions);
+      Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L4Positions", i), Reef.reefFaces[i].L4Positions);
+    }
+
+    Logger.recordOutput("FieldConstants/leftChuteLocations", CoralStations.leftChuteLocations);
+    Logger.recordOutput("FieldConstants/rightChuteLocations", CoralStations.rightChuteLocations);
   }
 }
