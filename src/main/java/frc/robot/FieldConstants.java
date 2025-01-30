@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.drive.DriveConstants.driveConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -69,6 +71,8 @@ public class FieldConstants {
   }
 
   public class Reef {
+    private static final double placeOffset = Units.inchesToMeters(1.625);
+
     public static record ReefFace(Pose2d facePos, double algaeHeight,
         Pose3d[] L2Positions, Pose3d[] L3Positions, Pose3d[] L4Positions) {
     }
@@ -95,47 +99,7 @@ public class FieldConstants {
 
     public static final ReefFace[] reefFaces = new ReefFace[6];
 
-    static {
-      Pose2d[] centerFaces = new Pose2d[] {
-          new Pose2d(
-              Units.inchesToMeters(144.003),
-              Units.inchesToMeters(158.500),
-              Rotation2d.fromDegrees(180)),
-          new Pose2d(
-              Units.inchesToMeters(160.373),
-              Units.inchesToMeters(186.857),
-              Rotation2d.fromDegrees(120)),
-          new Pose2d(
-              Units.inchesToMeters(193.116),
-              Units.inchesToMeters(186.858),
-              Rotation2d.fromDegrees(60)),
-          new Pose2d(
-              Units.inchesToMeters(209.489),
-              Units.inchesToMeters(158.502),
-              Rotation2d.fromDegrees(0)),
-          new Pose2d(
-              Units.inchesToMeters(193.118),
-              Units.inchesToMeters(130.145),
-              Rotation2d.fromDegrees(-60)),
-          new Pose2d(
-              Units.inchesToMeters(160.375),
-              Units.inchesToMeters(130.144),
-              Rotation2d.fromDegrees(-120))
-      };
-
-      for (int i = 0; i < centerFaces.length; i++) {
-        Pose3d[] L2Poses = findCoralPoses(centerFaces[i], ReefHeight.L2);
-        Pose3d[] L3Poses = findCoralPoses(centerFaces[i], ReefHeight.L3);
-        Pose3d[] L4Poses = findCoralPoses(centerFaces[i], ReefHeight.L4);
-
-        reefFaces[0] = new ReefFace(
-            centerFaces[i],
-            i % 2 == 0 ? Units.inchesToMeters(43.7) : Units.inchesToMeters(29.834),
-            L2Poses,
-            L3Poses,
-            L4Poses);
-      }
-    }
+    public static final Pose2d[] placePoses = new Pose2d[12];
 
     private static Pose3d[] findCoralPoses(Pose2d centerFace, ReefHeight level) {
       Pose3d[] poses = new Pose3d[2];
@@ -173,6 +137,60 @@ public class FieldConstants {
               poseDirection.getRotation().getRadians()));
 
       return poses;
+    }
+
+    static {
+      Pose2d[] centerFaces = new Pose2d[] {
+          new Pose2d(
+              Units.inchesToMeters(144.003),
+              Units.inchesToMeters(158.500),
+              Rotation2d.fromDegrees(180)),
+          new Pose2d(
+              Units.inchesToMeters(160.373),
+              Units.inchesToMeters(186.857),
+              Rotation2d.fromDegrees(120)),
+          new Pose2d(
+              Units.inchesToMeters(193.116),
+              Units.inchesToMeters(186.858),
+              Rotation2d.fromDegrees(60)),
+          new Pose2d(
+              Units.inchesToMeters(209.489),
+              Units.inchesToMeters(158.502),
+              Rotation2d.fromDegrees(0)),
+          new Pose2d(
+              Units.inchesToMeters(193.118),
+              Units.inchesToMeters(130.145),
+              Rotation2d.fromDegrees(-60)),
+          new Pose2d(
+              Units.inchesToMeters(160.375),
+              Units.inchesToMeters(130.144),
+              Rotation2d.fromDegrees(-120))
+      };
+
+      int placePoseIndex = 0;
+      for (int i = 0; i < centerFaces.length; i++) {
+        Pose3d[] L2Poses = findCoralPoses(centerFaces[i], ReefHeight.L2);
+        Pose3d[] L3Poses = findCoralPoses(centerFaces[i], ReefHeight.L3);
+        Pose3d[] L4Poses = findCoralPoses(centerFaces[i], ReefHeight.L4);
+
+        reefFaces[0] = new ReefFace(
+            centerFaces[i],
+            i % 2 == 0 ? Units.inchesToMeters(43.7) : Units.inchesToMeters(29.834),
+            L2Poses,
+            L3Poses,
+            L4Poses);
+
+        for (Pose3d pose : L2Poses) {
+          placePoses[placePoseIndex++] = new Pose2d(
+              pose.toPose2d()
+                  .transformBy(new Transform2d(driveConfig.bumperWidthX() + placeOffset, 0, new Rotation2d()))
+                  .getX(),
+              pose.toPose2d()
+                  .transformBy(new Transform2d(0, 0, new Rotation2d()))
+                  .getY(),
+              pose.getRotation().toRotation2d().rotateBy(new Rotation2d(Math.PI)));
+        }
+      }
     }
   }
 
@@ -219,9 +237,7 @@ public class FieldConstants {
           new Translation2d(Units.inchesToMeters(322.438), 0));
 
       reefZone = new CircleZone(
-          new Translation2d(
-              Units.inchesToMeters(176.746),
-              Units.inchesToMeters(158.499)),
+          Reef.center,
           Units.inchesToMeters(55)); // 55
 
       leftPickupZone = new PolygonZone(
