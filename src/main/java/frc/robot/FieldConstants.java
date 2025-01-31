@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.FieldConstants.Reef.ReefFace;
 import frc.robot.util.zoning.CircleZone;
 import frc.robot.util.zoning.PolygonZone;
 
@@ -47,7 +46,7 @@ public class FieldConstants {
 
     private static final double markerX = Units.inchesToMeters(48);
 
-    private static final double[] markerY = { 86.5, 158.5, 230.5 };
+    private static final double[] markerY = { 230.5, 158.5, 86.5 };
 
     static {
       for (int i = 0; i < markerTranslations.length; i++) {
@@ -57,18 +56,16 @@ public class FieldConstants {
   }
 
   public static final Translation2d processor = new Translation2d(Units.inchesToMeters(235.7261),
-      Units.inchesToMeters(316.955)); // fill
+      Units.inchesToMeters(0)); // fill
 
   public class cageLocations {
     public static final Translation2d[] cageTranslations = new Translation2d[3];
-
-    private static final double cageX = Units.inchesToMeters(fieldLength / 2);
 
     private static final double[] cageY = { 31.1875, 74.125, 117.0625 };
 
     static {
       for (int i = 0; i < cageTranslations.length; i++) {
-        cageTranslations[i] = new Translation2d(cageX, Units.inchesToMeters(cageY[i]));
+        cageTranslations[i] = new Translation2d(fieldLength / 2, fieldWidth - Units.inchesToMeters(cageY[i]));
       }
     }
   }
@@ -176,22 +173,26 @@ public class FieldConstants {
         Pose3d[] L3Poses = findCoralPoses(centerFaces[i], ReefHeight.L3);
         Pose3d[] L4Poses = findCoralPoses(centerFaces[i], ReefHeight.L4);
 
-        reefFaces[0] = new ReefFace(
+        reefFaces[i] = new ReefFace(
             centerFaces[i],
             i % 2 == 0 ? Units.inchesToMeters(43.7) : Units.inchesToMeters(29.834),
             L2Poses,
             L3Poses,
             L4Poses);
 
-        for (Pose3d pose : L2Poses) {
+        for (int j = 0; j < 2; j++) {
+          Pose2d poseDirection = new Pose2d(center, centerFaces[i].getRotation());
+          double adjustX = Units.inchesToMeters(30.738) + driveConfig.bumperWidthX() + placeOffset;
+          double adjustY = Units.inchesToMeters(6.469);
+
           placePoses[placePoseIndex++] = new Pose2d(
-              pose.toPose2d()
-                  .transformBy(new Transform2d(driveConfig.bumperWidthX() + placeOffset, 0, new Rotation2d()))
+              poseDirection
+                  .transformBy(new Transform2d(adjustX, j % 2 == 0 ? adjustY : -adjustY, new Rotation2d()))
                   .getX(),
-              pose.toPose2d()
-                  .transformBy(new Transform2d(0, 0, new Rotation2d()))
+              poseDirection
+                  .transformBy(new Transform2d(adjustX, j % 2 == 0 ? adjustY : -adjustY, new Rotation2d()))
                   .getY(),
-              pose.getRotation().toRotation2d().rotateBy(new Rotation2d(Math.PI)));
+              poseDirection.getRotation().rotateBy(new Rotation2d(Math.PI)));
         }
       }
     }
@@ -203,9 +204,6 @@ public class FieldConstants {
 
     private static final double chuteHeight = Units.inchesToMeters(37.5);
 
-    private static final Rotation2d leftRot = Rotation2d.fromDegrees(-54);
-    private static final Rotation2d rightRot = Rotation2d.fromDegrees(54);
-
     private static final double[] leftChuteX = { 7.2883, 13.7614, 20.2345, 26.7075, 33.1806, 39.6537, 46.1268, 52.5998,
         59.0729 };
     private static final double[] leftChuteY = { 44.1488, 39.4478, 34.7468, 30.0458, 25.3448, 20.6434, 15.9429, 11.2419,
@@ -213,11 +211,14 @@ public class FieldConstants {
 
     static {
       for (int i = 0; i < leftChuteLocations.length; i++) {
-        leftChuteLocations[i] = new Pose3d(leftChuteX[i], leftChuteY[i], chuteHeight, new Rotation3d(leftRot));
+        leftChuteLocations[i] = new Pose3d(Units.inchesToMeters(leftChuteX[i]),
+            fieldWidth - Units.inchesToMeters(leftChuteY[i]), chuteHeight,
+            new Rotation3d(0, Units.degreesToRadians(55), Units.degreesToRadians(-54)));
       }
       for (int i = 0; i < rightChuteLocations.length; i++) {
-        rightChuteLocations[i] = new Pose3d(leftChuteX[i], fieldLength - leftChuteY[i], chuteHeight,
-            new Rotation3d(rightRot));
+        rightChuteLocations[i] = new Pose3d(Units.inchesToMeters(leftChuteX[i]), Units.inchesToMeters(leftChuteY[i]),
+            chuteHeight,
+            new Rotation3d(0, Units.degreesToRadians(55), Units.degreesToRadians(54)));
       }
     }
   }
@@ -268,9 +269,11 @@ public class FieldConstants {
 
     Logger.recordOutput("FieldConstants/placePoses", Reef.placePoses);
 
-    // Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Branches", i), new Pose3d());
+    // Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Branches",
+    // i), new Pose3d());
 
     for (int i = 0; i < Reef.reefFaces.length; i++) {
+      System.out.println(Reef.reefFaces[i]);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/facePose", i), Reef.reefFaces[i].facePos);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/algaeHeight", i), Reef.reefFaces[i].algaeHeight);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Positions", i), Reef.reefFaces[i].L2Positions);

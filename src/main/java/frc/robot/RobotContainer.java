@@ -51,7 +51,7 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    FieldConstants.logFieldConstants();
+    // FieldConstants.logFieldConstants();
 
     // Configure autos and buttons
     setupAutos();
