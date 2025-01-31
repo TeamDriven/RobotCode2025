@@ -2,6 +2,8 @@ package frc.robot.subsystems.elevator;
 
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,11 +34,13 @@ public class Elevator extends SubsystemBase{
         if (isPositionControl == true) {
             elevatorIO.moveToPos(position);
         } else {
-            elevatorIO.runVelocity(velocity);
+            // elevatorIO.runVelocity(velocity);
+            elevatorIO.runVoltage(velocity);
         }
     }
 
     public void setPos(double pos) {
+        stopped = false;
         isPositionControl = true;
         position = pos;
     }
@@ -46,6 +50,7 @@ public class Elevator extends SubsystemBase{
     }
 
     public void runVelocity(double vel) {
+        stopped = false;
         isPositionControl = false;
         velocity = vel;
     }

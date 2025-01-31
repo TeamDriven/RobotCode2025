@@ -32,8 +32,8 @@ public class Controls {
   public static Trigger algaeIntakeIn = new Trigger(() -> false);
   public static Trigger algaeIntakeOut = new Trigger(() -> false);
   
-  public static Trigger elevatorUp = new Trigger(() -> false);
-  public static Trigger elevatorDown = new Trigger(() -> false);
+  public static Trigger elevatorUp = driver.pov(0);
+  public static Trigger elevatorDown = driver.pov(180);
 
   // Climber
   public static Trigger climberUp = new Trigger(() -> false);

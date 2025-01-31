@@ -48,6 +48,8 @@ public class RobotContainer {
 
   public static boolean shouldUseZones = true;
 
+  private static final LoggedTunableNumber elevatorVel = new LoggedTunableNumber("Elevator/velocity", 2);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -90,7 +92,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    drive.setDefaultCommand(driveCommand());
+    // drive.setDefaultCommand(driveCommand());
 
     resetPose.onTrue(
         Commands.runOnce(
@@ -124,9 +126,9 @@ public class RobotContainer {
     algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
 
-    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10)))
+    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
-    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10)))
+    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
     
     climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));

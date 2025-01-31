@@ -28,5 +28,7 @@ public interface ElevatorIO {
 
     default void runVelocity(double speed) {}
 
+    default void runVoltage(double volts) {}
+
     default void stopMotors() {}
 }
