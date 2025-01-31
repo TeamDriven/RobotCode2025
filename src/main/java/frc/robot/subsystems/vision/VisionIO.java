@@ -27,11 +27,6 @@ public interface VisionIO {
     default void setPipeline(int mode) {}
 
     /**
-     * @param mode 0 for active, 1 for inactive
-     */
-    default void setCameraMode(int mode) {}
-
-    /**
      * @param mode 0 for default, 1 for off, 2 for blink, 3 for on
      */
     default void setLights(int mode) {}

@@ -55,13 +55,6 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * @param mode 0 for active, 1 for inactive
-     */
-    public void setCameraMode(int mode) {
-        visionIO.setCameraMode(mode);
-    }
-
-    /**
      * @param mode 0 for default, 1 for off, 2 for blink, 3 for on
      */
     public void setLights(int mode) {

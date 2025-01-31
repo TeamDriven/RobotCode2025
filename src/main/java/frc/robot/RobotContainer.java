@@ -8,6 +8,10 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.intakeVelocity;
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.outtakeVelocity;
+import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.inSpeed;
+import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.outSpeed;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
@@ -17,13 +21,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.util.*;
@@ -31,13 +39,20 @@ import frc.robot.util.Alert.AlertType;
 
 public class RobotContainer {
   private final RobotState robotState = RobotState.getInstance();
-  private final Alert driverDisconnected =
-      new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
+  private final Alert driverDisconnected = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
 
   private static SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public static boolean shouldUseZones = true;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true);
+
+    // FieldConstants.logFieldConstants();
+
     // Configure autos and buttons
     setupAutos();
     configureButtonBindings(false);
@@ -58,15 +73,16 @@ public class RobotContainer {
   private Command driveCommand() {
     return drive
         .run(
-            () ->
-                drive.acceptTeleopInput(
-                    driveX.getAsDouble(), driveY.getAsDouble(), driveOmega.getAsDouble(), false))
+            () -> drive.acceptTeleopInput(
+                driveX.getAsDouble(), driveY.getAsDouble(), driveOmega.getAsDouble(), false))
         .withName("Drive Teleop Input");
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link Joystick} or {@link
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
+   * instantiating a {@link GenericHID} or one of its subclasses ({@link Joystick}
+   * or {@link
    * XboxController}), and then passing it to a {@link JoystickButton}.
    */
   private void configureButtonBindings(boolean demo) {
@@ -77,11 +93,51 @@ public class RobotContainer {
 
     resetPose.onTrue(
         Commands.runOnce(
-                () ->
-                    robotState.resetPose(
-                        new Pose2d(
-                            robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
+            () -> robotState.resetPose(
+                new Pose2d(
+                    robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
+
+    // intake
+    intake.whileTrue(
+        new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+
+    outtake.whileTrue(
+        new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+
+    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(4)))
+        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
+    coralActuationDown.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-4)))
+        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
+
+    // Algae
+    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(10)))
+        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
+    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-10)))
+        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
+
+    algaeIntakeIn.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(inSpeed)))
+        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
+    algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
+        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
+
+    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10)))
+        .onFalse(new InstantCommand(() -> elevator.stop()));
+    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10)))
+        .onFalse(new InstantCommand(() -> elevator.stop()));
+    
+    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    
+
+    // Zoning laws
+    new Trigger(RobotState.getInstance()::isInClimbZone)
+        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+
+    new Trigger(RobotState.getInstance()::isInReefZone)
+        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
   }
 
   /** Updates the alerts for disconnected controllers. */
@@ -106,31 +162,31 @@ public class RobotContainer {
     // Drive Static
     // Characterization
     // return new StaticCharacterization(
-    //         drive, drive::runCharacterization, drive::getCharacterizationVelocity)
-    //     .finallyDo(drive::endCharacterization);
+    // drive, drive::runCharacterization, drive::getCharacterizationVelocity)
+    // .finallyDo(drive::endCharacterization);
 
     // Drive FF Characterization
     // return new FeedForwardCharacterization(
-    //         drive, drive::runCharacterization, drive::getCharacterizationVelocity)
-    //     .finallyDo(drive::endCharacterization);
+    // drive, drive::runCharacterization, drive::getCharacterizationVelocity)
+    // .finallyDo(drive::endCharacterization);
 
     // Drive Wheel Radius Characterization
     // return drive
-    //     .orientModules(Drive.getCircleOrientations())
-    //     .andThen(
-    //         new WheelRadiusCharacterization(
-    //             drive, WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE))
-    //     .withName("Drive Wheel Radius Characterization");
+    // .orientModules(Drive.getCircleOrientations())
+    // .andThen(
+    // new WheelRadiusCharacterization(
+    // drive, WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE))
+    // .withName("Drive Wheel Radius Characterization");
 
     // Slippage Calculator
     // return Commands.runOnce(
-    //         () ->
-    //             robotState.resetPose(
-    //                 new Pose2d(
-    //                     // robotState.getEstimatedPose().getTranslation(),
-    //                     new Translation2d(), AllianceFlipUtil.apply(new Rotation2d()))))
-    //     .andThen(new SlippageCalculator(drive))
-    //     .withName("Slippage Calculator");
+    // () ->
+    // robotState.resetPose(
+    // new Pose2d(
+    // // robotState.getEstimatedPose().getTranslation(),
+    // new Translation2d(), AllianceFlipUtil.apply(new Rotation2d()))))
+    // .andThen(new SlippageCalculator(drive))
+    // .withName("Slippage Calculator");
 
     return autoChooser.getSelected();
   }
