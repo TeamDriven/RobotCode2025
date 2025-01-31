@@ -32,15 +32,6 @@ public class VisionIOLimelight implements VisionIO {
     }
     
     @Override
-    public void setCameraMode(int mode) {
-        if (mode == 0) {
-            LimelightHelpers.setCameraMode_Processor(LIMEIGHT_NAME);
-        } else if (mode == 1) {
-            LimelightHelpers.setCameraMode_Driver(LIMEIGHT_NAME);
-        }
-    }
-    
-    @Override
     public void setLights(int mode) {
         switch (mode) {
             case 0:

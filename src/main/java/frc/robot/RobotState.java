@@ -179,7 +179,6 @@ public class RobotState {
   private boolean inReefZone = false;
   private boolean inLeftPickupZone = false;
   private boolean inRightPickupZone = false;
-  private boolean inProcessorZone = false;
   private boolean inClimbZone = false;
   
   @AutoLogOutput(key = "RobotState/ReefZone")
@@ -197,11 +196,6 @@ public class RobotState {
     return inRightPickupZone;
   }
 
-  @AutoLogOutput(key = "RobotState/ProcessorZone")
-  public boolean isInProcessorZone() {
-    return inProcessorZone;
-  }
-
   @AutoLogOutput(key = "RobotState/ClimbZone")
   public boolean isInClimbZone() {
     return inClimbZone;
@@ -209,9 +203,8 @@ public class RobotState {
 
   public void updateZones() {
     inReefZone = Zones.reefZone.isRobotInZone(estimatedPose);
-    inLeftPickupZone = false;
-    inRightPickupZone = false;
-    inProcessorZone = false;
+    inLeftPickupZone = Zones.leftPickupZone.isRobotInZone(estimatedPose);
+    inRightPickupZone = Zones.rightPickupZone.isRobotInZone(estimatedPose);
     inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
   }
 }

@@ -29,13 +29,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
-import frc.robot.FieldConstants.Zones;
 import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
@@ -55,6 +52,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    // FieldConstants.logFieldConstants();
 
     // Configure autos and buttons
     setupAutos();
