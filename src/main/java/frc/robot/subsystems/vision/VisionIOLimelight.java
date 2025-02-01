@@ -12,6 +12,8 @@ public class VisionIOLimelight implements VisionIO {
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         var estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMEIGHT_NAME);
+
+        if (estimate == null) return;
         
         inputs.avgTagArea = estimate.avgTagArea;
         inputs.avgTagDist = estimate.avgTagDist;
