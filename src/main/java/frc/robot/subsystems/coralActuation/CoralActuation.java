@@ -42,6 +42,7 @@ public class CoralActuation extends SubsystemBase {
   }
 
   public void setPos(double pos) {
+    stopped = false;
     isPositionControl = true;
     position = pos;
   }
@@ -51,6 +52,7 @@ public class CoralActuation extends SubsystemBase {
   }
 
   public void runVoltage(double volts) {
+    stopped = false;
     isPositionControl = false;
     voltage = volts;
   }

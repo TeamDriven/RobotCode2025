@@ -64,6 +64,8 @@ public class ElevatorIOKraken implements ElevatorIO {
     configs.Voltage.PeakForwardVoltage = 12;
     configs.Voltage.PeakReverseVoltage = -12;
 
+    configs.CurrentLimits.SupplyCurrentLimit = 80;
+
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
       status = elevatorLeftMotor.getConfigurator().apply(configs);
@@ -90,7 +92,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.leftMotorPos = elevatorLeftMotor.getPosition().getValueAsDouble();
     inputs.leftMotorCurrent = elevatorLeftMotor.getSupplyCurrent().getValueAsDouble();
     inputs.leftMotorVel = elevatorLeftMotor.getVelocity().getValueAsDouble();
-    inputs.leftMotorVoltage = elevatorLeftMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.leftMotorVoltage = elevatorLeftMotor.getMotorVoltage().getValueAsDouble();
     inputs.leftMotorAccel = elevatorLeftMotor.getAcceleration().getValueAsDouble();
     inputs.leftIsMotionMagic = elevatorLeftMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
@@ -98,7 +100,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
     inputs.rightMotorCurrent = elevatorRightMotor.getSupplyCurrent().getValueAsDouble();
     inputs.rightMotorVel = elevatorRightMotor.getVelocity().getValueAsDouble();
-    inputs.rightMotorVoltage = elevatorRightMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.rightMotorVoltage = elevatorRightMotor.getMotorVoltage().getValueAsDouble();
     inputs.rightMotorAccel = elevatorRightMotor.getAcceleration().getValueAsDouble();
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();

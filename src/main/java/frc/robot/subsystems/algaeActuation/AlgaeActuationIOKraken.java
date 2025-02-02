@@ -28,7 +28,7 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO{
       TalonFXConfiguration configs = new TalonFXConfiguration();
 
       configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
       configs.MotionMagic.MotionMagicCruiseVelocity = 100;
       configs.MotionMagic.MotionMagicAcceleration = 250;
@@ -63,7 +63,7 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO{
         inputs.motorPos = actuationMotor.getPosition().getValueAsDouble();
         inputs.motorCurrent = actuationMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
-        inputs.motorVoltage = actuationMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.motorVoltage = actuationMotor.getMotorVoltage().getValueAsDouble();
     }
 
     @Override

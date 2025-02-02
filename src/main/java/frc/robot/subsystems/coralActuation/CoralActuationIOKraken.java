@@ -61,7 +61,7 @@ public class CoralActuationIOKraken implements CoralActuationIO {
         inputs.motorPos = coralActuationMotor.getPosition().getValueAsDouble();
         inputs.motorCurrent = coralActuationMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = coralActuationMotor.getVelocity().getValueAsDouble();
-        inputs.motorVoltage = coralActuationMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.motorVoltage = coralActuationMotor.getMotorVoltage().getValueAsDouble();
     }
 
     @Override

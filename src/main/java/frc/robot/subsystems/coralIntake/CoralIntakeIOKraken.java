@@ -52,7 +52,7 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     public void updateInputs(CoralIntakeIOInputs inputs) {
         inputs.motorCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
-        inputs.motorVoltage = intakeMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.motorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.motorAccel = intakeMotor.getAcceleration().getValueAsDouble();
     }
 

@@ -70,7 +70,7 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19));
+          climber = new Climber(new ClimberIOKraken(19, 20));
         }
         case DEVBOT -> {
           drive =
@@ -89,7 +89,7 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19));
+          climber = new Climber(new ClimberIOKraken(19, 20));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");

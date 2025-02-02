@@ -23,10 +23,10 @@ public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         
         /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-        configs.Slot0.kP = 4; // An error of 1 rotation per second results in 2V output
+        configs.Slot0.kP = 0.025; // An error of 1 rotation per second results in 2V output
         configs.Slot0.kI =
             0.0; // An error of 1 rotation per second increases output by 0.5V every second
         configs.Slot0.kD =
@@ -53,7 +53,7 @@ public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
     public void updateInputs(AlgaeIntakeIOInputs inputs) {
         inputs.motorCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
-        inputs.motorVoltage = intakeMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.motorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.motorAccel = intakeMotor.getAcceleration().getValueAsDouble();
     }
 

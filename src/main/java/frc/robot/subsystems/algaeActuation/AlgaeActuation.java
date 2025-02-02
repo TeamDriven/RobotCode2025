@@ -41,6 +41,7 @@ public class AlgaeActuation extends SubsystemBase {
   }
 
   public void setPos(double pos) {
+    stopped = false;
     isPositionControl = true;
     position = pos;
   }
@@ -50,6 +51,7 @@ public class AlgaeActuation extends SubsystemBase {
   }
 
   public void runVoltage(double volt) {
+    stopped = false;
     isPositionControl = false;
     voltage = volt;
   }

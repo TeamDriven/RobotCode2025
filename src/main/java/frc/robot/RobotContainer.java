@@ -45,7 +45,7 @@ public class RobotContainer {
 
   public static boolean shouldUseZones = true;
 
-  private static final LoggedTunableNumber elevatorVel = new LoggedTunableNumber("Elevator/velocity", 2);
+  private static final LoggedTunableNumber elevatorVel = new LoggedTunableNumber("Elevator/Velocity", 6);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -91,7 +91,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    // drive.setDefaultCommand(driveCommand());
+    drive.setDefaultCommand(driveCommand());
 
     resetPose.onTrue(
         Commands.runOnce(
@@ -115,9 +115,9 @@ public class RobotContainer {
         .whileFalse(new InstantCommand(() -> coralActuation.stop()));
 
     // Algae
-    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(10)))
+    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(2)))
         .onFalse(new InstantCommand(() -> algaeActuation.stop()));
-    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-10)))
+    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-2)))
         .onFalse(new InstantCommand(() -> algaeActuation.stop()));
 
     algaeIntakeIn.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(inSpeed)))
@@ -125,13 +125,13 @@ public class RobotContainer {
     algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
 
-    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(elevatorVel.get())))
+    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVoltage(elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
-    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-elevatorVel.get())))
+    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVoltage(-elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
     
-    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
-    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(12), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-12), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
     
 
     // Zoning laws
