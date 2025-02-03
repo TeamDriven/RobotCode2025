@@ -1,12 +1,11 @@
 package frc.robot.subsystems.climber;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.util.TalonFXUtil;
+import frc.robot.util.TalonFXUtil.ConfigFactory;
 
 public class ClimberIOKraken implements ClimberIO {
   
@@ -24,32 +23,14 @@ public class ClimberIOKraken implements ClimberIO {
     voltageControl = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
 
-    TalonFXConfiguration configs = new TalonFXConfiguration();
+    ConfigFactory configFactory = new ConfigFactory();
 
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configFactory.setBrakeMode(true);
+    configFactory.setInverted(false);
+    configFactory.setCurrentLimits(80);
+    configFactory.setVoltageLimits(12);
 
-    // Peak output of 8 volts
-    configs.Voltage.PeakForwardVoltage = 12;
-    configs.Voltage.PeakReverseVoltage = -12;
-
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = topClimberMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
-
-    status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = bottomClimberMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
+    TalonFXUtil.applySettings(topClimberMotor, bottomClimberMotor, configFactory.getConfig(), false);
   }
   
   @Override

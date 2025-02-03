@@ -100,20 +100,6 @@ public class RobotContainer {
                     robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
 
-    // intake
-    intake.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
-
-    outtake.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
-
-    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(4)))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-    coralActuationDown.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-4)))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-
     // Algae
     algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(2)))
         .onFalse(new InstantCommand(() -> algaeActuation.stop()));
@@ -125,13 +111,29 @@ public class RobotContainer {
     algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
         .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
 
+    // intake
+    coralIntakeIn.whileTrue(
+        new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+
+    coralOuttakeOut.whileTrue(
+        new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
+        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+
+    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(4)))
+        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
+    coralActuationDown.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-4)))
+        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
+
+    // Elevator
     elevatorUp.onTrue(new InstantCommand(() -> elevator.runVoltage(elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
     elevatorDown.onTrue(new InstantCommand(() -> elevator.runVoltage(-elevatorVel.get())))
         .onFalse(new InstantCommand(() -> elevator.stop()));
     
-    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(12), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
-    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-12), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
+    // Climber
+    climberUp.onTrue(new InstantCommand(() -> climber.runVoltage(12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
+    climberDown.onTrue(new InstantCommand(() -> climber.runVoltage(-12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
     
 
     // Zoning laws

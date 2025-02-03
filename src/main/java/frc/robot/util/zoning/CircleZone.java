@@ -1,6 +1,5 @@
 package frc.robot.util.zoning;
 
-import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 
 import edu.wpi.first.math.geometry.Pose2d;

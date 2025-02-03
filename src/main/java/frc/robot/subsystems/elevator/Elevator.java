@@ -8,6 +8,7 @@ public class Elevator extends SubsystemBase{
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
+    // TODO: remove voltage control
     private enum mode {
         POSITION,
         VELOCITY,

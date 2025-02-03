@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.coralActuation;
 
-import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,10 +12,15 @@ public class CoralActuation extends SubsystemBase {
   private CoralActuationIO coralActuationIO;
   private CoralActuationIOInputsAutoLogged inputs = new CoralActuationIOInputsAutoLogged();
 
-  private double position = startPos;
-  private boolean stopped = false;
-  private double voltage = 0;
-  private boolean isPositionControl = true;
+  private enum mode {
+    POSITION,
+    VOLTAGE,
+    STOPPED;
+  }
+
+  private mode currentMode = mode.STOPPED;
+
+  private double value = 0;
 
   /** Creates a new CoralActuation. */
   public CoralActuation(CoralActuationIO coralActuationIO) {
@@ -29,31 +32,28 @@ public class CoralActuation extends SubsystemBase {
     coralActuationIO.updateInputs(inputs);
     Logger.processInputs("coralActuation", inputs);
 
-    if (stopped == true) {
-      coralActuationIO.stopMotor();
-      return;
-    }
-
-    if (isPositionControl == true) {
-      coralActuationIO.moveToPos(position);
-    } else {
-      coralActuationIO.runVoltage(voltage);
+    switch (currentMode) {
+      case POSITION:
+        coralActuationIO.moveToPos(value);
+      case VOLTAGE:
+        coralActuationIO.runVoltage(value);
+      case STOPPED:
+        coralActuationIO.stopMotor();
     }
   }
 
   public void setPos(double pos) {
-    stopped = false;
-    isPositionControl = true;
-    position = pos;
+    currentMode = mode.POSITION;
+    value = pos;
   }
 
   public void stop() {
-    stopped = true;
+    currentMode = mode.STOPPED;
+    value = 0;
   }
 
   public void runVoltage(double volts) {
-    stopped = false;
-    isPositionControl = false;
-    voltage = volts;
+    currentMode = mode.VOLTAGE;
+    value = volts;
   }
 }

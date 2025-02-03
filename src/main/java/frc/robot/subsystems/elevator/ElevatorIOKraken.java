@@ -2,16 +2,15 @@ package frc.robot.subsystems.elevator;
 
 import static frc.robot.subsystems.elevator.ElevatorConstants.rotationsToInches;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.util.TalonFXUtil;
+import frc.robot.util.TalonFXUtil.ConfigFactory;
 
 public class ElevatorIOKraken implements ElevatorIO {
   private TalonFX elevatorLeftMotor;
@@ -31,60 +30,17 @@ public class ElevatorIOKraken implements ElevatorIO {
     voltageOut = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
 
-    TalonFXConfiguration configs = new TalonFXConfiguration();
+    ConfigFactory configFactory = new ConfigFactory();
+    configFactory.setInverted(true);
+    configFactory.setBrakeMode(true);
+    configFactory.setVoltageLimits(12);
+    configFactory.setCurrentLimits(80);
 
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    configFactory.setSlot0(0.01, 0, 0);
 
-    configs.MotionMagic.MotionMagicCruiseVelocity = 100;
-    configs.MotionMagic.MotionMagicAcceleration = 250;
-    configs.MotionMagic.MotionMagicJerk = 350;
+    configFactory.setMotionMagic(10, 25, 35);
 
-    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 10; // An error of 1 rotation per second results in 2V output
-    configs.Slot0.kI =
-        0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    configs.Slot0.kD =
-        0.0; // A change of 1 rotation per second squared results in 0.01 volts output
-    configs.Slot0.kV =
-        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
-    // Rotation per second
-
-    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot1.kP = 10; // An error of 1 rotation per second results in 2V output
-    configs.Slot1.kI =
-        0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    configs.Slot1.kD =
-        0.0; // A change of 1 rotation per second squared results in 0.01 volts output
-    configs.Slot1.kV =
-        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
-    // Rotation per second
-
-    // Peak output of 12 volts
-    configs.Voltage.PeakForwardVoltage = 12;
-    configs.Voltage.PeakReverseVoltage = -12;
-
-    configs.CurrentLimits.SupplyCurrentLimit = 80;
-
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = elevatorLeftMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
-
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = elevatorRightMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
+    TalonFXUtil.applySettings(elevatorLeftMotor, elevatorRightMotor, configFactory.getConfig(), true);
   }
 
   @Override

@@ -13,7 +13,7 @@ public class Climber extends SubsystemBase {
   private final ClimberIO climberIO;
   private final ClimberIOInputsAutoLogged climberInputs = new ClimberIOInputsAutoLogged();
 
-  private double velocity = 0;
+  private double voltage = 0;
 
   public Climber(ClimberIO climberIO) {
     this.climberIO = climberIO;
@@ -24,15 +24,15 @@ public class Climber extends SubsystemBase {
     climberIO.updateInputs(climberInputs);
     Logger.processInputs("Climber", climberInputs);
   
-    if(velocity != 0) {
-      climberIO.runClimberMotors(velocity);
+    if(voltage != 0) {
+      climberIO.runClimberMotors(voltage);
     } else {
       climberIO.stopClimber();
     }
   }
 
-  public void runClimber(double speed) {
-    velocity = speed;
+  public void runVoltage(double volts) {
+    voltage = volts;
   }
 
 }
