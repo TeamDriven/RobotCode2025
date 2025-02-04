@@ -31,7 +31,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     StopMode = new NeutralOut();
 
     ConfigFactory configFactory = new ConfigFactory();
-    configFactory.setInverted(true);
+    configFactory.setInverted(false);
     configFactory.setBrakeMode(true);
     configFactory.setVoltageLimits(12);
     configFactory.setCurrentLimits(80);

@@ -12,6 +12,7 @@ import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.intakeVeloci
 import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.outtakeVelocity;
 import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.inSpeed;
 import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.outSpeed;
+import static frc.robot.subsystems.led.LEDConstants.*;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
@@ -58,11 +59,29 @@ public class RobotContainer {
     // Configure autos and buttons
     setupAutos();
     configureButtonBindings(false);
+    // testLEDControls();
 
     // Alerts for constants
     if (Constants.tuningMode) {
       new Alert("Tuning mode enabled", AlertType.INFO).set(true);
     }
+  }
+
+  public void testLEDControls() {
+    CommandScheduler.getInstance().getActiveButtonLoop().clear();
+    
+    driver.a().onTrue(leds.setAnimation(RAINBOW_ANIMATION));
+    driver.b().onTrue(leds.setAnimation(FIRE_ANIMATION));
+    driver.x().onTrue(leds.setAnimation(TWINKLE_ANIMATION));
+    driver.y().onTrue(leds.setAnimation(LARSON_ANIMATION));
+    
+    driver.pov(0).onTrue(leds.setAnimation(RGB_FADE_ANIMATION));
+    driver.pov(90).onTrue(leds.setColor(255, 0, 0));
+    driver.pov(180).onTrue(leds.setColor(0, 255, 0));
+    driver.pov(270).onTrue(leds.setColor(0, 0, 255));
+
+    driver.rightBumper().onTrue(leds.setColor(teamDrivenYellow[0], teamDrivenYellow[1], teamDrivenYellow[2], 10, 5));
+    driver.leftBumper().onTrue(leds.setColor(0, 0, 0));
   }
 
   private void setupAutos() {
