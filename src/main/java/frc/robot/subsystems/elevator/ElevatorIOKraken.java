@@ -11,8 +11,10 @@ import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
 
 import frc.robot.util.TalonFXUtil;
 import frc.robot.util.TalonFXUtil.ConfigFactory;
+import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class ElevatorIOKraken implements ElevatorIO {
+  private MotorFactory motorFactory;
   private TalonFX elevatorLeftMotor;
   private TalonFX elevatorRightMotor;
 
@@ -22,25 +24,25 @@ public class ElevatorIOKraken implements ElevatorIO {
   private NeutralOut StopMode;
 
   public ElevatorIOKraken(int leftMotorID, int rightMotorID) {
-    elevatorLeftMotor = new TalonFX(leftMotorID);
-    elevatorRightMotor = new TalonFX(rightMotorID);
+    motorFactory = new MotorFactory("Elevator", leftMotorID, rightMotorID);
+
+    motorFactory.setInverted(false, true);
+    motorFactory.setBrakeMode(true);
+    motorFactory.setVoltageLimits(12);
+    motorFactory.setCurrentLimits(80);
+    
+    motorFactory.setSlot0(0.01, 0, 0);
+    motorFactory.setMotionMagic(10, 25, 35);
+
+    motorFactory.configureMotors();
+    var motors = motorFactory.getMotors();
+    elevatorLeftMotor = motors[0];
+    elevatorRightMotor = motors[1];
 
     motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
     velocityControl = new VelocityVoltage(0).withEnableFOC(true).withSlot(1);
     voltageOut = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
-
-    ConfigFactory configFactory = new ConfigFactory();
-    configFactory.setInverted(false);
-    configFactory.setBrakeMode(true);
-    configFactory.setVoltageLimits(12);
-    configFactory.setCurrentLimits(80);
-
-    configFactory.setSlot0(0.01, 0, 0);
-
-    configFactory.setMotionMagic(10, 25, 35);
-
-    TalonFXUtil.applySettings(elevatorLeftMotor, elevatorRightMotor, configFactory.getConfig(), true);
   }
 
   @Override
@@ -61,6 +63,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
+    motorFactory.checkForUpdates();
   }
 
   @Override

@@ -110,7 +110,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    drive.setDefaultCommand(driveCommand());
+    // drive.setDefaultCommand(driveCommand());
 
     resetPose.onTrue(
         Commands.runOnce(

@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -113,5 +115,179 @@ public class TalonFXUtil {
                     : InvertedValue.Clockwise_Positive;
         }
         applySettings(motor2, config);
+    }
+
+    public static class MotorFactory {
+        private final TalonFX[] motors;
+        private final ConfigFactory configFactory;
+        private final String key;
+
+        private boolean[] invertedValues = null;
+
+        private ArrayList<LoggedTunableNumber> activeSettings = new ArrayList<>();
+
+        private LoggedTunableNumber currentLimits = null;
+        private LoggedTunableNumber forwardVoltageLimit = null;
+        private LoggedTunableNumber reverseVoltageLimit = null;
+
+        private LoggedTunableNumber mmVel = null;
+        private LoggedTunableNumber mmAccel = null;
+        private LoggedTunableNumber mmJerk = null;
+
+        private LoggedTunableNumber slot0kP = null;
+        private LoggedTunableNumber slot0kI = null;
+        private LoggedTunableNumber slot0kD = null;
+
+        private LoggedTunableNumber slot1kP = null;
+        private LoggedTunableNumber slot1kI = null;
+        private LoggedTunableNumber slot1kD = null;
+
+        private LoggedTunableNumber slot2kP = null;
+        private LoggedTunableNumber slot2kI = null;
+        private LoggedTunableNumber slot2kD = null;
+
+        public MotorFactory(String key, int... ids) {
+            this.key = key;
+
+            motors = new TalonFX[ids.length];
+
+            for (int i = 0; i < ids.length; i++) {
+                motors[i] = new TalonFX(ids[i]);
+            }
+
+            configFactory = new ConfigFactory();
+        }
+
+        public void setInverted(boolean... shouldInvert) {
+            if (shouldInvert.length != motors.length) throw new IllegalArgumentException();
+
+            this.invertedValues = shouldInvert;
+        }
+
+        public void setBrakeMode(boolean brakeMode) {
+            configFactory.setBrakeMode(brakeMode);
+        }
+
+        public void setCurrentLimits(double currentLimit) {
+            configFactory.setCurrentLimits(currentLimit);
+            this.currentLimits = new LoggedTunableNumber(key + "/CurrentLimit", currentLimit);
+            activeSettings.add(this.currentLimits);
+        }
+
+        public void setGearRatio(double gearRatio) {
+            configFactory.setGearRatio(gearRatio);
+        }
+
+        public void setContinousWrap(boolean continousWrap) {
+            configFactory.setContinousWrap(continousWrap);
+        }
+
+        public void setMotionMagic(double maxVelocity, double maxAccel, double jerk) {
+            configFactory.setMotionMagic(maxVelocity, maxAccel, jerk);
+
+            this.mmVel = new LoggedTunableNumber(key + "/MotionMagic/MaxVelocity", maxVelocity);
+            activeSettings.add(this.mmVel);
+
+            this.mmAccel = new LoggedTunableNumber(key + "/MotionMagic/MaxAcceleration", maxAccel);
+            activeSettings.add(this.mmAccel);
+
+            this.mmJerk = new LoggedTunableNumber(key + "/MotionMagic/Jerk", jerk);
+            activeSettings.add(this.mmJerk);
+        }
+
+        public void setVoltageLimits(double maxVoltage) {
+            setVoltageLimits(maxVoltage, -maxVoltage);
+        }
+
+        public void setVoltageLimits(double maxForwardVoltage, double maxReverseVoltage) {
+            configFactory.setVoltageLimits(maxForwardVoltage, maxReverseVoltage);
+
+            this.forwardVoltageLimit = new LoggedTunableNumber(key + "/ForwardVoltageLimit", maxForwardVoltage);
+            activeSettings.add(this.forwardVoltageLimit);
+
+            this.reverseVoltageLimit = new LoggedTunableNumber(key + "/ReverseVoltageLimit", maxReverseVoltage);
+            activeSettings.add(this.reverseVoltageLimit);
+        }
+
+        public void setSlot0(double kP, double kI, double kD) {
+            configFactory.setSlot0(kP, kI, kD);
+
+            this.slot0kP = new LoggedTunableNumber(key + "/Slot0/kP", kP);
+            activeSettings.add(this.slot0kP);
+
+            this.slot0kI = new LoggedTunableNumber(key + "/Slot0/kI", kI);
+            activeSettings.add(this.slot0kI);
+
+            this.slot0kD = new LoggedTunableNumber(key + "/Slot0/kD", kD);
+            activeSettings.add(this.slot0kD);
+        }
+
+        public void setSlot1(double kP, double kI, double kD) {
+            configFactory.setSlot1(kP, kI, kD);
+
+            this.slot1kP = new LoggedTunableNumber(key + "/Slot1/kP", kP);
+            activeSettings.add(this.slot1kP);
+
+            this.slot1kI = new LoggedTunableNumber(key + "/Slot1/kI", kI);
+            activeSettings.add(this.slot1kI);
+
+            this.slot1kD = new LoggedTunableNumber(key + "/Slot1/kD", kD);
+            activeSettings.add(this.slot1kD);
+        }
+
+        public void setSlot2(double kP, double kI, double kD) {
+            configFactory.setSlot2(kP, kI, kD);
+
+            this.slot2kP = new LoggedTunableNumber(key + "/Slot2/kP", kP);
+            activeSettings.add(this.slot2kP);
+
+            this.slot2kI = new LoggedTunableNumber(key + "/Slot2/kI", kI);
+            activeSettings.add(this.slot2kI);
+
+            this.slot2kD = new LoggedTunableNumber(key + "/Slot2/kD", kD);
+            activeSettings.add(this.slot2kD);
+        }
+
+        public void configureMotors() {
+            if (currentLimits != null) {
+                configFactory.setCurrentLimits(currentLimits.get());
+            }
+
+            if (forwardVoltageLimit != null && reverseVoltageLimit != null) {
+                configFactory.setVoltageLimits(forwardVoltageLimit.get(), reverseVoltageLimit.get());
+            }
+
+            if (mmVel != null && mmAccel != null && mmJerk != null) {
+                configFactory.setMotionMagic(mmVel.get(), mmAccel.get(), mmJerk.get());
+            }
+
+            if (slot0kP != null && slot0kI != null && slot0kD != null) {
+                configFactory.setSlot0(slot0kP.get(), slot0kI.get(), slot0kD.get());
+            }
+
+            if (slot1kP != null && slot1kI != null && slot1kD != null) {
+                configFactory.setSlot1(slot1kP.get(), slot1kI.get(), slot1kD.get());
+            }
+
+            if (slot2kP != null && slot2kI != null && slot2kD != null) {
+                configFactory.setSlot2(slot2kP.get(), slot2kI.get(), slot2kD.get());
+            }
+
+            for (int i = 0; i < motors.length; i++) {
+                if (invertedValues != null) {
+                    configFactory.setInverted(invertedValues[i]);
+                }
+
+                applySettings(motors[i], configFactory.getConfig());
+            }
+        }
+
+        public TalonFX[] getMotors() {
+            return motors;
+        }
+
+        public void checkForUpdates() {
+            LoggedTunableNumber.ifChanged(hashCode(), () -> configureMotors(), activeSettings.toArray(new LoggedTunableNumber[activeSettings.size()]));
+        }
     }
 }

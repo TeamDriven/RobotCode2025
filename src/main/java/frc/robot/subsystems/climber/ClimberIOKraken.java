@@ -6,31 +6,34 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.util.TalonFXUtil;
 import frc.robot.util.TalonFXUtil.ConfigFactory;
+import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class ClimberIOKraken implements ClimberIO {
-  
+  private MotorFactory motorFactory;
 
-  public TalonFX topClimberMotor;
-  public TalonFX bottomClimberMotor;
+  private TalonFX topClimberMotor;
+  private TalonFX bottomClimberMotor;
 
   private VoltageOut voltageControl;
   private NeutralOut StopMode;
 
   public ClimberIOKraken(int tMotorID, int bMotorID) {
-    topClimberMotor = new TalonFX(tMotorID);
-    bottomClimberMotor = new TalonFX(bMotorID);
+    motorFactory = new MotorFactory("climber", tMotorID, bMotorID);
+
+    motorFactory.setBrakeMode(true);
+    motorFactory.setInverted(false);
+    motorFactory.setCurrentLimits(80);
+    motorFactory.setVoltageLimits(12);
+
+    motorFactory.configureMotors();
+
+    var motors = motorFactory.getMotors();
+    topClimberMotor = motors[0];
+    bottomClimberMotor = motors[1];
+
 
     voltageControl = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
-
-    ConfigFactory configFactory = new ConfigFactory();
-
-    configFactory.setBrakeMode(true);
-    configFactory.setInverted(false);
-    configFactory.setCurrentLimits(80);
-    configFactory.setVoltageLimits(12);
-
-    TalonFXUtil.applySettings(topClimberMotor, bottomClimberMotor, configFactory.getConfig(), false);
   }
   
   @Override
@@ -46,6 +49,9 @@ public class ClimberIOKraken implements ClimberIO {
     inputs.bottomMotorVoltage = bottomClimberMotor.getMotorVoltage().getValueAsDouble();
     inputs.bottomStallCurrent = bottomClimberMotor.getMotorStallCurrent().getValueAsDouble();
     inputs.bottomTorqueCurrent = bottomClimberMotor.getTorqueCurrent().getValueAsDouble();
+
+    motorFactory.checkForUpdates();
+
   }
 
   @Override

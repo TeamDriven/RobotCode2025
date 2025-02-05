@@ -9,31 +9,34 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.util.TalonFXUtil;
 import frc.robot.util.TalonFXUtil.ConfigFactory;
+import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class AlgaeActuationIOKraken implements AlgaeActuationIO {
-    public TalonFX actuationMotor;
+    private MotorFactory motorFactory;
+    private TalonFX actuationMotor;
 
     private MotionMagicVoltage motionMagicControl;
     private VoltageOut voltageControl;
     private NeutralOut StopMode;
 
     public AlgaeActuationIOKraken(int motorID) {
-        actuationMotor = new TalonFX(motorID);
+        motorFactory = new MotorFactory("algaeActuation", motorID);
+
+        motorFactory.setBrakeMode(true);
+        motorFactory.setInverted(true);
+        motorFactory.setCurrentLimits(60);
+        motorFactory.setVoltageLimits(8);
+
+        motorFactory.setSlot0(0.01, 0, 0);
+        motorFactory.setMotionMagic(10, 25, 35);
+
+        motorFactory.configureMotors();
+
+        actuationMotor = motorFactory.getMotors()[0];
 
         motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
         voltageControl = new VoltageOut(0).withEnableFOC(true);
         StopMode = new NeutralOut();
-
-        ConfigFactory configFactory = new ConfigFactory();
-        configFactory.setBrakeMode(true);
-        configFactory.setInverted(true);
-        configFactory.setCurrentLimits(60);
-        configFactory.setVoltageLimits(8);
-
-        configFactory.setSlot0(0.01, 0, 0);
-        configFactory.setMotionMagic(10, 25, 35);
-    
-        TalonFXUtil.applySettings(actuationMotor, configFactory.getConfig());
     }
 
     @Override
@@ -42,6 +45,8 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO {
         inputs.motorCurrent = actuationMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
         inputs.motorVoltage = actuationMotor.getMotorVoltage().getValueAsDouble();
+
+        motorFactory.checkForUpdates();
     }
 
     @Override
