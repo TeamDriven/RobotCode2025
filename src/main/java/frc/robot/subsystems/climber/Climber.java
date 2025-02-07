@@ -2,6 +2,8 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -33,6 +35,10 @@ public class Climber extends SubsystemBase {
 
   public void runVoltage(double volts) {
     voltage = volts;
+  }
+
+  public Command runVoltageCommand(double volts) {
+    return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
   }
 
 }

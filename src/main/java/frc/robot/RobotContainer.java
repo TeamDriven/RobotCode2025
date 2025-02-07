@@ -8,10 +8,12 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.intakeVelocity;
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.outtakeVelocity;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.inSpeed;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.outSpeed;
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
+import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.*;
+import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.*;
+import static frc.robot.subsystems.climber.ClimberConstants.*;
 import static frc.robot.subsystems.led.LEDConstants.*;
 
 import static frc.robot.Constants.*;
@@ -46,8 +48,6 @@ public class RobotContainer {
 
   public static boolean shouldUseZones = true;
 
-  private static final LoggedTunableNumber elevatorVel = new LoggedTunableNumber("Elevator/Velocity", 6);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -69,12 +69,12 @@ public class RobotContainer {
 
   public void testLEDControls() {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
-    
+
     driver.a().onTrue(leds.setAnimation(RAINBOW_ANIMATION));
     driver.b().onTrue(leds.setAnimation(FIRE_ANIMATION));
     driver.x().onTrue(leds.setAnimation(TWINKLE_ANIMATION));
     driver.y().onTrue(leds.setAnimation(LARSON_ANIMATION));
-    
+
     driver.pov(0).onTrue(leds.setAnimation(RGB_FADE_ANIMATION));
     driver.pov(90).onTrue(leds.setColor(255, 0, 0));
     driver.pov(180).onTrue(leds.setColor(0, 255, 0));
@@ -120,47 +120,40 @@ public class RobotContainer {
             .ignoringDisable(true));
 
     // Algae
-    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(2)))
+    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(algaeActuationVoltage.get())))
         .onFalse(new InstantCommand(() -> algaeActuation.stop()));
-    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-2)))
+    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-algaeActuationVoltage.get())))
         .onFalse(new InstantCommand(() -> algaeActuation.stop()));
 
-    algaeIntakeIn.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(inSpeed)))
-        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
-    algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
-        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
+    algaeIntakeIn.onTrue(algaeIntake.runVelocityCommand(algaeIntakeTuningVelocity.get()));
+    algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
 
     // intake
-    coralIntakeIn.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
+    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
+    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
 
-    coralOuttakeOut.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
-
-    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(4)))
+    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(coralActuationTuningVoltage.get())))
         .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-    coralActuationDown.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-4)))
+    coralActuationDown
+        .whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-coralActuationTuningVoltage.get())))
         .whileFalse(new InstantCommand(() -> coralActuation.stop()));
 
     // Elevator
-    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVoltage(elevatorVel.get())))
-        .onFalse(new InstantCommand(() -> elevator.stop()));
-    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVoltage(-elevatorVel.get())))
-        .onFalse(new InstantCommand(() -> elevator.stop()));
-    
+    elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));
+    elevatorDown.onTrue(elevator.runVoltageCommand(-elevatorTuningVoltage.get()));
+
     // Climber
-    climberUp.onTrue(new InstantCommand(() -> climber.runVoltage(12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
-    climberDown.onTrue(new InstantCommand(() -> climber.runVoltage(-12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
-    
+    climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
+    climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
 
     // Zoning laws
     new Trigger(RobotState.getInstance()::isInClimbZone)
-        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+        .whileTrue(
+            new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
 
     new Trigger(RobotState.getInstance()::isInReefZone)
-        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+        .whileTrue(
+            new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
   }
 
   /** Updates the alerts for disconnected controllers. */

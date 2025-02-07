@@ -6,6 +6,8 @@ package frc.robot.subsystems.algaeIntake;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeIntake extends SubsystemBase {
@@ -32,5 +34,9 @@ public class AlgaeIntake extends SubsystemBase {
 
   public void runVelocity(double vel) {
     velocity = vel;
+  }
+
+  public Command runVelocityCommand(double vel) {
+    return Commands.startEnd(() -> runVelocity(vel), () -> runVelocity(0), this);
   }
 }

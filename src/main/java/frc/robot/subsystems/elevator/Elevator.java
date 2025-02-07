@@ -2,6 +2,8 @@ package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase{
@@ -69,5 +71,9 @@ public class Elevator extends SubsystemBase{
     public void runVoltage(double volts) {
         currentMode = mode.VOLTAGE;
         value = volts;
+    }
+
+    public Command runVoltageCommand(double volts) {
+        return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
     }
 }
