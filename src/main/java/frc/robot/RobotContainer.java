@@ -120,10 +120,8 @@ public class RobotContainer {
             .ignoringDisable(true));
 
     // Algae
-    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(algaeActuationVoltage.get())))
-        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
-    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-algaeActuationVoltage.get())))
-        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
+    algaeActuationUp.onTrue(algaeActuation.runVoltageCommand(algaeActuationVoltage.get()));
+    algaeActuationDown.onTrue(algaeActuation.runVoltageCommand(-algaeActuationVoltage.get()));
 
     algaeIntakeIn.onTrue(algaeIntake.runVelocityCommand(algaeIntakeTuningVelocity.get()));
     algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
@@ -132,11 +130,8 @@ public class RobotContainer {
     coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
     coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
 
-    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(coralActuationTuningVoltage.get())))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-    coralActuationDown
-        .whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-coralActuationTuningVoltage.get())))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
+    coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
+    coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
 
     // Elevator
     elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));

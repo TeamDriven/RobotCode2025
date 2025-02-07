@@ -6,6 +6,8 @@ package frc.robot.subsystems.algaeActuation;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeActuation extends SubsystemBase {
@@ -54,5 +56,9 @@ public class AlgaeActuation extends SubsystemBase {
   public void runVoltage(double volts) {
     currentMode = mode.VOLTAGE;
     value = volts;
+  }
+
+  public Command runVoltageCommand(double volts) {
+    return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
   }
 }
