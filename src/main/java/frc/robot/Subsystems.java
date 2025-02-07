@@ -34,6 +34,9 @@ import frc.robot.subsystems.led.LEDIOCANdle;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.winch.Winch;
+import frc.robot.subsystems.winch.WinchIO;
+import frc.robot.subsystems.winch.WinchIOKraken;
 
 /**
  * The Subsystems class represents the collection of subsystems used in the robot. It provides
@@ -51,6 +54,7 @@ public final class Subsystems {
   public static final AlgaeIntake algaeIntake;
   public static final Elevator elevator;
   public static final Climber climber;
+  public static final Winch winch;
 
   public static final LED leds;
 
@@ -76,6 +80,7 @@ public final class Subsystems {
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
           climber = new Climber(new ClimberIOKraken(19, 20));
+          winch = new Winch(new WinchIOKraken(21, 22));
 
           leds = new LED(new LEDIOCANdle(60));
         }
@@ -97,6 +102,7 @@ public final class Subsystems {
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
           climber = new Climber(new ClimberIOKraken(19, 20));
+          winch = new Winch(new WinchIOKraken(21, 22));
 
           leds = new LED(new LEDIOCANdle(60));
         }
@@ -125,6 +131,7 @@ public final class Subsystems {
       algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
       elevator = new Elevator(new ElevatorIO() {});
       climber = new Climber(new ClimberIO() {});
+      winch = new Winch(new WinchIO() {});
 
       leds = new LED(new LEDIO() {});
     }

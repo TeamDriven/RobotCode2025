@@ -154,6 +154,9 @@ public class RobotContainer {
     climberUp.onTrue(new InstantCommand(() -> climber.runVoltage(12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
     climberDown.onTrue(new InstantCommand(() -> climber.runVoltage(-12), climber)).onFalse(Commands.runOnce(() -> climber.runVoltage(0), climber));
     
+    // winch
+    climberUp.onTrue(new InstantCommand(() -> winch.runVoltage(12), winch)).onFalse(Commands.runOnce(() -> winch.runVoltage(0), winch));
+    climberDown.onTrue(new InstantCommand(() -> winch.runVoltage(-12), winch)).onFalse(Commands.runOnce(() -> winch.runVoltage(0), winch));
 
     // Zoning laws
     new Trigger(RobotState.getInstance()::isInClimbZone)
