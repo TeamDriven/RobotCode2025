@@ -46,7 +46,7 @@ public class AlgaeActuationIOKraken implements AlgaeActuationIO {
         inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
         inputs.motorVoltage = actuationMotor.getMotorVoltage().getValueAsDouble();
 
-        motorFactory.checkForUpdates();
+        // motorFactory.checkForUpdates();
     }
 
     @Override

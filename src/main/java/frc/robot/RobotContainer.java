@@ -36,7 +36,13 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
+import frc.robot.commands.autos.TestPath;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.commands.autos.Place2RightSide;
+import frc.robot.commands.autos.Place4RightSide;
+import frc.robot.commands.autos.Place4RightSideForReal;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -70,23 +76,27 @@ public class RobotContainer {
   public void testLEDControls() {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
-    driver.a().onTrue(leds.setAnimation(RAINBOW_ANIMATION));
-    driver.b().onTrue(leds.setAnimation(FIRE_ANIMATION));
-    driver.x().onTrue(leds.setAnimation(TWINKLE_ANIMATION));
-    driver.y().onTrue(leds.setAnimation(LARSON_ANIMATION));
+    // driver.a().onTrue(leds.setAnimation(RAINBOW_ANIMATION));
+    // driver.b().onTrue(leds.setAnimation(FIRE_ANIMATION));
+    // driver.x().onTrue(leds.setAnimation(TWINKLE_ANIMATION));
+    // driver.y().onTrue(leds.setAnimation(LARSON_ANIMATION));
 
-    driver.pov(0).onTrue(leds.setAnimation(RGB_FADE_ANIMATION));
-    driver.pov(90).onTrue(leds.setColor(255, 0, 0));
-    driver.pov(180).onTrue(leds.setColor(0, 255, 0));
-    driver.pov(270).onTrue(leds.setColor(0, 0, 255));
+    // driver.pov(0).onTrue(leds.setAnimation(RGB_FADE_ANIMATION));
+    // driver.pov(90).onTrue(leds.setColor(255, 0, 0));
+    // driver.pov(180).onTrue(leds.setColor(0, 255, 0));
+    // driver.pov(270).onTrue(leds.setColor(0, 0, 255));
 
-    driver.rightBumper().onTrue(leds.setColor(teamDrivenYellow[0], teamDrivenYellow[1], teamDrivenYellow[2], 10, 5));
-    driver.leftBumper().onTrue(leds.setColor(0, 0, 0));
+    // driver.rightBumper().onTrue(leds.setColor(teamDrivenYellow[0],
+    // teamDrivenYellow[1], teamDrivenYellow[2], 10, 5));
+    // driver.leftBumper().onTrue(leds.setColor(0, 0, 0));
   }
 
   private void setupAutos() {
     autoChooser.setDefaultOption("Test Auto", new TestAuto().getAuto().cmd());
     autoChooser.addOption("Place 2 right side", new Place2RightSide().getAuto().cmd());
+    autoChooser.addOption("Place4RightSide", new Place4RightSide().getAuto().cmd());
+    autoChooser.addOption("TestPath", new TestPath().getAuto().cmd());
+    autoChooser.addOption("place 4 right side for real", new Place4RightSideForReal().getAuto().cmd());
 
     SmartDashboard.putData(autoChooser);
   }
@@ -110,7 +120,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    // drive.setDefaultCommand(driveCommand());
+    drive.setDefaultCommand(driveCommand());
 
     resetPose.onTrue(
         Commands.runOnce(
@@ -120,26 +130,26 @@ public class RobotContainer {
             .ignoringDisable(true));
 
     // Algae
-    algaeActuationUp.onTrue(algaeActuation.runVoltageCommand(algaeActuationVoltage.get()));
-    algaeActuationDown.onTrue(algaeActuation.runVoltageCommand(-algaeActuationVoltage.get()));
+    // algaeActuationUp.onTrue(algaeActuation.runVoltageCommand(algaeActuationVoltage.get()));
+    // algaeActuationDown.onTrue(algaeActuation.runVoltageCommand(-algaeActuationVoltage.get()));
 
-    algaeIntakeIn.onTrue(algaeIntake.runVelocityCommand(algaeIntakeTuningVelocity.get()));
-    algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
+    // algaeIntakeIn.onTrue(algaeIntake.runVelocityCommand(algaeIntakeTuningVelocity.get()));
+    // algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
 
     // intake
-    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
-    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
+    // coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
+    // coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
 
-    coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
-    coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
+    // coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
+    // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
 
     // Elevator
-    elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));
-    elevatorDown.onTrue(elevator.runVoltageCommand(-elevatorTuningVoltage.get()));
+    // elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));
+    // elevatorDown.onTrue(elevator.runVoltageCommand(-elevatorTuningVoltage.get()));
 
     // Climber
-    climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
-    climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
+    // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
+    // climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
 
     // Zoning laws
     new Trigger(RobotState.getInstance()::isInClimbZone)
@@ -178,8 +188,8 @@ public class RobotContainer {
 
     // Drive FF Characterization
     // return new FeedForwardCharacterization(
-    // drive, drive::runCharacterization, drive::getCharacterizationVelocity)
-    // .finallyDo(drive::endCharacterization);
+    //     drive, drive::runCharacterization, drive::getCharacterizationVelocity)
+    //     .finallyDo(drive::endCharacterization);
 
     // Drive Wheel Radius Characterization
     // return drive

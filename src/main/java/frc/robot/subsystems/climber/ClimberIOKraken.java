@@ -50,7 +50,7 @@ public class ClimberIOKraken implements ClimberIO {
     inputs.bottomStallCurrent = bottomClimberMotor.getMotorStallCurrent().getValueAsDouble();
     inputs.bottomTorqueCurrent = bottomClimberMotor.getTorqueCurrent().getValueAsDouble();
 
-    motorFactory.checkForUpdates();
+    // motorFactory.checkForUpdates();
 
   }
 

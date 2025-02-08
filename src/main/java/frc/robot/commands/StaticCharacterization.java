@@ -14,6 +14,8 @@ import frc.robot.util.LoggedTunableNumber;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class StaticCharacterization extends Command {
   private static final LoggedTunableNumber currentRampFactor =
       new LoggedTunableNumber("StaticCharacterization/CurrentRampPerSec", 1.0);

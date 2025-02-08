@@ -5,8 +5,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.util.TalonFXUtil;
-import frc.robot.util.TalonFXUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class CoralActuationIOKraken implements CoralActuationIO {
@@ -44,7 +42,7 @@ public class CoralActuationIOKraken implements CoralActuationIO {
         inputs.motorVel = coralActuationMotor.getVelocity().getValueAsDouble();
         inputs.motorVoltage = coralActuationMotor.getMotorVoltage().getValueAsDouble();
 
-        motorFactory.checkForUpdates();
+        // motorFactory.checkForUpdates();
     }
 
     @Override

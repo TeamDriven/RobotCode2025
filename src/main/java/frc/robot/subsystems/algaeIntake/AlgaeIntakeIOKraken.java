@@ -40,7 +40,7 @@ public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{
         inputs.motorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.motorAccel = intakeMotor.getAcceleration().getValueAsDouble();
 
-        motorFactory.checkForUpdates();
+        // motorFactory.checkForUpdates();
     }
 
     @Override

@@ -63,7 +63,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
-    motorFactory.checkForUpdates();
+    // motorFactory.checkForUpdates();
   }
 
   @Override

@@ -45,14 +45,14 @@ public final class Subsystems {
   public static final Vision leftVision;
   public static final Vision rightVision;
 
-  public static final CoralIntake coralIntake;
-  public static final CoralActuation coralActuation;
-  public static final AlgaeActuation algaeActuation;
-  public static final AlgaeIntake algaeIntake;
-  public static final Elevator elevator;
-  public static final Climber climber;
+  // public static final CoralIntake coralIntake;
+  // public static final CoralActuation coralActuation;
+  // public static final AlgaeActuation algaeActuation;
+  // public static final AlgaeIntake algaeIntake;
+  // public static final Elevator elevator;
+  // public static final Climber climber;
 
-  public static final LED leds;
+  // public static final LED leds;
 
   static {
     // Create subsystems
@@ -70,14 +70,14 @@ public final class Subsystems {
           leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
           rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
-          coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
-          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
-          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
-          elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19, 20));
+          // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
+          // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
+          // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
+          // elevator = new Elevator(new ElevatorIOKraken(15, 16));
+          // climber = new Climber(new ClimberIOKraken(19, 20));
 
-          leds = new LED(new LEDIOCANdle(60));
+          // leds = new LED(new LEDIOCANdle(60));
         }
         case DEVBOT -> {
           drive =
@@ -91,14 +91,14 @@ public final class Subsystems {
           leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
           rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
-          coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
-          algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
-          algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
-          elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19, 20));
+          // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
+          // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
+          // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
+          // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
+          // elevator = new Elevator(new ElevatorIOKraken(15, 16));
+          // climber = new Climber(new ClimberIOKraken(19, 20));
 
-          leds = new LED(new LEDIOCANdle(60));
+          // leds = new LED(new LEDIOCANdle(60));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -119,14 +119,14 @@ public final class Subsystems {
       leftVision = new Vision("Left Vision", new VisionIO() {}, drive::getSpeeds);
       rightVision = new Vision("Right Vision", new VisionIO() {}, drive::getSpeeds);
 
-      coralIntake = new CoralIntake(new CoralIntakeIO() {});
-      coralActuation = new CoralActuation(new CoralActuationIO() {});
-      algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
-      algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
-      elevator = new Elevator(new ElevatorIO() {});
-      climber = new Climber(new ClimberIO() {});
+      // coralIntake = new CoralIntake(new CoralIntakeIO() {});
+      // coralActuation = new CoralActuation(new CoralActuationIO() {});
+      // algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
+      // algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
+      // elevator = new Elevator(new ElevatorIO() {});
+      // climber = new Climber(new ClimberIO() {});
 
-      leds = new LED(new LEDIO() {});
+      // leds = new LED(new LEDIO() {});
     }
   }
 }
