@@ -28,6 +28,9 @@ import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOKraken;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.led.LEDIO;
+import frc.robot.subsystems.led.LEDIOCANdle;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -48,6 +51,8 @@ public final class Subsystems {
   public static final AlgaeIntake algaeIntake;
   public static final Elevator elevator;
   public static final Climber climber;
+
+  public static final LED leds;
 
   static {
     // Create subsystems
@@ -70,7 +75,9 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19));
+          climber = new Climber(new ClimberIOKraken(19, 20));
+
+          leds = new LED(new LEDIOCANdle(60));
         }
         case DEVBOT -> {
           drive =
@@ -89,7 +96,9 @@ public final class Subsystems {
           algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
           elevator = new Elevator(new ElevatorIOKraken(15, 16));
-          climber = new Climber(new ClimberIOKraken(19));
+          climber = new Climber(new ClimberIOKraken(19, 20));
+
+          leds = new LED(new LEDIOCANdle(60));
         }
         case SIMBOT -> {
           throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -116,6 +125,8 @@ public final class Subsystems {
       algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
       elevator = new Elevator(new ElevatorIO() {});
       climber = new Climber(new ClimberIO() {});
+
+      leds = new LED(new LEDIO() {});
     }
   }
 }

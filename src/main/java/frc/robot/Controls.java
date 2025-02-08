@@ -17,25 +17,27 @@ public class Controls {
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
 
-  //coralIntake
-  public static Trigger intake = driver.x();
-  public static Trigger outtake = driver.b();
+  // Algae Actuation
+  public static Trigger algaeActuationUp = driver.y();
+  public static Trigger algaeActuationDown = driver.a();
 
+  // Algae Intake
+  public static Trigger algaeIntakeIn = driver.x();
+  public static Trigger algaeIntakeOut = driver.b();
+
+  // Coral Actuation
   public static Trigger coralActuationUp = new Trigger(() -> false);
   public static Trigger coralActuationDown = new Trigger(() -> false);
 
-  // Algae Actuation
-  public static Trigger algaeActuationUp = new Trigger(() -> false);
-  public static Trigger algaeActuationDown = new Trigger(() -> false);
-
-  // Algae Intake
-  public static Trigger algaeIntakeIn = new Trigger(() -> false);
-  public static Trigger algaeIntakeOut = new Trigger(() -> false);
+  // Coral Intake
+  public static Trigger coralIntakeIn = new Trigger(() -> false);
+  public static Trigger coralOuttakeOut = new Trigger(() -> false);
   
-  public static Trigger elevatorUp = new Trigger(() -> false);
-  public static Trigger elevatorDown = new Trigger(() -> false);
+  // Elevator
+  public static Trigger elevatorUp = driver.pov(0);
+  public static Trigger elevatorDown = driver.pov(180);
 
   // Climber
-  public static Trigger climberUp = new Trigger(() -> false);
-  public static Trigger climberDown = new Trigger(() -> false);
+  public static Trigger climberUp = driver.pov(270);
+  public static Trigger climberDown = driver.pov(90);
 }

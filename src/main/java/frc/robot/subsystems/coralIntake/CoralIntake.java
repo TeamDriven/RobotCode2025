@@ -4,6 +4,8 @@ import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.detectionCur
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralIntake extends SubsystemBase {
@@ -31,7 +33,11 @@ public class CoralIntake extends SubsystemBase {
         }
     }
 
-    public void setMotorVelocity(double velocity) {
+    public void runVelocity(double velocity) {
         this.velocity = velocity;
+    }
+
+    public Command runVelocityCommand(double vel) {
+        return Commands.startEnd(() -> runVelocity(vel), () -> runVelocity(0), this);
     }
 }

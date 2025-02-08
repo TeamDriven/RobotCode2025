@@ -1,70 +1,68 @@
 package frc.robot.subsystems.climber;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.util.TalonFXUtil;
+import frc.robot.util.TalonFXUtil.ConfigFactory;
+import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class ClimberIOKraken implements ClimberIO {
-  public TalonFX ClimberMotor;
+  private MotorFactory motorFactory;
 
-  private VelocityTorqueCurrentFOC VelMode;
+  private TalonFX topClimberMotor;
+  private TalonFX bottomClimberMotor;
+
+  private VoltageOut voltageControl;
   private NeutralOut StopMode;
 
-  public ClimberIOKraken(int lMotorID) {
-    ClimberMotor = new TalonFX(lMotorID);
+  public ClimberIOKraken(int tMotorID, int bMotorID) {
+    motorFactory = new MotorFactory("climber", tMotorID, bMotorID);
 
-    VelMode = new VelocityTorqueCurrentFOC(0).withSlot(0);
+    motorFactory.setBrakeMode(true);
+    motorFactory.setInverted(false, false);
+    motorFactory.setCurrentLimits(80);
+    motorFactory.setVoltageLimits(12);
+
+    motorFactory.configureMotors();
+
+    var motors = motorFactory.getMotors();
+    topClimberMotor = motors[0];
+    bottomClimberMotor = motors[1];
+
+
+    voltageControl = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
-
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 10; // An error of 1 rotation per second results in 2V output
-    configs.Slot0.kI =
-        0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    configs.Slot0.kD =
-        0.0; // A change of 1 rotation per second squared results in 0.01 volts output
-    configs.Slot0.kV =
-        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
-    // Rotation per second
-
-    // Peak output of 8 volts
-    configs.Voltage.PeakForwardVoltage = 12;
-    configs.Voltage.PeakReverseVoltage = -12;
-
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = ClimberMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
   }
   
   @Override
   public void updateInputs(ClimberIOInputs inputs) {
-    inputs.motorPos = ClimberMotor.getPosition().getValueAsDouble();
-    inputs.motorCurrent = ClimberMotor.getSupplyCurrent().getValueAsDouble();
-    inputs.motorVoltage = ClimberMotor.getSupplyVoltage().getValueAsDouble();
-    inputs.stallCurrent = ClimberMotor.getMotorStallCurrent().getValueAsDouble();
-    inputs.torqueCurrent = ClimberMotor.getTorqueCurrent().getValueAsDouble();
+    inputs.topMotorPos = topClimberMotor.getPosition().getValueAsDouble();
+    inputs.topMotorCurrent = topClimberMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.topMotorVoltage = topClimberMotor.getMotorVoltage().getValueAsDouble();
+    inputs.topStallCurrent = topClimberMotor.getMotorStallCurrent().getValueAsDouble();
+    inputs.topTorqueCurrent = topClimberMotor.getTorqueCurrent().getValueAsDouble();
+    
+    inputs.bottomMotorPos = bottomClimberMotor.getPosition().getValueAsDouble();
+    inputs.bottomMotorCurrent = bottomClimberMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.bottomMotorVoltage = bottomClimberMotor.getMotorVoltage().getValueAsDouble();
+    inputs.bottomStallCurrent = bottomClimberMotor.getMotorStallCurrent().getValueAsDouble();
+    inputs.bottomTorqueCurrent = bottomClimberMotor.getTorqueCurrent().getValueAsDouble();
+
+    motorFactory.checkForUpdates();
+
   }
 
   @Override
-  public void runClimberMotors(double velocity) {
-    ClimberMotor.setControl(VelMode.withVelocity(velocity).withAcceleration(60));
+  public void runClimberMotors(double voltage) {
+    topClimberMotor.setControl(voltageControl.withOutput(voltage));
+    bottomClimberMotor.setControl(voltageControl.withOutput(voltage));
   }
 
   @Override
   public void stopClimber() {
-    ClimberMotor.setControl(StopMode);
+    topClimberMotor.setControl(StopMode);
+    bottomClimberMotor.setControl(StopMode);
   }
 }

@@ -2,6 +2,8 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -13,7 +15,7 @@ public class Climber extends SubsystemBase {
   private final ClimberIO climberIO;
   private final ClimberIOInputsAutoLogged climberInputs = new ClimberIOInputsAutoLogged();
 
-  private double velocity = 0;
+  private double voltage = 0;
 
   public Climber(ClimberIO climberIO) {
     this.climberIO = climberIO;
@@ -24,15 +26,19 @@ public class Climber extends SubsystemBase {
     climberIO.updateInputs(climberInputs);
     Logger.processInputs("Climber", climberInputs);
   
-    if(velocity != 0) {
-      climberIO.runClimberMotors(velocity);
+    if(voltage != 0) {
+      climberIO.runClimberMotors(voltage);
     } else {
       climberIO.stopClimber();
     }
   }
 
-  public void runClimber(double speed) {
-    velocity = speed;
+  public void runVoltage(double volts) {
+    voltage = volts;
+  }
+
+  public Command runVoltageCommand(double volts) {
+    return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
   }
 
 }

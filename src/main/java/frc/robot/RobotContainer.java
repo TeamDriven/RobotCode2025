@@ -8,10 +8,13 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.intakeVelocity;
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.outtakeVelocity;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.inSpeed;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.outSpeed;
+import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
+import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.*;
+import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.*;
+import static frc.robot.subsystems.climber.ClimberConstants.*;
+import static frc.robot.subsystems.led.LEDConstants.*;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
@@ -56,11 +59,29 @@ public class RobotContainer {
     // Configure autos and buttons
     setupAutos();
     configureButtonBindings(false);
+    // testLEDControls();
 
     // Alerts for constants
     if (Constants.tuningMode) {
       new Alert("Tuning mode enabled", AlertType.INFO).set(true);
     }
+  }
+
+  public void testLEDControls() {
+    CommandScheduler.getInstance().getActiveButtonLoop().clear();
+
+    driver.a().onTrue(leds.setAnimation(RAINBOW_ANIMATION));
+    driver.b().onTrue(leds.setAnimation(FIRE_ANIMATION));
+    driver.x().onTrue(leds.setAnimation(TWINKLE_ANIMATION));
+    driver.y().onTrue(leds.setAnimation(LARSON_ANIMATION));
+
+    driver.pov(0).onTrue(leds.setAnimation(RGB_FADE_ANIMATION));
+    driver.pov(90).onTrue(leds.setColor(255, 0, 0));
+    driver.pov(180).onTrue(leds.setColor(0, 255, 0));
+    driver.pov(270).onTrue(leds.setColor(0, 0, 255));
+
+    driver.rightBumper().onTrue(leds.setColor(teamDrivenYellow[0], teamDrivenYellow[1], teamDrivenYellow[2], 10, 5));
+    driver.leftBumper().onTrue(leds.setColor(0, 0, 0));
   }
 
   private void setupAutos() {
@@ -89,7 +110,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    drive.setDefaultCommand(driveCommand());
+    // drive.setDefaultCommand(driveCommand());
 
     resetPose.onTrue(
         Commands.runOnce(
@@ -98,46 +119,36 @@ public class RobotContainer {
                     robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
 
-    // intake
-    intake.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(intakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
-
-    outtake.whileTrue(
-        new InstantCommand(() -> coralIntake.setMotorVelocity(outtakeVelocity)))
-        .onFalse(new InstantCommand(() -> coralIntake.setMotorVelocity(0)));
-
-    coralActuationUp.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(4)))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-    coralActuationDown.whileTrue(new InstantCommand(() -> coralActuation.runVoltage(-4)))
-        .whileFalse(new InstantCommand(() -> coralActuation.stop()));
-
     // Algae
-    algaeActuationDown.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(10)))
-        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
-    algaeActuationUp.onTrue(new InstantCommand(() -> algaeActuation.runVoltage(-10)))
-        .onFalse(new InstantCommand(() -> algaeActuation.stop()));
+    algaeActuationUp.onTrue(algaeActuation.runVoltageCommand(algaeActuationVoltage.get()));
+    algaeActuationDown.onTrue(algaeActuation.runVoltageCommand(-algaeActuationVoltage.get()));
 
-    algaeIntakeIn.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(inSpeed)))
-        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
-    algaeIntakeOut.onTrue(new InstantCommand(() -> algaeIntake.runVelocity(outSpeed)))
-        .onFalse(new InstantCommand(() -> algaeIntake.runVelocity(0)));
+    algaeIntakeIn.onTrue(algaeIntake.runVelocityCommand(algaeIntakeTuningVelocity.get()));
+    algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
 
-    elevatorUp.onTrue(new InstantCommand(() -> elevator.runVelocity(10)))
-        .onFalse(new InstantCommand(() -> elevator.stop()));
-    elevatorDown.onTrue(new InstantCommand(() -> elevator.runVelocity(-10)))
-        .onFalse(new InstantCommand(() -> elevator.stop()));
-    
-    climberUp.onTrue(new InstantCommand(() -> climber.runClimber(10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
-    climberDown.onTrue(new InstantCommand(() -> climber.runClimber(-10), climber)).onFalse(Commands.runOnce(() -> climber.runClimber(0), climber));
-    
+    // intake
+    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
+    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
+
+    coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
+    coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
+
+    // Elevator
+    elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));
+    elevatorDown.onTrue(elevator.runVoltageCommand(-elevatorTuningVoltage.get()));
+
+    // Climber
+    climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
+    climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
 
     // Zoning laws
     new Trigger(RobotState.getInstance()::isInClimbZone)
-        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+        .whileTrue(
+            new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
 
     new Trigger(RobotState.getInstance()::isInReefZone)
-        .whileTrue(new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+        .whileTrue(
+            new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
   }
 
   /** Updates the alerts for disconnected controllers. */

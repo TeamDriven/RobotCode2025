@@ -4,53 +4,61 @@
 
 package frc.robot.subsystems.algaeActuation;
 
-import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.tuckPos;
-
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeActuation extends SubsystemBase {
-  private final AlgaeActuationIO activationIO;
+  private final AlgaeActuationIO actuationIO;
   private final AlgaeActuationIOInputsAutoLogged activationInputs = new AlgaeActuationIOInputsAutoLogged();
 
-  private double position = tuckPos;
-  private boolean stopped = false;
-  private double voltage = 0;
-  private boolean isPositionControl = true;
+  private enum mode {
+    POSITION,
+    VOLTAGE,
+    STOPPED;
+  }
 
-  public AlgaeActuation(AlgaeActuationIO activationIO) {
-    this.activationIO = activationIO;
+  private mode currentMode = mode.STOPPED;
+
+  private double value = 0;
+
+  public AlgaeActuation(AlgaeActuationIO actuationIO) {
+    this.actuationIO = actuationIO;
   }
 
   @Override
   public void periodic() {
-    activationIO.updateInputs(activationInputs);
+    actuationIO.updateInputs(activationInputs);
     Logger.processInputs("algaeActuation", activationInputs);
 
-    if (stopped == true) {
-      activationIO.stopMotors();
-      return;
-    }
-
-    if (isPositionControl == true) {
-      activationIO.moveToPos(position);
-    } else {
-      activationIO.runVoltage(voltage);
+    switch (currentMode) {
+      case POSITION:
+        actuationIO.moveToPos(value);
+      case VOLTAGE:
+        actuationIO.runVoltage(value);
+      case STOPPED:
+        actuationIO.stopMotors();
     }
   }
 
   public void setPos(double pos) {
-    isPositionControl = true;
-    position = pos;
+    currentMode = mode.POSITION;
+    value = pos;
   }
 
   public void stop() {
-    stopped = true;
+    currentMode = mode.STOPPED;
+    value = 0;
   }
 
-  public void runVoltage(double volt) {
-    isPositionControl = false;
-    voltage = volt;
+  public void runVoltage(double volts) {
+    currentMode = mode.VOLTAGE;
+    value = volts;
+  }
+
+  public Command runVoltageCommand(double volts) {
+    return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
   }
 }

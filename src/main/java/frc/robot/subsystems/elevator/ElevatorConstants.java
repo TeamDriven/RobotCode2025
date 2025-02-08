@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import frc.robot.util.LoggedTunableNumber;
+
 public class ElevatorConstants {
     private static final double gearRatio = 17; // Is subject to change
     private static final double pulleyRadius = 0.6765; // if 36t pulley 0.6765
@@ -13,4 +15,6 @@ public class ElevatorConstants {
     public static final double L2Pos = 0;
     public static final double L3Pos = 0;
     public static final double L4Pos = 0;
+
+    public static final LoggedTunableNumber elevatorTuningVoltage = new LoggedTunableNumber("Elevator/TuningVoltage", 6);
 }
