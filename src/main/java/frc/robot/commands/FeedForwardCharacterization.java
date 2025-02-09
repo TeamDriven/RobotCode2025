@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 public class FeedForwardCharacterization extends Command {
   private static final double START_DELAY_SECS = 2.0;
   private static final double RAMP_VOLTS_PER_SEC = 0.1;

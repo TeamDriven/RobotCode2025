@@ -24,22 +24,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.TestPath;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.WheelRadiusCharacterization;
+import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
+import frc.robot.FieldConstants.Reef;
 import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.commands.autos.Place4RightSideForReal;
@@ -152,13 +147,15 @@ public class RobotContainer {
     // climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
 
     // Zoning laws
-    new Trigger(RobotState.getInstance()::isInClimbZone)
-        .whileTrue(
-            new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+    // new Trigger(RobotState.getInstance()::isInClimbZone)
+    //     .whileTrue(
+    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
 
-    new Trigger(RobotState.getInstance()::isInReefZone)
-        .whileTrue(
-            new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+    // new Trigger(RobotState.getInstance()::isInReefZone)
+    //     .whileTrue(
+    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+    
+    driver.a().whileTrue(new AutoMoveToNearestPOI(false, Reef.placePoses).andThen(new AutoMoveToNearestPOI(true, Reef.placePoses)));
   }
 
   /** Updates the alerts for disconnected controllers. */

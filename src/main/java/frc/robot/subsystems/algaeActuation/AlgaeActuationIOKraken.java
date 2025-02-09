@@ -7,8 +7,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.util.TalonFXUtil;
-import frc.robot.util.TalonFXUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class AlgaeActuationIOKraken implements AlgaeActuationIO {

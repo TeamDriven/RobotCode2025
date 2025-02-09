@@ -4,7 +4,6 @@ import static frc.robot.subsystems.led.LEDConstants.numLED;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 
 public class LEDIOCANdle implements LEDIO {

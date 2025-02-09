@@ -1,13 +1,9 @@
 package frc.robot.subsystems.algaeIntake;
 
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.util.TalonFXUtil;
-import frc.robot.util.TalonFXUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class AlgaeIntakeIOKraken implements AlgaeIntakeIO{

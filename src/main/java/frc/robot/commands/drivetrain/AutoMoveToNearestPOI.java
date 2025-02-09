@@ -2,6 +2,8 @@ package frc.robot.commands.drivetrain;
 
 import static frc.robot.Subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,7 +32,7 @@ public class AutoMoveToNearestPOI extends Command {
         for (Pose2d pose : poses) {
             double dist = curPose.getTranslation().getDistance(pose.getTranslation());
             if (dist < minDist) {
-                dist = minDist;
+                minDist = dist;
                 selectedPose = pose;
             }
         }

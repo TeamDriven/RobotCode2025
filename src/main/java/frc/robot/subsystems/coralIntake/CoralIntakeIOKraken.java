@@ -2,16 +2,10 @@ package frc.robot.subsystems.coralIntake;
 
 import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
 
-import java.security.Key;
-
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.util.TalonFXUtil;
-import frc.robot.util.TalonFXUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class CoralIntakeIOKraken implements CoralIntakeIO {

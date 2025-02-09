@@ -14,6 +14,11 @@ public class Place4RightSideForReal implements AutoBase{
 
         var place1 = routine.trajectory("place 4 right for real", 0);
         var pickup2 = routine.trajectory("place 4 right for real", 1);
+        var place3 = routine.trajectory("place 4 right for real", 2);
+        var pickup4 = routine.trajectory("place 4 right for real", 3);
+        var place5 = routine.trajectory("place 4 right for real", 4);
+        var pickup6 = routine.trajectory("place 4 right for real", 5);
+        var place7 = routine.trajectory("place 4 right for real", 6);
 
         routine.active().onTrue(
             Commands.sequence(
@@ -25,8 +30,20 @@ public class Place4RightSideForReal implements AutoBase{
 
         place1.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
         pickup2.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
+        place3.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
+        pickup4.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
+        place5.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
+        pickup6.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
+        place7.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
 
         place1.done().onTrue(pickup2.cmd().beforeStarting(new WaitCommand(1)));
+        pickup2.done().onTrue(place3.cmd().beforeStarting(new WaitCommand(0.33)));
+        place3.done().onTrue(pickup4.cmd().beforeStarting(new WaitCommand(1)));
+        pickup4.done().onTrue(place5.cmd().beforeStarting(new WaitCommand(0.33)));
+        place5.done().onTrue(pickup6.cmd().beforeStarting(new WaitCommand(1)));
+        pickup6.done().onTrue(place7.cmd().beforeStarting(new WaitCommand(0.33)));
+
+
 
         return routine;
     }

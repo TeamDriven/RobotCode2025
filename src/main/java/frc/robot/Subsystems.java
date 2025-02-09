@@ -4,46 +4,26 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.algaeActuation.AlgaeActuation;
-import frc.robot.subsystems.algaeActuation.AlgaeActuationIO;
-import frc.robot.subsystems.algaeActuation.AlgaeActuationIOKraken;
-import frc.robot.subsystems.algaeIntake.AlgaeIntake;
-import frc.robot.subsystems.algaeIntake.AlgaeIntakeIO;
-import frc.robot.subsystems.algaeIntake.AlgaeIntakeIOKraken;
-import frc.robot.subsystems.coralActuation.CoralActuation;
-import frc.robot.subsystems.coralActuation.CoralActuationIO;
-import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
-import frc.robot.subsystems.coralIntake.CoralIntake;
-import frc.robot.subsystems.coralIntake.CoralIntakeIO;
-import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOKraken;
-import frc.robot.subsystems.led.LED;
-import frc.robot.subsystems.led.LEDIO;
-import frc.robot.subsystems.led.LEDIOCANdle;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 
 /**
- * The Subsystems class represents the collection of subsystems used in the robot. It provides
+ * The Subsystems class represents the collection of subsystems used in the
+ * robot. It provides
  * static references to various subsystem objects that are used in the robot.
  */
 public final class Subsystems {
   public static final Drive drive;
 
-  public static final Vision leftVision;
-  public static final Vision rightVision;
+  public static final Vision bottomVision;
+  // public static final Vision rightVision;
 
   // public static final CoralIntake coralIntake;
   // public static final CoralActuation coralActuation;
@@ -59,16 +39,16 @@ public final class Subsystems {
     if (Constants.getMode() != Constants.Mode.REPLAY) {
       switch (Constants.getRobot()) {
         case COMPBOT -> {
-          drive =
-              new Drive(
-                  new GyroIOPigeon2(true),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+          drive = new Drive(
+              new GyroIOPigeon2(true),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
 
-          leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
-          rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
+          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
+          // rightVision = new Vision("Right Vision", new
+          // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
           // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
@@ -80,16 +60,16 @@ public final class Subsystems {
           // leds = new LED(new LEDIOCANdle(60));
         }
         case DEVBOT -> {
-          drive =
-              new Drive(
-                  new GyroIOPigeon2(false),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
-                  new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+          drive = new Drive(
+              new GyroIOPigeon2(false),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
 
-          leftVision = new Vision("Left Vision", new VisionIOLimelight("limelight-left"), drive::getSpeeds);
-          rightVision = new Vision("Right Vision", new VisionIOLimelight("limelight-right"), drive::getSpeeds);
+          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
+          // rightVision = new Vision("Right Vision", new
+          // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
           // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
@@ -108,16 +88,22 @@ public final class Subsystems {
         }
       }
     } else {
-      drive =
-          new Drive(
-              new GyroIO() {},
-              new ModuleIO() {},
-              new ModuleIO() {},
-              new ModuleIO() {},
-              new ModuleIO() {});
+      drive = new Drive(
+          new GyroIO() {
+          },
+          new ModuleIO() {
+          },
+          new ModuleIO() {
+          },
+          new ModuleIO() {
+          },
+          new ModuleIO() {
+          });
 
-      leftVision = new Vision("Left Vision", new VisionIO() {}, drive::getSpeeds);
-      rightVision = new Vision("Right Vision", new VisionIO() {}, drive::getSpeeds);
+      bottomVision = new Vision("Bottom Vision", new VisionIO() {
+      }, drive::getSpeeds);
+      // rightVision = new Vision("Right Vision", new VisionIO() {},
+      // drive::getSpeeds);
 
       // coralIntake = new CoralIntake(new CoralIntakeIO() {});
       // coralActuation = new CoralActuation(new CoralActuationIO() {});

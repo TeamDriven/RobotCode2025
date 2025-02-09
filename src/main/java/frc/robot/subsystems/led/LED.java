@@ -1,7 +1,5 @@
 package frc.robot.subsystems.led;
 
-import static frc.robot.subsystems.led.LEDConstants.numLED;
-
 import com.ctre.phoenix.led.Animation;
 
 import edu.wpi.first.wpilibj2.command.Command;
