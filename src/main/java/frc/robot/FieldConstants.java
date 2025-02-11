@@ -71,7 +71,7 @@ public class FieldConstants {
   }
 
   public class Reef {
-    private static final double placeOffset = Units.inchesToMeters(13.625); //1.625 is bumper touching
+    private static final double placeOffset = Units.inchesToMeters(13.625); // 1.625 is bumper touching
 
     public static record ReefFace(Pose2d facePos, double algaeHeight,
         Pose3d[] L2Positions, Pose3d[] L3Positions, Pose3d[] L4Positions) {
@@ -224,7 +224,7 @@ public class FieldConstants {
   }
 
   public class Zones {
-    private static final double pickupZoneLength = 40;
+    private static final double pickupZoneLength = 60; // Not real units
 
     public static PolygonZone climbZone;
 
@@ -233,28 +233,38 @@ public class FieldConstants {
     public static PolygonZone leftPickupZone;
     public static PolygonZone rightPickupZone;
 
+    public static Translation2d[] climbZoneCorners = new Translation2d[] {
+        new Translation2d(Units.inchesToMeters(368.438), 0),
+        new Translation2d(Units.inchesToMeters(368.438), fieldWidth),
+        new Translation2d(Units.inchesToMeters(322.438), fieldWidth),
+        new Translation2d(Units.inchesToMeters(322.438), 0) };
+
+    public static Translation2d[] leftPickupZoneCorners = new Translation2d[] {
+        new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),
+        new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015 + pickupZoneLength * Math.sin(Units.degreesToRadians(35)))),
+        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength * Math.cos(Units.degreesToRadians(35))), fieldWidth),
+        new Translation2d(Units.inchesToMeters(66.6745), fieldWidth)
+    };
+
+    public static Translation2d[] rightPickupZoneCorners = new Translation2d[] {
+        new Translation2d(0, Units.inchesToMeters(48.7015)),
+        new Translation2d(0, Units.inchesToMeters(48.7015 + pickupZoneLength * Math.sin(Units.degreesToRadians(35)))),
+        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength * Math.cos(Units.degreesToRadians(35))), 0),
+        new Translation2d(Units.inchesToMeters(66.6745), 0)
+    };
+
     static {
-      climbZone = new PolygonZone(
-          new Translation2d(Units.inchesToMeters(368.438), 0),
-          new Translation2d(Units.inchesToMeters(368.438), fieldWidth),
-          new Translation2d(Units.inchesToMeters(322.438), fieldWidth),
-          new Translation2d(Units.inchesToMeters(322.438), 0));
+      climbZone = new PolygonZone(climbZoneCorners);
 
       reefZone = new CircleZone(
           Reef.center,
           Units.inchesToMeters(55)); // 55
 
       leftPickupZone = new PolygonZone(
-          new Translation2d(0, Units.inchesToMeters(48.7015)),
-          new Translation2d(0, Units.inchesToMeters(48.7015 + pickupZoneLength)),
-          new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength), 0),
-          new Translation2d(Units.inchesToMeters(66.6745), 0));
+          leftPickupZoneCorners);
 
       rightPickupZone = new PolygonZone(
-          new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),
-          new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015 + pickupZoneLength)),
-          new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength), fieldWidth),
-          new Translation2d(Units.inchesToMeters(66.6745), fieldWidth));
+          rightPickupZoneCorners);
     }
   }
 
@@ -273,7 +283,6 @@ public class FieldConstants {
     // i), new Pose3d());
 
     for (int i = 0; i < Reef.reefFaces.length; i++) {
-      System.out.println(Reef.reefFaces[i]);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/facePose", i), Reef.reefFaces[i].facePos);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/algaeHeight", i), Reef.reefFaces[i].algaeHeight);
       Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Positions", i), Reef.reefFaces[i].L2Positions);
@@ -283,5 +292,9 @@ public class FieldConstants {
 
     Logger.recordOutput("FieldConstants/leftChuteLocations", CoralStations.leftChuteLocations);
     Logger.recordOutput("FieldConstants/rightChuteLocations", CoralStations.rightChuteLocations);
+
+    Logger.recordOutput("FieldConstants/Zones/climbZoneCorners", Zones.climbZoneCorners);
+    Logger.recordOutput("FieldConstants/Zones/leftPickupZoneCorners", Zones.leftPickupZoneCorners);
+    Logger.recordOutput("FieldConstants/Zones/rightPickupZoneCorners", Zones.rightPickupZoneCorners);
   }
 }
