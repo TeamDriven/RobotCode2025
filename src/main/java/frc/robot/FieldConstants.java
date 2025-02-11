@@ -71,7 +71,7 @@ public class FieldConstants {
   }
 
   public class Reef {
-    private static final double placeOffset = Units.inchesToMeters(1.625);
+    private static final double placeOffset = Units.inchesToMeters(13.625); //1.625 is bumper touching
 
     public static record ReefFace(Pose2d facePos, double algaeHeight,
         Pose3d[] L2Positions, Pose3d[] L3Positions, Pose3d[] L4Positions) {
@@ -182,7 +182,7 @@ public class FieldConstants {
 
         for (int j = 0; j < 2; j++) {
           Pose2d poseDirection = new Pose2d(center, centerFaces[i].getRotation());
-          double adjustX = Units.inchesToMeters(30.738) + driveConfig.bumperWidthX() + placeOffset;
+          double adjustX = Units.inchesToMeters(30.738) + (driveConfig.bumperWidthX() / 2) + placeOffset;
           double adjustY = Units.inchesToMeters(6.469);
 
           placePoses[placePoseIndex++] = new Pose2d(

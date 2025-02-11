@@ -36,8 +36,9 @@ import frc.robot.commands.autos.TestPath;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.commands.autos.Place2RightSide;
+import frc.robot.commands.autos.Place4LeftSide;
 import frc.robot.commands.autos.Place4RightSide;
-import frc.robot.commands.autos.Place4RightSideForReal;
+import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -89,9 +90,9 @@ public class RobotContainer {
   private void setupAutos() {
     autoChooser.setDefaultOption("Test Auto", new TestAuto().getAuto().cmd());
     autoChooser.addOption("Place 2 right side", new Place2RightSide().getAuto().cmd());
-    autoChooser.addOption("Place4RightSide", new Place4RightSide().getAuto().cmd());
     autoChooser.addOption("TestPath", new TestPath().getAuto().cmd());
-    autoChooser.addOption("place 4 right side for real", new Place4RightSideForReal().getAuto().cmd());
+    autoChooser.addOption("place 4 right side", new Place4RightSide().getAuto().cmd());
+    autoChooser.addOption("place 4 left side", new Place4LeftSide().getAuto().cmd());
 
     SmartDashboard.putData(autoChooser);
   }

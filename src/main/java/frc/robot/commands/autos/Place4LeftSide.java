@@ -7,18 +7,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drive.Drive;
 
-public class Place4RightSideForReal implements AutoBase{
+public class Place4LeftSide implements AutoBase{
     @Override
     public AutoRoutine getAuto() {
-        AutoRoutine routine = drive.autoFactory.newRoutine("Place4RightSideForReal");
+        AutoRoutine routine = drive.autoFactory.newRoutine("Place4RightSide");
 
-        var place1 = routine.trajectory("place 4 right for real", 0);
-        var pickup2 = routine.trajectory("place 4 right for real", 1);
-        var place3 = routine.trajectory("place 4 right for real", 2);
-        var pickup4 = routine.trajectory("place 4 right for real", 3);
-        var place5 = routine.trajectory("place 4 right for real", 4);
-        var pickup6 = routine.trajectory("place 4 right for real", 5);
-        var place7 = routine.trajectory("place 4 right for real", 6);
+        var place1 = routine.trajectory("place 4 left side", 0);
+        var pickup2 = routine.trajectory("place 4 left side", 1);
+        var place3 = routine.trajectory("place 4 left side", 2);
+        var pickup4 = routine.trajectory("place 4 left side", 3);
+        var place5 = routine.trajectory("place 4 left side", 4);
+        var pickup6 = routine.trajectory("place 4 left side", 5);
+        var place7 = routine.trajectory("place 4 left side", 6);
 
         routine.active().onTrue(
             Commands.sequence(

@@ -3,6 +3,7 @@ package frc.robot.commands.autos;
 import static frc.robot.Subsystems.drive;
 
 import choreo.auto.AutoRoutine;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drive.Drive;
@@ -10,7 +11,7 @@ import frc.robot.subsystems.drive.Drive;
 public class Place4RightSide implements AutoBase{
     @Override
     public AutoRoutine getAuto() {
-        AutoRoutine routine = drive.autoFactory.newRoutine("place4RightSide");
+        AutoRoutine routine = drive.autoFactory.newRoutine("Place4RightSide");
 
         var place1 = routine.trajectory("place 4 right side", 0);
         var pickup2 = routine.trajectory("place 4 right side", 1);
@@ -37,12 +38,13 @@ public class Place4RightSide implements AutoBase{
         place7.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
 
         place1.done().onTrue(pickup2.cmd().beforeStarting(new WaitCommand(1)));
+        pickup2.done().onTrue(place3.cmd().beforeStarting(new WaitCommand(0.33)));
         place3.done().onTrue(pickup4.cmd().beforeStarting(new WaitCommand(1)));
+        pickup4.done().onTrue(place5.cmd().beforeStarting(new WaitCommand(0.33)));
         place5.done().onTrue(pickup6.cmd().beforeStarting(new WaitCommand(1)));
-        
-        pickup2.done().onTrue(place3.cmd().beforeStarting(new WaitCommand(1)));
-        pickup4.done().onTrue(place5.cmd().beforeStarting(new WaitCommand(1)));
-        pickup6.done().onTrue(place7.cmd().beforeStarting(new WaitCommand(1)));
+        pickup6.done().onTrue(place7.cmd().beforeStarting(new WaitCommand(0.33)));
+
+        place7.done().onTrue(Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime())).beforeStarting(new WaitCommand(1)));
 
         return routine;
     }
