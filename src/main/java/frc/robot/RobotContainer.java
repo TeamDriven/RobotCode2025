@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.TestPath;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
+import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.commands.autos.Place4LeftSide;
@@ -59,7 +60,7 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    // FieldConstants.logFieldConstants();
+    FieldConstants.logFieldConstants();
 
     // Configure autos and buttons
     setupAutos();
@@ -168,7 +169,7 @@ public class RobotContainer {
     //         new RepeatCommand(new InstantCommand(() -> System.out.println("Right Pickup: " + Timer.getFPGATimestamp()))));
 
     driver.a().whileTrue(
-        new AutoMoveToNearestPOI(false, Reef.placePoses).andThen(new AutoMoveToNearestPOI(true, Reef.placePoses)));
+        new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
   }
 
   /** Updates the alerts for disconnected controllers. */

@@ -24,6 +24,7 @@ import frc.robot.subsystems.drive.controllers.AutoDriveController;
 import frc.robot.subsystems.drive.controllers.HeadingController;
 import frc.robot.subsystems.drive.controllers.SimpleDriveController;
 import frc.robot.subsystems.drive.controllers.TeleopDriveController;
+import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.util.EqualsUtil;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.SwerveDriveWheelPositions;
@@ -370,10 +371,10 @@ public class Drive extends SubsystemBase {
   public void setAutoAlignGoal(
       Supplier<Pose2d> poseSupplier,
       Supplier<Translation2d> feedforwardSupplier,
-      boolean slowMode) {
+      allignmentMode mode) {
     if (DriverStation.isEnabled()) {
       currentDriveMode = DriveMode.AUTO_ALIGN;
-      autoAlignController = new AutoAlignController(poseSupplier, feedforwardSupplier, slowMode);
+      autoAlignController = new AutoAlignController(poseSupplier, feedforwardSupplier, mode);
     }
   }
 

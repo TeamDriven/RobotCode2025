@@ -23,6 +23,7 @@ public final class Subsystems {
   public static final Drive drive;
 
   public static final Vision bottomVision;
+  public static final Vision backVision;
   // public static final Vision rightVision;
 
   // public static final CoralIntake coralIntake;
@@ -47,6 +48,7 @@ public final class Subsystems {
               new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
 
           bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
+          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
@@ -68,6 +70,8 @@ public final class Subsystems {
               new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
 
           bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
+          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
+
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
@@ -101,6 +105,8 @@ public final class Subsystems {
           });
 
       bottomVision = new Vision("Bottom Vision", new VisionIO() {
+      }, drive::getSpeeds);
+      backVision = new Vision("Back Vision", new VisionIO() {
       }, drive::getSpeeds);
       // rightVision = new Vision("Right Vision", new VisionIO() {},
       // drive::getSpeeds);

@@ -8,16 +8,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
+import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;;
 
 public class AutoMoveToNearestPOI extends Command {
     private final Pose2d[] poses;
-    private final boolean slowMode;
+    private final allignmentMode mode;
 
     private Pose2d selectedPose;
 
-    public AutoMoveToNearestPOI(boolean slowMode, Pose2d... poses) {
+    public AutoMoveToNearestPOI(allignmentMode mode, Pose2d... poses) {
         this.poses = poses;
-        this.slowMode = slowMode;
+        this.mode = mode;
         addRequirements(drive);
     }
 
@@ -40,7 +41,7 @@ public class AutoMoveToNearestPOI extends Command {
         this.selectedPose = selectedPose;
         // Currently feedforward is empty, you can use this to add driver corrections see
         // https://github.com/Mechanical-Advantage/RobotCode2024/blob/fee73633da2a04a496cb7cf8bb0f6d78a67ae8d1/src/main/java/org/littletonrobotics/frc2024/RobotContainer.java#L748
-        drive.setAutoAlignGoal(() -> this.selectedPose, () -> new Translation2d(), slowMode);
+        drive.setAutoAlignGoal(() -> this.selectedPose, () -> new Translation2d(), mode);
     }
 
     @Override
