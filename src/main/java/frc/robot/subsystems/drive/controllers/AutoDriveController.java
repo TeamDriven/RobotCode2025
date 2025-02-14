@@ -18,7 +18,7 @@ import frc.robot.RobotState;
 public class AutoDriveController {
   private final PIDController xController = new PIDController(1.5, 0.0, 0.5);
   private final PIDController yController = new PIDController(1.5, 0.0, 0.5);
-  private final PIDController headingController = new PIDController(1.75, 0.0, 0.1);
+  private final PIDController headingController = new PIDController(2.5, 0.0, 0.35);
 
   private SwerveSample sample;
 
