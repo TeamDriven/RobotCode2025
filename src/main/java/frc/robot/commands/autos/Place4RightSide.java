@@ -6,7 +6,7 @@ import choreo.auto.AutoRoutine;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
@@ -29,21 +29,6 @@ public class Place4RightSide implements AutoBase {
                         place1.resetOdometry(),
                         Commands.runOnce(() -> drive.orientModules(Drive.getStraightOrientations()), drive),
                         place1.cmd()));
-
-        place1.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        pickup2.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        place3.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        pickup4.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        place5.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        pickup6.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-        place7.done().onTrue(Commands.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false), drive));
-
-        // place1.done().onTrue(pickup2.cmd().beforeStarting(new WaitCommand(1)));
-        pickup2.done().onTrue(place3.cmd().beforeStarting(new WaitCommand(0.33)));
-        // place3.done().onTrue(pickup4.cmd().beforeStarting(new WaitCommand(1)));
-        pickup4.done().onTrue(place5.cmd().beforeStarting(new WaitCommand(0.33)));
-        // place5.done().onTrue(pickup6.cmd().beforeStarting(new WaitCommand(1)));
-        pickup6.done().onTrue(place7.cmd().beforeStarting(new WaitCommand(0.33)));
 
         place1.atTime("Place Piece 1").onTrue(
                 Commands.sequence(
@@ -80,6 +65,33 @@ public class Place4RightSide implements AutoBase {
                                 drive),
                         Commands.waitSeconds(1),
                         Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime()))));
+
+        pickup2.atTime("pickup 1").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[7], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place3.cmd()));
+
+        pickup4.atTime("pickup 2").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[7], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place5.cmd()));
+
+        pickup6.atTime("pickup 3").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[7], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place7.cmd()));
 
         return routine;
     }

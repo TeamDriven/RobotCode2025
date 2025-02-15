@@ -31,12 +31,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.autos.TestAuto;
-import frc.robot.commands.autos.TestPath;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
+import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.Reef;
-import frc.robot.commands.autos.Place2RightSide;
 import frc.robot.commands.autos.Place4LeftSide;
 import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.util.*;
@@ -88,10 +86,7 @@ public class RobotContainer {
   }
 
   private void setupAutos() {
-    autoChooser.setDefaultOption("Test Auto", new TestAuto().getAuto().cmd());
-    autoChooser.addOption("Place 2 right side", new Place2RightSide().getAuto().cmd());
-    autoChooser.addOption("TestPath", new TestPath().getAuto().cmd());
-    autoChooser.addOption("place 4 right side", new Place4RightSide().getAuto().cmd());
+    autoChooser.setDefaultOption("place 4 right side", new Place4RightSide().getAuto().cmd());
     autoChooser.addOption("place 4 left side", new Place4LeftSide().getAuto().cmd());
 
     SmartDashboard.putData(autoChooser);
@@ -149,23 +144,33 @@ public class RobotContainer {
 
     // Zoning laws
     // new Trigger(RobotState.getInstance()::isInClimbZone)
-    //     .whileTrue(
-    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " + Timer.getFPGATimestamp()))));
+    // .whileTrue(
+    // new RepeatCommand(new InstantCommand(() -> System.out.println("Climb: " +
+    // Timer.getFPGATimestamp()))));
 
     // new Trigger(RobotState.getInstance()::isInReefZone)
-    //     .whileTrue(
-    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " + Timer.getFPGATimestamp()))));
+    // .whileTrue(
+    // new RepeatCommand(new InstantCommand(() -> System.out.println("Reef: " +
+    // Timer.getFPGATimestamp()))));
 
     // new Trigger(RobotState.getInstance()::isInLeftPickupZone)
-    //     .whileTrue(
-    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Left Pickup: " + Timer.getFPGATimestamp()))));
+    // .whileTrue(
+    // new RepeatCommand(new InstantCommand(() -> System.out.println("Left Pickup: "
+    // + Timer.getFPGATimestamp()))));
 
     // new Trigger(RobotState.getInstance()::isInRightPickupZone)
-    //     .whileTrue(
-    //         new RepeatCommand(new InstantCommand(() -> System.out.println("Right Pickup: " + Timer.getFPGATimestamp()))));
+    // .whileTrue(
+    // new RepeatCommand(new InstantCommand(() -> System.out.println("Right Pickup:
+    // " + Timer.getFPGATimestamp()))));
+
+    driver.y().onTrue(Commands.runOnce(() -> drive.setHeadingGoal(() -> new Rotation2d(Math.PI)), drive))
+        .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
 
     driver.a().whileTrue(
         new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
+
+    driver.b().whileTrue(
+        new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, CoralStations.pickupLocations));
   }
 
   /** Updates the alerts for disconnected controllers. */

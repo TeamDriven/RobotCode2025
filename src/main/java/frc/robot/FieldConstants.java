@@ -199,26 +199,68 @@ public class FieldConstants {
   }
 
   public class CoralStations {
+    public static final Pose2d[] pickupLocations = new Pose2d[18];
+
     public static final Pose3d[] leftChuteLocations = new Pose3d[9];
     public static final Pose3d[] rightChuteLocations = new Pose3d[9];
 
+    public static final double pickupOffset = Units.inchesToMeters(12);
+
     private static final double chuteHeight = Units.inchesToMeters(37.5);
 
-    private static final double[] leftChuteX = { 7.2883, 13.7614, 20.2345, 26.7075, 33.1806, 39.6537, 46.1268, 52.5998,
+    private static final double[] rightChuteX = { 7.2883, 13.7614, 20.2345, 26.7075, 33.1806, 39.6537, 46.1268, 52.5998,
         59.0729 };
-    private static final double[] leftChuteY = { 44.1488, 39.4478, 34.7468, 30.0458, 25.3448, 20.6434, 15.9429, 11.2419,
+    private static final double[] rightChuteY = { 44.1488, 39.4478, 34.7468, 30.0458, 25.3448, 20.6434, 15.9429,
+        11.2419,
         6.5409 };
 
     static {
       for (int i = 0; i < leftChuteLocations.length; i++) {
-        leftChuteLocations[i] = new Pose3d(Units.inchesToMeters(leftChuteX[i]),
-            fieldWidth - Units.inchesToMeters(leftChuteY[i]), chuteHeight,
-            new Rotation3d(0, Units.degreesToRadians(55), Units.degreesToRadians(-54)));
-      }
-      for (int i = 0; i < rightChuteLocations.length; i++) {
-        rightChuteLocations[i] = new Pose3d(Units.inchesToMeters(leftChuteX[i]), Units.inchesToMeters(leftChuteY[i]),
+        var x = Units.inchesToMeters(rightChuteX[i]);
+        var y = fieldWidth - Units.inchesToMeters(rightChuteY[i]);
+
+        leftChuteLocations[i] = new Pose3d(
+            x,
+            y,
             chuteHeight,
-            new Rotation3d(0, Units.degreesToRadians(55), Units.degreesToRadians(54)));
+            new Rotation3d(
+                0,
+                Units.degreesToRadians(55),
+                Units.degreesToRadians(-55)));
+
+        Pose2d chutePose = new Pose2d(x, y, new Rotation2d(Units.degreesToRadians(-55)));
+        pickupLocations[i] = new Pose2d(
+            chutePose
+                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .getX(),
+            chutePose
+                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .getY(),
+            chutePose.getRotation().rotateBy(new Rotation2d(Math.PI)));
+      }
+
+      for (int i = 0; i < rightChuteLocations.length; i++) {
+        var x = Units.inchesToMeters(rightChuteX[i]);
+        var y = Units.inchesToMeters(rightChuteY[i]);
+
+        rightChuteLocations[i] = new Pose3d(
+            x,
+            y,
+            chuteHeight,
+            new Rotation3d(
+                0,
+                Units.degreesToRadians(55),
+                Units.degreesToRadians(55)));
+
+        Pose2d chutePose = new Pose2d(x, y, new Rotation2d(Units.degreesToRadians(55)));
+        pickupLocations[i + 9] = new Pose2d(
+            chutePose
+                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .getX(),
+            chutePose
+                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .getY(),
+            chutePose.getRotation().rotateBy(new Rotation2d(Math.PI)));
       }
     }
   }
@@ -241,8 +283,10 @@ public class FieldConstants {
 
     public static Translation2d[] leftPickupZoneCorners = new Translation2d[] {
         new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),
-        new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015 + pickupZoneLength * Math.sin(Units.degreesToRadians(35)))),
-        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength * Math.cos(Units.degreesToRadians(35))), fieldWidth),
+        new Translation2d(0,
+            fieldWidth - Units.inchesToMeters(48.7015 + pickupZoneLength * Math.sin(Units.degreesToRadians(35)))),
+        new Translation2d(Units.inchesToMeters(66.6745 + pickupZoneLength * Math.cos(Units.degreesToRadians(35))),
+            fieldWidth),
         new Translation2d(Units.inchesToMeters(66.6745), fieldWidth)
     };
 
@@ -278,6 +322,8 @@ public class FieldConstants {
     Logger.recordOutput("FieldConstants/reefCenter", Reef.center);
 
     Logger.recordOutput("FieldConstants/placePoses", Reef.placePoses);
+
+    Logger.recordOutput("FieldConstants/pickupPoses", CoralStations.pickupLocations);
 
     // Logger.recordOutput(String.format("FieldConstants/reefFaces/%d/L2Branches",
     // i), new Pose3d());

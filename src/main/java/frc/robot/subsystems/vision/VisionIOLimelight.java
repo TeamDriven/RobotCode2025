@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.LimelightHelpers;
 
 public class VisionIOLimelight implements VisionIO {
@@ -13,7 +14,15 @@ public class VisionIOLimelight implements VisionIO {
     public void updateInputs(VisionIOInputs inputs) {
         var estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMEIGHT_NAME);
 
-        if (estimate == null) return;
+        if (estimate == null){
+            inputs.avgTagArea = 0;
+            inputs.avgTagDist = 0;
+            inputs.latency = 0;
+            inputs.pose = new Pose2d();
+            inputs.tagCount = 0;
+            inputs.timestampSeconds = 0;
+            return;
+        }
         
         inputs.avgTagArea = estimate.avgTagArea;
         inputs.avgTagDist = estimate.avgTagDist;

@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
@@ -80,6 +81,33 @@ public class Place4LeftSide implements AutoBase {
                                 drive),
                         Commands.waitSeconds(1),
                         Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime()))));
+
+        pickup2.atTime("pickup 1").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[16], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place3.cmd()));
+
+        pickup4.atTime("pickup 2").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[16], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place5.cmd()));
+
+        pickup6.atTime("pickup 3").onTrue(
+                Commands.sequence(
+                        Commands.runOnce(
+                                () -> drive.setAutoAlignGoal(() -> CoralStations.pickupLocations[16], () -> new Translation2d(),
+                                        allignmentMode.SLOW),
+                                drive),
+                        Commands.waitSeconds(0.43),
+                        place7.cmd()));
 
         return routine;
     }
