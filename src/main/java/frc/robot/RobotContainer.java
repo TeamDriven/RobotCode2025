@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +48,8 @@ public class RobotContainer {
   private static SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   public static boolean shouldUseZones = true;
+
+  public double time = Double.NaN;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -162,6 +165,10 @@ public class RobotContainer {
     // .whileTrue(
     // new RepeatCommand(new InstantCommand(() -> System.out.println("Right Pickup:
     // " + Timer.getFPGATimestamp()))));
+
+    driver.rightTrigger(0.1).onTrue(Commands.runOnce(() -> {
+      this.time = Timer.getFPGATimestamp();
+    })).onFalse(Commands.runOnce(() -> System.out.println(Timer.getFPGATimestamp() - this.time)));
 
     driver.y().onTrue(Commands.runOnce(() -> drive.setHeadingGoal(() -> new Rotation2d(Math.PI)), drive))
         .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
