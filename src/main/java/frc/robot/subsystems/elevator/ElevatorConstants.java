@@ -3,8 +3,8 @@ package frc.robot.subsystems.elevator;
 import frc.robot.util.LoggedTunableNumber;
 
 public class ElevatorConstants {
-    private static final double gearRatio = 17; // Is subject to change
-    private static final double pulleyRadius = 0.6765; // if 36t pulley 0.6765
+    private static final double gearRatio = 6.4295; // Is subject to change
+    private static final double pulleyRadius = 1.1; // if 36t pulley 1.1
 
     public static final double rotationsToInches = gearRatio / (pulleyRadius * 2 * Math.PI);
     

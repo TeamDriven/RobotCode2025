@@ -70,12 +70,12 @@ public class ModuleIOKrakenFOC implements ModuleIO {
       new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
 
-  public ModuleIOKrakenFOC(ModuleConfig config) {
+  public ModuleIOKrakenFOC(ModuleConfig config, String CANbus) {
     // Init controllers and encoders from config constants
-    driveTalon = new TalonFX(config.driveID());
-    turnTalon = new TalonFX(config.turnID());
+    driveTalon = new TalonFX(config.driveID(), CANbus);
+    turnTalon = new TalonFX(config.turnID(), CANbus);
     // turnAbsoluteEncoder = new AnalogInput(config.absoluteEncoderChannel());
-    turnAbsoluteEncoder = new CANcoder(config.absoluteEncoderChannel());
+    turnAbsoluteEncoder = new CANcoder(config.absoluteEncoderChannel(), CANbus);
     absoluteEncoderOffset = config.absoluteEncoderOffset();
 
     // Config Motors

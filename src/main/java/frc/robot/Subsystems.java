@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -42,10 +43,10 @@ public final class Subsystems {
         case COMPBOT -> {
           drive = new Drive(
               new GyroIOPigeon2(true),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
 
           bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
           backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
@@ -64,10 +65,10 @@ public final class Subsystems {
         case DEVBOT -> {
           drive = new Drive(
               new GyroIOPigeon2(false),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
 
           bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
           backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
