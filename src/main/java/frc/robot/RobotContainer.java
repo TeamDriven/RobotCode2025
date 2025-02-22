@@ -131,15 +131,15 @@ public class RobotContainer {
     // algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
 
     // intake
-    // coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity.get()));
-    // coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity.get()));
+    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity::get));
+    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity::get));
 
     // coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
     // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
 
     // Elevator
-    // elevatorUp.onTrue(elevator.runVoltageCommand(elevatorTuningVoltage.get()));
-    // elevatorDown.onTrue(elevator.runVoltageCommand(-elevatorTuningVoltage.get()));
+    // elevatorUp.onTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
+    // elevatorDown.onTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
 
     // Climber
     // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
@@ -166,18 +166,18 @@ public class RobotContainer {
     // new RepeatCommand(new InstantCommand(() -> System.out.println("Right Pickup:
     // " + Timer.getFPGATimestamp()))));
 
-    driver.rightTrigger(0.1).onTrue(Commands.runOnce(() -> {
-      this.time = Timer.getFPGATimestamp();
-    })).onFalse(Commands.runOnce(() -> System.out.println(Timer.getFPGATimestamp() - this.time)));
+    // driver.rightTrigger(0.1).onTrue(Commands.runOnce(() -> {
+    //   this.time = Timer.getFPGATimestamp();
+    // })).onFalse(Commands.runOnce(() -> System.out.println(Timer.getFPGATimestamp() - this.time)));
 
-    driver.y().onTrue(Commands.runOnce(() -> drive.setHeadingGoal(() -> new Rotation2d(Math.PI)), drive))
-        .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
+    // driver.y().onTrue(Commands.runOnce(() -> drive.setHeadingGoal(() -> new Rotation2d(Math.PI)), drive))
+    //     .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
 
-    driver.a().whileTrue(
-        new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
+    // driver.a().whileTrue(
+    //     new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
 
-    driver.b().whileTrue(
-        new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, CoralStations.pickupLocations));
+    // driver.b().whileTrue(
+    //     new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, CoralStations.pickupLocations));
   }
 
   /** Updates the alerts for disconnected controllers. */

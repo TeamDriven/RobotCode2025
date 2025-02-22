@@ -16,13 +16,13 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     private final NeutralOut stopMode = new NeutralOut();
 
     public CoralIntakeIOKraken(int motorID) {
-        motorFactory = new MotorFactory("coralIntake", motorID);
+        motorFactory = new MotorFactory("CoralIntake", motorID);
 
         motorFactory.setBrakeMode(true);
         motorFactory.setInverted(false);
         motorFactory.setCurrentLimits(40);
         motorFactory.setVoltageLimits(8);
-        motorFactory.setSlot0(0.01, 0, 0);
+        motorFactory.setSlot0(0.75, 0, 0.00025);
 
         motorFactory.configureMotors();
         intakeMotor = motorFactory.getMotors()[0];

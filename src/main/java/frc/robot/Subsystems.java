@@ -4,7 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.subsystems.coralIntake.CoralIntake;
+import frc.robot.subsystems.coralIntake.CoralIntakeIO;
+import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -27,7 +29,7 @@ public final class Subsystems {
   public static final Vision backVision;
   // public static final Vision rightVision;
 
-  // public static final CoralIntake coralIntake;
+  public static final CoralIntake coralIntake;
   // public static final CoralActuation coralActuation;
   // public static final AlgaeActuation algaeActuation;
   // public static final AlgaeIntake algaeIntake;
@@ -53,7 +55,7 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
@@ -63,12 +65,24 @@ public final class Subsystems {
           // leds = new LED(new LEDIOCANdle(60));
         }
         case DEVBOT -> {
+          // drive = new Drive(
+          // new GyroIOPigeon2(false),
+          // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
+          // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
+          // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
+          // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
+
           drive = new Drive(
-              new GyroIOPigeon2(false),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
+              new GyroIO() {
+              },
+              new ModuleIO() {
+              },
+              new ModuleIO() {
+              },
+              new ModuleIO() {
+              },
+              new ModuleIO() {
+              });
 
           bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
           backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
@@ -76,7 +90,7 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(17));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(18));
@@ -112,7 +126,7 @@ public final class Subsystems {
       // rightVision = new Vision("Right Vision", new VisionIO() {},
       // drive::getSpeeds);
 
-      // coralIntake = new CoralIntake(new CoralIntakeIO() {});
+      coralIntake = new CoralIntake(new CoralIntakeIO() {});
       // coralActuation = new CoralActuation(new CoralActuationIO() {});
       // algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
       // algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});

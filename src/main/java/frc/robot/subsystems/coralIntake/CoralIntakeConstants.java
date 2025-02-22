@@ -9,6 +9,6 @@ public class CoralIntakeConstants {
 
     public static final double detectionCurrent = 9999;
 
-    public static final LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("CoralIntake/intakeVelocity", -40);
-    public static final LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("CoralIntake/outtakeVelocity", 60);
+    public static final LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("CoralIntake/intakeVelocity", -20);
+    public static final LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("CoralIntake/outtakeVelocity", 20);
 }

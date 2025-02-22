@@ -2,6 +2,8 @@ package frc.robot.subsystems.coralIntake;
 
 import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.detectionCurrent;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,5 +41,9 @@ public class CoralIntake extends SubsystemBase {
 
     public Command runVelocityCommand(double vel) {
         return Commands.startEnd(() -> runVelocity(vel), () -> runVelocity(0), this);
+    }
+
+    public Command runVelocityCommand(DoubleSupplier vel) {
+        return Commands.startEnd(() -> runVelocity(vel.getAsDouble()), () -> runVelocity(0), this);
     }
 }

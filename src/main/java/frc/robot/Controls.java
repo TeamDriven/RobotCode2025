@@ -18,20 +18,20 @@ public class Controls {
   public static Trigger resetPose = driver.start();
 
   // Algae Actuation
-  public static Trigger algaeActuationUp = driver.y();
-  public static Trigger algaeActuationDown = driver.a();
+  public static Trigger algaeActuationUp = new Trigger(() -> false);
+  public static Trigger algaeActuationDown = new Trigger(() -> false);
 
   // Algae Intake
-  public static Trigger algaeIntakeIn = driver.x();
-  public static Trigger algaeIntakeOut = driver.b();
+  public static Trigger algaeIntakeIn = new Trigger(() -> false);
+  public static Trigger algaeIntakeOut = new Trigger(() -> false);
 
   // Coral Actuation
   public static Trigger coralActuationUp = new Trigger(() -> false);
   public static Trigger coralActuationDown = new Trigger(() -> false);
 
   // Coral Intake
-  public static Trigger coralIntakeIn = new Trigger(() -> false);
-  public static Trigger coralOuttakeOut = new Trigger(() -> false);
+  public static Trigger coralIntakeIn = driver.x();
+  public static Trigger coralOuttakeOut = driver.b();
   
   // Elevator
   public static Trigger elevatorUp = driver.pov(0);
