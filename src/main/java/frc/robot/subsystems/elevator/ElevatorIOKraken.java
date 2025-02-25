@@ -1,27 +1,32 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.rotationsToInches;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
 
+import frc.robot.util.CancoderUtil;
+import frc.robot.util.CancoderUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class ElevatorIOKraken implements ElevatorIO {
   private MotorFactory motorFactory;
   private TalonFX elevatorLeftMotor;
   private TalonFX elevatorRightMotor;
+  private CANcoder encoder;
 
   private MotionMagicVoltage motionMagicControl;
   private VelocityVoltage velocityControl;
   private VoltageOut voltageOut;
   private NeutralOut StopMode;
 
-  public ElevatorIOKraken(int leftMotorID, int rightMotorID) {
+  public ElevatorIOKraken(int leftMotorID, int rightMotorID, int encoderID) {
     motorFactory = new MotorFactory("Elevator", leftMotorID, rightMotorID);
 
     motorFactory.setInverted(false, true);
@@ -32,10 +37,20 @@ public class ElevatorIOKraken implements ElevatorIO {
     motorFactory.setSlot0(0.01, 0, 0);
     motorFactory.setMotionMagic(10, 25, 35);
 
+    motorFactory.setExternalEncoder(encoderID, FeedbackSensorSourceValue.FusedCANcoder, gearRatio);
+    motorFactory.setSensorToOutputRatio(sensorToInches);
+
     motorFactory.configureMotors();
     var motors = motorFactory.getMotors();
     elevatorLeftMotor = motors[0];
     elevatorRightMotor = motors[1];
+
+    ConfigFactory cancoderFactory = new ConfigFactory();
+    cancoderFactory.setInverted(false);
+    cancoderFactory.setOffset(0);
+
+    encoder = new CANcoder(encoderID);
+    CancoderUtil.applySettings(encoder, cancoderFactory.getConfig());
 
     motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
     velocityControl = new VelocityVoltage(0).withEnableFOC(true).withSlot(1);
@@ -61,13 +76,16 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
-    // motorFactory.checkForUpdates();
+    inputs.absoluteEncoderPos = encoder.getAbsolutePosition().getValueAsDouble();
+    inputs.relativeEncoderPos = encoder.getPosition().getValueAsDouble();
+
+    motorFactory.checkForUpdates();
   }
 
   @Override
   public void moveToPos(double pos) {
-    elevatorLeftMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
-    elevatorRightMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
+    elevatorLeftMotor.setControl(motionMagicControl.withPosition(pos));
+    elevatorRightMotor.setControl(motionMagicControl.withPosition(pos));
   }
 
   @Override

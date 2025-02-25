@@ -31,19 +31,30 @@ public class AutoTurnTowardsPOI extends Command {
 
   @Override
   public void initialize() {
-    Translation2d speakerLocation =
+    Translation2d POILocation =
         AllianceFlipUtil.apply(POISupplier.get());
+        
+    // this.angleSupplier =
+    //     () -> {
+    //       Transform2d translation =
+    //           new Transform2d(
+    //               POILocation.getX() - RobotState.getInstance().getEstimatedPose().getX(),
+    //               POILocation.getY() - RobotState.getInstance().getEstimatedPose().getY(),
+    //               new Rotation2d());
+    //       return new Rotation2d(
+    //           Math.atan2(translation.getY(), translation.getX())
+    //               + Units.degreesToRadians(offset.getAsDouble()));
+    //     };
+
     this.angleSupplier =
         () -> {
-          Transform2d translation =
-              new Transform2d(
-                  speakerLocation.getX() - RobotState.getInstance().getEstimatedPose().getX(),
-                  speakerLocation.getY() - RobotState.getInstance().getEstimatedPose().getY(),
-                  new Rotation2d());
-          return new Rotation2d(
-              Math.atan2(translation.getY(), translation.getX())
-                  + Units.degreesToRadians(offset.getAsDouble()));
+          Translation2d translation =
+              new Translation2d(
+                  POILocation.getX() - RobotState.getInstance().getEstimatedPose().getX(),
+                  POILocation.getY() - RobotState.getInstance().getEstimatedPose().getY());
+          return translation.getAngle().plus(Rotation2d.fromDegrees(offset.getAsDouble()));
         };
+
     drive.setHeadingGoal(angleSupplier);
   }
 

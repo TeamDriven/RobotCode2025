@@ -20,6 +20,9 @@ public interface ElevatorIO {
         public double rightMotorAccel = 0;
         public double rightTemp = 0;
         public boolean rightIsMotionMagic = false;
+
+        public double absoluteEncoderPos = 0;
+        public double relativeEncoderPos = 0;
     }
     
     default void updateInputs(ElevatorIOInputs inputs) {}

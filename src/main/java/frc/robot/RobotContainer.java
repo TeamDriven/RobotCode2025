@@ -138,12 +138,15 @@ public class RobotContainer {
     // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
 
     // Elevator
-    // elevatorUp.onTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
-    // elevatorDown.onTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
+    elevatorUp.whileTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
+    elevatorDown.whileTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
 
     // Climber
-    // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
-    // climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
+    climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
+    climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
+
+    System.out.println("Climber volt: " +climberTuningVoltage.get() );
+    
 
     // Zoning laws
     // new Trigger(RobotState.getInstance()::isInClimbZone)

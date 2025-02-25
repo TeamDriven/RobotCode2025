@@ -27,8 +27,8 @@ public class GyroIOPigeon2 implements GyroIO {
   private final Queue<Double> yawPositionQueue;
   private final StatusSignal<AngularVelocity> yawVelocity;
 
-  public GyroIOPigeon2(boolean phoenixDrive) {
-    pigeon = new Pigeon2(id);
+  public GyroIOPigeon2(boolean phoenixDrive, String CANbus) {
+    pigeon = new Pigeon2(id, CANbus);
     yaw = pigeon.getYaw();
     yawVelocity = pigeon.getAngularVelocityZWorld();
 

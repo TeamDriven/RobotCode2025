@@ -345,6 +345,7 @@ public class Drive extends SubsystemBase {
       if (currentDriveMode != DriveMode.AUTO_ALIGN) {
         currentDriveMode = DriveMode.TELEOP;
       }
+
       teleopDriveController.acceptDriveInput(
           controllerX, controllerY, controllerOmega, robotRelative);
     }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -30,8 +31,8 @@ public class TalonFXUtil {
             config.CurrentLimits.SupplyCurrentLimit = currentLimit;
         }
 
-        public void setGearRatio(double gearRatio) {
-            config.Feedback.SensorToMechanismRatio = gearRatio;
+        public void setSensorToOutputRatio(double setSensorToOutputRatio) {
+            config.Feedback.SensorToMechanismRatio = setSensorToOutputRatio;
         }
 
         public void setContinousWrap(boolean continousWrap) {
@@ -52,6 +53,19 @@ public class TalonFXUtil {
         public void setVoltageLimits(double maxForwardVoltage, double maxReverseVoltage) {
             config.Voltage.PeakForwardVoltage = maxForwardVoltage;
             config.Voltage.PeakReverseVoltage = maxReverseVoltage;
+        }
+
+        public void setExternalEncoder(int encoderID, FeedbackSensorSourceValue encoderType) {
+            config.Feedback.FeedbackRemoteSensorID = encoderID;
+            config.Feedback.FeedbackSensorSource = encoderType;
+            // config.Feedback.FeedbackRotorOffset
+        }
+
+        public void setExternalEncoder(int encoderID, FeedbackSensorSourceValue encoderType, double motorToSensorRatio) {
+            config.Feedback.FeedbackRemoteSensorID = encoderID;
+            config.Feedback.FeedbackSensorSource = encoderType;
+            config.Feedback.RotorToSensorRatio = motorToSensorRatio;
+            // config.Feedback.FeedbackRotorOffset
         }
 
         public void setSlot0(double kP, double kI, double kD, double kV) {
@@ -174,8 +188,8 @@ public class TalonFXUtil {
             activeSettings.add(this.currentLimits);
         }
 
-        public void setGearRatio(double gearRatio) {
-            configFactory.setGearRatio(gearRatio);
+        public void setSensorToOutputRatio(double gearRatio) {
+            configFactory.setSensorToOutputRatio(gearRatio);
         }
 
         public void setContinousWrap(boolean continousWrap) {
@@ -209,6 +223,14 @@ public class TalonFXUtil {
             activeSettings.add(this.reverseVoltageLimit);
         }
 
+        public void setExternalEncoder(int encoderID, FeedbackSensorSourceValue encoderType) {
+            configFactory.setExternalEncoder(encoderID, encoderType);
+        }
+
+        public void setExternalEncoder(int encoderID, FeedbackSensorSourceValue encoderType, double motorToSensorRatio) {
+            configFactory.setExternalEncoder(encoderID, encoderType, motorToSensorRatio);
+        }
+        
         public void setSlot0(double kP, double kI, double kD) {
             configFactory.setSlot0(kP, kI, kD);
 
