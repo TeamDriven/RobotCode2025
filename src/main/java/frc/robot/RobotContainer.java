@@ -146,8 +146,8 @@ public class RobotContainer {
     driver.y().whileTrue(elevator.runVelocityCommand(() -> elevatorTuningVelocity.get()));
     driver.a().whileTrue(elevator.runVelocityCommand(() -> -elevatorTuningVelocity.get()));
     
-    driver.x().onTrue(elevator.run(() -> elevator.setPos(10)));
-    driver.b().onTrue(elevator.run(() -> elevator.setPos(60)));
+    driver.x().onTrue(elevator.run(() -> elevator.setPos(20)));
+    driver.b().onTrue(elevator.run(() -> elevator.setPos(50)));
 
     // Climber
     // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));

@@ -9,6 +9,7 @@ public class ElevatorConstants {
     public static final double sensorToInches = 1 / (pulleyRadius * 2 * Math.PI);
 
     public static final double maxStableVelocity = 75;
+    public static final double maxSafeHeight = 40;
     
     public static final double bottomPos = 0;
     public static final double topPos = 62.3;
