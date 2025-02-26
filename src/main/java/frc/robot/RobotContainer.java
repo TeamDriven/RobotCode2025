@@ -123,6 +123,8 @@ public class RobotContainer {
                     robotState.getEstimatedPose().getTranslation(), AllianceFlipUtil.apply(new Rotation2d()))))
             .ignoringDisable(true));
 
+    resetElevatorPosition.onTrue(elevator.resetPosition());
+
     // Algae
     // algaeActuationUp.onTrue(algaeActuation.runVoltageCommand(algaeActuationVoltage.get()));
     // algaeActuationDown.onTrue(algaeActuation.runVoltageCommand(-algaeActuationVoltage.get()));
@@ -131,8 +133,8 @@ public class RobotContainer {
     // algaeIntakeOut.onTrue(algaeIntake.runVelocityCommand(-algaeIntakeTuningVelocity.get()));
 
     // intake
-    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity::get));
-    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity::get));
+    // coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity::get));
+    // coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity::get));
 
     // coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
     // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
@@ -141,9 +143,15 @@ public class RobotContainer {
     elevatorUp.whileTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
     elevatorDown.whileTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
 
+    driver.y().whileTrue(elevator.runVelocityCommand(() -> elevatorTuningVelocity.get()));
+    driver.a().whileTrue(elevator.runVelocityCommand(() -> -elevatorTuningVelocity.get()));
+    
+    driver.x().onTrue(elevator.run(() -> elevator.setPos(10)));
+    driver.b().onTrue(elevator.run(() -> elevator.setPos(60)));
+
     // Climber
-    climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
-    climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
+    // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
+    // climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
 
     System.out.println("Climber volt: " +climberTuningVoltage.get() );
     

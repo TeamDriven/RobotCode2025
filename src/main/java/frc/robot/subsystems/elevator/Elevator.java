@@ -1,18 +1,29 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
+
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.LoggedTunableNumber;
 
 public class Elevator extends SubsystemBase{
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
-    // TODO: remove voltage control
+    private final LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/posPID/kP", 0.001);
+    private final LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/posPID/kI", 0);
+    private final LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/posPID/kD", 0);
+    private final LoggedTunableNumber tolerance = new LoggedTunableNumber("Elevator/posPID/tolerance", 5);
+    
+    private PIDController posPid;
+
     private enum mode {
         POSITION,
         VELOCITY,
@@ -26,6 +37,13 @@ public class Elevator extends SubsystemBase{
 
     public Elevator(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
+
+        setUpPID();
+    }
+
+    public void setUpPID() {
+        posPid = new PIDController(kP.get(), kI.get(), kD.get());
+        posPid.setTolerance(tolerance.get());
     }
 
     @Override
@@ -36,9 +54,17 @@ public class Elevator extends SubsystemBase{
         Logger.recordOutput("Elevator/mode", currentMode);
         Logger.recordOutput("Elevator/value", value);
 
+        LoggedTunableNumber.ifChanged(hashCode(), this::setUpPID, kP, kI, kD, tolerance);
+
         switch (currentMode) {
             case POSITION:
-                elevatorIO.moveToPos(value);
+                // double velocity = MathUtil.clamp(posPid.calculate(elevatorInputs.leftMotorPos, value), -maxStableVelocity, maxStableVelocity);
+                // if (posPid.atSetpoint()) {
+                    elevatorIO.moveToPos(value);
+                // } else {
+                //     Logger.recordOutput("Elevator/posVelocity", velocity);
+                    // elevatorIO.runVelocity(velocity);
+                // }
                 break;
         
             case VELOCITY:
@@ -70,6 +96,14 @@ public class Elevator extends SubsystemBase{
         value = vel;
     }
 
+    public Command runVelocityCommand(double vel) {
+        return Commands.startEnd(() -> runVelocity(vel), () -> stop(), this);
+    }
+
+    public Command runVelocityCommand(DoubleSupplier vel) {
+        return Commands.startEnd(() -> runVelocity(vel.getAsDouble()), () -> stop(), this);
+    }
+
     public void runVoltage(double volts) {
         currentMode = mode.VOLTAGE;
         value = volts;
@@ -81,5 +115,9 @@ public class Elevator extends SubsystemBase{
 
     public Command runVoltageCommand(DoubleSupplier volts) {
         return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
+    }
+
+    public Command resetPosition() {
+        return Commands.runOnce(elevatorIO::resetPosition, this);
     }
 }

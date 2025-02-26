@@ -34,4 +34,6 @@ public interface ElevatorIO {
     default void runVoltage(double volts) {}
 
     default void stopMotors() {}
+
+    default void resetPosition() {}
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.Constants.tuningMode;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -34,8 +35,10 @@ public class ElevatorIOKraken implements ElevatorIO {
     motorFactory.setVoltageLimits(12);
     motorFactory.setCurrentLimits(80);
     
-    motorFactory.setSlot0(0.01, 0, 0);
-    motorFactory.setMotionMagic(10, 25, 35);
+    motorFactory.setSlot0(15, 0.5, 0.065, 1.55);
+    motorFactory.setMotionMagic(100, 60, 120);
+
+    motorFactory.setSlot1(0.5, 0, 0.001, 0.135);
 
     motorFactory.setExternalEncoder(encoderID, FeedbackSensorSourceValue.FusedCANcoder, gearRatio);
     motorFactory.setSensorToOutputRatio(sensorToInches);
@@ -46,11 +49,15 @@ public class ElevatorIOKraken implements ElevatorIO {
     elevatorRightMotor = motors[1];
 
     ConfigFactory cancoderFactory = new ConfigFactory();
-    cancoderFactory.setInverted(false);
+    cancoderFactory.setInverted(true);
     cancoderFactory.setOffset(0);
 
     encoder = new CANcoder(encoderID);
     CancoderUtil.applySettings(encoder, cancoderFactory.getConfig());
+
+    if(!tuningMode) {
+      resetPosition();
+    }
 
     motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
     velocityControl = new VelocityVoltage(0).withEnableFOC(true).withSlot(1);
@@ -104,5 +111,12 @@ public class ElevatorIOKraken implements ElevatorIO {
   public void stopMotors() {
     elevatorLeftMotor.setControl(StopMode);
     elevatorRightMotor.setControl(StopMode);
+  }
+
+  @Override
+  public void resetPosition() {
+    elevatorLeftMotor.setPosition(0);
+    elevatorRightMotor.setPosition(0);
+    encoder.setPosition(0);
   }
 }

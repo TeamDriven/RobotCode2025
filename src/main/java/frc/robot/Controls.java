@@ -36,6 +36,7 @@ public class Controls {
   // Elevator
   public static Trigger elevatorUp = driver.pov(0);
   public static Trigger elevatorDown = driver.pov(180);
+  public static Trigger resetElevatorPosition = driver.back();
 
   // Climber
   public static Trigger climberUp = driver.pov(270);

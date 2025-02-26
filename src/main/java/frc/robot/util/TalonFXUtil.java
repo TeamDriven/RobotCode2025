@@ -68,15 +68,19 @@ public class TalonFXUtil {
             // config.Feedback.FeedbackRotorOffset
         }
 
-        public void setSlot0(double kP, double kI, double kD, double kV) {
+        public void setSlot0(double kP, double kI, double kD, double kV, double kS) {
             config.Slot0.kP = kP;
             config.Slot0.kI = kI;
             config.Slot0.kD = kD;
             config.Slot0.kV = kV;
         }
 
+        public void setSlot0(double kP, double kI, double kD, double kV) {
+            setSlot0(kP, kI, kD, kV, 0);
+        }
+
         public void setSlot0(double kP, double kI, double kD) {
-            setSlot0(kP, kI, kD, 0.12);
+            setSlot0(kP, kI, kD, 0.12, 0);
         }
 
         public void setSlot1(double kP, double kI, double kD, double kV) {
@@ -151,14 +155,17 @@ public class TalonFXUtil {
         private LoggedTunableNumber slot0kP = null;
         private LoggedTunableNumber slot0kI = null;
         private LoggedTunableNumber slot0kD = null;
+        private LoggedTunableNumber slot0kS = null;
 
         private LoggedTunableNumber slot1kP = null;
         private LoggedTunableNumber slot1kI = null;
         private LoggedTunableNumber slot1kD = null;
+        private LoggedTunableNumber slot1kS = null;
 
         private LoggedTunableNumber slot2kP = null;
         private LoggedTunableNumber slot2kI = null;
         private LoggedTunableNumber slot2kD = null;
+        private LoggedTunableNumber slot2kS = null;
 
         public MotorFactory(String key, int... ids) {
             this.key = key;
@@ -270,6 +277,54 @@ public class TalonFXUtil {
             activeSettings.add(this.slot2kD);
         }
 
+        public void setSlot0(double kP, double kI, double kD, double kS) {
+            configFactory.setSlot0(kP, kI, kD);
+
+            this.slot0kP = new LoggedTunableNumber(key + "/Slot0/kP", kP);
+            activeSettings.add(this.slot0kP);
+
+            this.slot0kI = new LoggedTunableNumber(key + "/Slot0/kI", kI);
+            activeSettings.add(this.slot0kI);
+
+            this.slot0kD = new LoggedTunableNumber(key + "/Slot0/kD", kD);
+            activeSettings.add(this.slot0kD);
+
+            this.slot0kS = new LoggedTunableNumber(key + "/Slot0/kS", kS);
+            activeSettings.add(this.slot0kS);
+        }
+
+        public void setSlot1(double kP, double kI, double kD, double kS) {
+            configFactory.setSlot1(kP, kI, kD);
+
+            this.slot1kP = new LoggedTunableNumber(key + "/Slot1/kP", kP);
+            activeSettings.add(this.slot1kP);
+
+            this.slot1kI = new LoggedTunableNumber(key + "/Slot1/kI", kI);
+            activeSettings.add(this.slot1kI);
+
+            this.slot1kD = new LoggedTunableNumber(key + "/Slot1/kD", kD);
+            activeSettings.add(this.slot1kD);
+
+            this.slot1kS = new LoggedTunableNumber(key + "/Slot1/kS", kS);
+            activeSettings.add(this.slot1kS);
+        }
+
+        public void setSlot2(double kP, double kI, double kD, double kS) {
+            configFactory.setSlot2(kP, kI, kD);
+
+            this.slot2kP = new LoggedTunableNumber(key + "/Slot2/kP", kP);
+            activeSettings.add(this.slot2kP);
+
+            this.slot2kI = new LoggedTunableNumber(key + "/Slot2/kI", kI);
+            activeSettings.add(this.slot2kI);
+
+            this.slot2kD = new LoggedTunableNumber(key + "/Slot2/kD", kD);
+            activeSettings.add(this.slot2kD);
+
+            this.slot2kS = new LoggedTunableNumber(key + "/Slot2/kS", kS);
+            activeSettings.add(this.slot2kS);
+        }
+
         public void configureMotors() {
             if (currentLimits != null) {
                 configFactory.setCurrentLimits(currentLimits.get());
@@ -284,15 +339,27 @@ public class TalonFXUtil {
             }
 
             if (slot0kP != null && slot0kI != null && slot0kD != null) {
-                configFactory.setSlot0(slot0kP.get(), slot0kI.get(), slot0kD.get());
+                if (slot0kS != null) {
+                    configFactory.setSlot0(slot0kP.get(), slot0kI.get(), slot0kD.get(), slot0kS.get());
+                } else {
+                    configFactory.setSlot0(slot0kP.get(), slot0kI.get(), slot0kD.get());
+                }
             }
 
             if (slot1kP != null && slot1kI != null && slot1kD != null) {
-                configFactory.setSlot1(slot1kP.get(), slot1kI.get(), slot1kD.get());
+                if (slot1kS != null) {
+                    configFactory.setSlot1(slot1kP.get(), slot1kI.get(), slot1kD.get(), slot1kS.get());
+                } else {
+                    configFactory.setSlot1(slot1kP.get(), slot1kI.get(), slot1kD.get());
+                }
             }
 
             if (slot2kP != null && slot2kI != null && slot2kD != null) {
-                configFactory.setSlot2(slot2kP.get(), slot2kI.get(), slot2kD.get());
+                if (slot2kS != null) {
+                    configFactory.setSlot2(slot2kP.get(), slot2kI.get(), slot2kD.get(), slot2kS.get());
+                } else {
+                    configFactory.setSlot2(slot2kP.get(), slot2kI.get(), slot2kD.get());
+                }
             }
 
             for (int i = 0; i < motors.length; i++) {
