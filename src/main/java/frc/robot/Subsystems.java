@@ -21,6 +21,9 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.climber.ClimberIOKraken;
+import frc.robot.subsystems.coralActuation.CoralActuation;
+import frc.robot.subsystems.coralActuation.CoralActuationIO;
+import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
 
 /**
  * The Subsystems class represents the collection of subsystems used in the
@@ -35,7 +38,7 @@ public final class Subsystems {
   // public static final Vision rightVision;
 
   public static final CoralIntake coralIntake;
-  // public static final CoralActuation coralActuation;
+  public static final CoralActuation coralActuation;
   // public static final AlgaeActuation algaeActuation;
   // public static final AlgaeIntake algaeIntake;
   public static final Elevator elevator;
@@ -62,10 +65,10 @@ public final class Subsystems {
 
           // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralIntake = new CoralIntake(new CoralIntakeIO() {});
-          // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
+          coralActuation = new CoralActuation(new CoralActuationIOKraken(14, 0));
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
-          elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
+          elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
           // climber = new Climber(new ClimberIOKraken(20, 21));
           climber = new Climber(new ClimberIO() {});
 
@@ -98,10 +101,10 @@ public final class Subsystems {
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
           coralIntake = new CoralIntake(new CoralIntakeIO() {});
-          // coralActuation = new CoralActuation(new CoralActuationIOKraken(14));
+          coralActuation = new CoralActuation(new CoralActuationIO() {});
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
-          elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
+          elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
           climber = new Climber(new ClimberIOKraken(20, 21));
 
           // leds = new LED(new LEDIOCANdle(60));
@@ -134,7 +137,7 @@ public final class Subsystems {
       // drive::getSpeeds);
 
       coralIntake = new CoralIntake(new CoralIntakeIO() {});
-      // coralActuation = new CoralActuation(new CoralActuationIO() {});
+      coralActuation = new CoralActuation(new CoralActuationIO() {});
       // algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
       // algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
       elevator = new Elevator(new ElevatorIO() {});

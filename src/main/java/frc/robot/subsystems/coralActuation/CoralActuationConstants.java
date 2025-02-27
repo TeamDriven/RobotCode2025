@@ -7,7 +7,9 @@ public class CoralActuationConstants {
 
     public static final double rotationsToDegrees = 360 * gearRatio;
 
+    public static final double offset = 121.7;
+
     public static final double startPos = 0;
 
-    public static final LoggedTunableNumber coralActuationTuningVoltage = new LoggedTunableNumber("CoralActuation/tuningVoltage", 4);
+    public static final LoggedTunableNumber coralActuationTuningVoltage = new LoggedTunableNumber("CoralActuation/tuningVoltage", 1);
 }

@@ -9,6 +9,9 @@ public interface CoralActuationIO {
         public double motorVoltage = 0;
         public double motorCurrent = 0;
         public double motorVel = 0;
+
+        public double absoluteEncoderPos = 0;
+        public double relativeEncoderPos = 0;
     }
 
     default void updateInputs(CoralActuationIOInputs inputs) {}
@@ -18,4 +21,6 @@ public interface CoralActuationIO {
     default void runVoltage(double voltage) {}
 
     default void stopMotor() {}
+
+    default void seedMotor() {}
 }

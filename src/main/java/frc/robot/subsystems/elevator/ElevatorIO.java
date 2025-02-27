@@ -23,6 +23,8 @@ public interface ElevatorIO {
 
         public double absoluteEncoderPos = 0;
         public double relativeEncoderPos = 0;
+
+        public boolean isZeroButtonPressed = false;
     }
     
     default void updateInputs(ElevatorIOInputs inputs) {}

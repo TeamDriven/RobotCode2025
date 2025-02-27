@@ -136,25 +136,25 @@ public class RobotContainer {
     // coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity::get));
     // coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity::get));
 
-    // coralActuationUp.whileTrue(coralActuation.runVoltageCommand(coralActuationTuningVoltage.get()));
-    // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(-coralActuationTuningVoltage.get()));
+    coralActuationUp.whileTrue(coralActuation.runVoltageCommand(() -> coralActuationTuningVoltage.get()));
+    coralActuationDown.whileTrue(coralActuation.runVoltageCommand(() -> -coralActuationTuningVoltage.get()));
+
+    driver.x().onTrue(coralActuation.run(() -> coralActuation.setPos(70)));
+    driver.b().onTrue(coralActuation.run(() -> coralActuation.setPos(110)));
 
     // Elevator
     elevatorUp.whileTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
     elevatorDown.whileTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
 
-    driver.y().whileTrue(elevator.runVelocityCommand(() -> elevatorTuningVelocity.get()));
-    driver.a().whileTrue(elevator.runVelocityCommand(() -> -elevatorTuningVelocity.get()));
+    // driver.y().whileTrue(elevator.runVelocityCommand(() -> elevatorTuningVelocity.get()));
+    // driver.a().whileTrue(elevator.runVelocityCommand(() -> -elevatorTuningVelocity.get()));
     
-    driver.x().onTrue(elevator.run(() -> elevator.setPos(20)));
-    driver.b().onTrue(elevator.run(() -> elevator.setPos(50)));
+    // driver.x().onTrue(elevator.run(() -> elevator.setPos(20)));
+    // driver.b().onTrue(elevator.run(() -> elevator.setPos(50)));
 
     // Climber
     // climberUp.onTrue(climber.runVoltageCommand(climberTuningVoltage.get()));
     // climberDown.onTrue(climber.runVoltageCommand(-climberTuningVoltage.get()));
-
-    System.out.println("Climber volt: " +climberTuningVoltage.get() );
-    
 
     // Zoning laws
     // new Trigger(RobotState.getInstance()::isInClimbZone)

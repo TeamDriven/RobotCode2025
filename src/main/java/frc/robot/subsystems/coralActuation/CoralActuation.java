@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.coralActuation;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,15 +34,22 @@ public class CoralActuation extends SubsystemBase {
   @Override
   public void periodic() {
     coralActuationIO.updateInputs(inputs);
-    Logger.processInputs("coralActuation", inputs);
+    Logger.processInputs("CoralActuation", inputs);
+
+    Logger.recordOutput("CoralActuation/mode", currentMode);
+    Logger.recordOutput("CoralActuation/value", value);
 
     switch (currentMode) {
       case POSITION:
+        coralActuationIO.seedMotor();
         coralActuationIO.moveToPos(value);
+        break;
       case VOLTAGE:
         coralActuationIO.runVoltage(value);
+        break;
       case STOPPED:
         coralActuationIO.stopMotor();
+        break;
     }
   }
 
@@ -61,5 +70,9 @@ public class CoralActuation extends SubsystemBase {
   
   public Command runVoltageCommand(double volts) {
     return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
+  }
+
+  public Command runVoltageCommand(DoubleSupplier volts) {
+    return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
   }
 }

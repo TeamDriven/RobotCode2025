@@ -26,8 +26,8 @@ public class Controls {
   public static Trigger algaeIntakeOut = new Trigger(() -> false);
 
   // Coral Actuation
-  public static Trigger coralActuationUp = new Trigger(() -> false);
-  public static Trigger coralActuationDown = new Trigger(() -> false);
+  public static Trigger coralActuationUp = driver.y();
+  public static Trigger coralActuationDown = driver.a();
 
   // Coral Intake
   public static Trigger coralIntakeIn = driver.x();
