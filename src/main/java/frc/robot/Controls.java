@@ -17,6 +17,12 @@ public class Controls {
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
 
+  // Actions
+  public static Trigger placeL4 = rightStickDrive ? driver.pov(0) : driver.y();
+  public static Trigger placeL3 = rightStickDrive ? driver.pov(270) : driver.x();
+  public static Trigger placeL2 = rightStickDrive ? driver.pov(90) : driver.b();
+  public static Trigger placeL1 = rightStickDrive ? driver.pov(180) : driver.a();
+  
   // Algae Actuation
   public static Trigger algaeActuationUp = new Trigger(() -> false);
   public static Trigger algaeActuationDown = new Trigger(() -> false);
@@ -30,8 +36,8 @@ public class Controls {
   public static Trigger coralActuationDown = driver.a();
 
   // Coral Intake
-  public static Trigger coralIntakeIn = driver.x();
-  public static Trigger coralOuttakeOut = driver.b();
+  public static Trigger coralIntakeIn = driver.rightBumper();
+  public static Trigger coralOuttakeOut = driver.leftBumper();
   
   // Elevator
   public static Trigger elevatorUp = driver.pov(0);

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -37,10 +38,12 @@ public class ElevatorIOKraken implements ElevatorIO {
     motorFactory.setVoltageLimits(12);
     motorFactory.setCurrentLimits(80);
     
-    motorFactory.setSlot0(15, 0.5, 0.065, 1.55);
-    motorFactory.setMotionMagic(100, 60, 120);
+    motorFactory.setSlot0(13, 0.5, 0.065);
+    motorFactory.setSlot0(1.8, 0.4, GravityTypeValue.Elevator_Static);
+    motorFactory.setMotionMagic(10000, 6000, 12000);
 
-    motorFactory.setSlot1(0.5, 0, 0.001, 0.135);
+    motorFactory.setSlot1(0.5, 0, 0.001);
+    motorFactory.setSlot1(0.135, 0.4, GravityTypeValue.Elevator_Static);
 
     motorFactory.setExternalEncoder(encoderID, FeedbackSensorSourceValue.FusedCANcoder, gearRatio);
     motorFactory.setSensorToOutputRatio(sensorToInches);

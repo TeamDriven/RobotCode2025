@@ -207,4 +207,20 @@ public class RobotState {
     inRightPickupZone = Zones.rightPickupZone.isRobotInZone(estimatedPose);
     inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
   }
+
+  public boolean hasCoral = false;
+
+  public static enum actions {
+    L4,
+    L3,
+    L2,
+    L1,
+    PICKUP_CORAL,
+    PICKUP_ALGAE,
+    DEALGIFY,
+    CLIMB,
+    NONE
+  }
+
+  public actions desiredAction = actions.NONE;
 }

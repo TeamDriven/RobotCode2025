@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.coralIntake.CoralIntake;
 import frc.robot.subsystems.coralIntake.CoralIntakeIO;
+import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -63,8 +64,7 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          // coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
-          coralIntake = new CoralIntake(new CoralIntakeIO() {});
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14, 0));
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));

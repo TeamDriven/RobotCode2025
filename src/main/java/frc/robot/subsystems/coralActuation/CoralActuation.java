@@ -8,13 +8,20 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.coralActuation.CoralActuationIO.CoralActuationIOInputs;
 
 public class CoralActuation extends SubsystemBase {
   private CoralActuationIO coralActuationIO;
   private CoralActuationIOInputsAutoLogged inputs = new CoralActuationIOInputsAutoLogged();
+
+  private Timer brakeTimer = new Timer();
+  private boolean brakeMode = true;
 
   private enum mode {
     POSITION,
@@ -22,13 +29,15 @@ public class CoralActuation extends SubsystemBase {
     STOPPED;
   }
 
-  private mode currentMode = mode.STOPPED;
+  private mode currentMode = mode.POSITION;
 
   private double value = 0;
 
   /** Creates a new CoralActuation. */
   public CoralActuation(CoralActuationIO coralActuationIO) {
     this.coralActuationIO = coralActuationIO;
+
+    brakeTimer.start();
   }
 
   @Override
@@ -38,6 +47,17 @@ public class CoralActuation extends SubsystemBase {
 
     Logger.recordOutput("CoralActuation/mode", currentMode);
     Logger.recordOutput("CoralActuation/value", value);
+
+    if (DriverStation.isEnabled()) {
+      brakeTimer.reset();
+      if (!brakeMode) {
+        coralActuationIO.setBrakeMode(true);
+        brakeMode = true;
+      }
+    } else if (brakeTimer.hasElapsed(5) && brakeMode) {
+      coralActuationIO.setBrakeMode(false);
+      brakeMode = false;
+    }
 
     switch (currentMode) {
       case POSITION:
@@ -75,4 +95,8 @@ public class CoralActuation extends SubsystemBase {
   public Command runVoltageCommand(DoubleSupplier volts) {
     return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
   }
+
+  public boolean isAtAngle(double angle, double tolerance) {
+        return MathUtil.isNear(angle, inputs.relativeEncoderPos, tolerance);
+    }
 }

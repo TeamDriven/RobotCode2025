@@ -17,19 +17,12 @@ public class Elevator extends SubsystemBase{
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
-    private final LoggedTunableNumber upP = new LoggedTunableNumber("Elevator/upPID/kP", 3.3);
-    private final LoggedTunableNumber upI = new LoggedTunableNumber("Elevator/upPID/kI", 0);
-    private final LoggedTunableNumber upD = new LoggedTunableNumber("Elevator/upPID/kD", 0.02);
-    private final LoggedTunableNumber upTolerance = new LoggedTunableNumber("Elevator/upPID/tolerance", 15);
+    private final LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/posPID/kP", 6.5);
+    private final LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/posPID/kI", 0);
+    private final LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/posPID/kD", 0.02);
+    private final LoggedTunableNumber tolerance = new LoggedTunableNumber("Elevator/posPID/tolerance", 2.5);
     
-    private PIDController upPid;
-
-    private final LoggedTunableNumber downP = new LoggedTunableNumber("Elevator/downPID/kP", 3.15);
-    private final LoggedTunableNumber downI = new LoggedTunableNumber("Elevator/downPID/kI", 0);
-    private final LoggedTunableNumber downD = new LoggedTunableNumber("Elevator/downPID/kD", 0.02);
-    private final LoggedTunableNumber downTolerance = new LoggedTunableNumber("Elevator/downPID/tolerance", 15);
-    
-    private PIDController downPid;
+    private PIDController posPid;
 
     private enum mode {
         POSITION,
@@ -49,11 +42,8 @@ public class Elevator extends SubsystemBase{
     }
 
     public void setUpPID() {
-        upPid = new PIDController(upP.get(), upI.get(), upD.get());
-        upPid.setTolerance(upTolerance.get());
-
-        downPid = new PIDController(downP.get(), downI.get(), downD.get());
-        downPid.setTolerance(downTolerance.get());
+        posPid = new PIDController(kP.get(), kI.get(), kD.get());
+        posPid.setTolerance(tolerance.get());
     }
 
     @Override
@@ -64,17 +54,14 @@ public class Elevator extends SubsystemBase{
         Logger.recordOutput("Elevator/mode", currentMode);
         Logger.recordOutput("Elevator/value", value);
 
-        LoggedTunableNumber.ifChanged(hashCode(), this::setUpPID, upP, upI, upD, upTolerance, downP, downI, downD, downTolerance);
+        LoggedTunableNumber.ifChanged(hashCode(), this::setUpPID, kP, kI, kD, tolerance);
 
         switch (currentMode) {
             case POSITION:
-                boolean isMovingUp = elevatorInputs.leftMotorPos < value;
-                double velocity = isMovingUp
-                    ? MathUtil.clamp(upPid.calculate(elevatorInputs.leftMotorPos, value), 0, maxStableVelocity)
-                    : MathUtil.clamp(downPid.calculate(elevatorInputs.leftMotorPos, value), -maxStableVelocity, 0);
+                double velocity = MathUtil.clamp(posPid.calculate(elevatorInputs.leftMotorPos, value), -maxStableVelocity, maxStableVelocity);
                 Logger.recordOutput("Elevator/posVelocity", velocity);
 
-                if ((isMovingUp && upPid.atSetpoint()) || (!isMovingUp && downPid.atSetpoint())) {
+                if (posPid.atSetpoint()) {
                     elevatorIO.moveToPos(value);
                 } else {
                     elevatorIO.runVelocity(velocity);
@@ -133,5 +120,9 @@ public class Elevator extends SubsystemBase{
 
     public Command resetPosition() {
         return Commands.runOnce(elevatorIO::resetPosition, this);
+    }
+
+    public boolean isAtHeight(double height, double tolerance) {
+        return MathUtil.isNear(height, elevatorInputs.leftMotorPos, tolerance);
     }
 }

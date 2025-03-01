@@ -19,10 +19,11 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
         motorFactory = new MotorFactory("CoralIntake", motorID);
 
         motorFactory.setBrakeMode(true);
-        motorFactory.setInverted(false);
+        motorFactory.setInverted(true);
         motorFactory.setCurrentLimits(40);
         motorFactory.setVoltageLimits(8);
-        motorFactory.setSlot0(0.75, 0, 0.00025);
+        motorFactory.setSlot0(0.15, 0, 0.0025);
+        motorFactory.setSlot0(0.5);
 
         motorFactory.configureMotors();
         intakeMotor = motorFactory.getMotors()[0];

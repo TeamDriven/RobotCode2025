@@ -12,15 +12,17 @@ public class ElevatorConstants {
     public static final double maxSafeHeight = 40;
     
     public static final double bottomPos = 0;
-    public static final double topPos = 62.3;
+    public static final double topPos = 63.5;
 
     public static final double startPos = 0;
-    public static final double restingPos = 0;
-    public static final double pickUpPos = 0;
-    public static final double L1Pos = 0;
-    public static final double L2Pos = 0;
-    public static final double L3Pos = 0;
-    public static final double L4Pos = 0;
+    public static final double tuckPos = 20;
+    public static final double pickUpPos = 9.75;
+    public static final double L1Pos = 3.8;
+    public static final double L2Pos = 19.5;
+    public static final double L3Pos = 37.5;
+    public static final double L4Pos = 63.3;
+    public static final double lowDealgifyPos = 9.5;
+    public static final double highDealgifyPos = 27;
 
     public static final LoggedTunableNumber elevatorTuningVoltage = new LoggedTunableNumber("Elevator/TuningVoltage", 4);
     public static final LoggedTunableNumber elevatorTuningVelocity = new LoggedTunableNumber("Elevator/TuningVelocity", 65);

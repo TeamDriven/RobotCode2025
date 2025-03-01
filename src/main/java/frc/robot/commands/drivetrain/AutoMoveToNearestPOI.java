@@ -11,19 +11,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.LoggedTunableNumber;;
 
 public class AutoMoveToNearestPOI extends Command {
     private final Pose2d[] poses;
     private List<Pose2d> actualPoses;
     private final allignmentMode mode;
+    private final boolean autoFinish;
+
+    private static boolean alignFinished = false;
 
     private Pose2d selectedPose;
 
-    public AutoMoveToNearestPOI(allignmentMode mode, Pose2d... poses) {
+    public AutoMoveToNearestPOI(boolean autoFinish, allignmentMode mode, Pose2d... poses) {
         this.poses = poses;
         this.mode = mode;
+        this.autoFinish = autoFinish;
+        alignFinished = false;
         addRequirements(drive);
+    }
+
+    public AutoMoveToNearestPOI(allignmentMode mode, Pose2d... poses) {
+        this(true, mode, poses);
     }
 
     private void findNearestTarget() {
@@ -55,7 +63,11 @@ public class AutoMoveToNearestPOI extends Command {
 
     @Override
     public boolean isFinished() {
-        return drive.isAutoAlignGoalCompleted();
+        if (autoFinish) return drive.isAutoAlignGoalCompleted();
+        return alignFinished;
     }
     
+    public static void stop() {
+        alignFinished = true;
+    }
 }

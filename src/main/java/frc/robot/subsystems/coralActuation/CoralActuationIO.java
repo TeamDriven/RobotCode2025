@@ -20,6 +20,8 @@ public interface CoralActuationIO {
 
     default void runVoltage(double voltage) {}
 
+    default void setBrakeMode(boolean brakeMode) {}
+
     default void stopMotor() {}
 
     default void seedMotor() {}
