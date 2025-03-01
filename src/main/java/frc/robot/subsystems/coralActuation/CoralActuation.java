@@ -15,10 +15,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.coralActuation.CoralActuationIO.CoralActuationIOInputs;
+import frc.robot.util.LoggedTunableNumber;
 
 public class CoralActuation extends SubsystemBase {
   private CoralActuationIO coralActuationIO;
   private CoralActuationIOInputsAutoLogged inputs = new CoralActuationIOInputsAutoLogged();
+
+  private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("CoralActuation/toleranceTime", 0.1);
+  private LoggedTunableNumber tolerance = new LoggedTunableNumber("CoralActuation/tolerance", 1);
+
+  private Timer toleranceTimer = new Timer();
 
   private Timer brakeTimer = new Timer();
   private boolean brakeMode = true;
@@ -37,6 +43,7 @@ public class CoralActuation extends SubsystemBase {
   public CoralActuation(CoralActuationIO coralActuationIO) {
     this.coralActuationIO = coralActuationIO;
 
+    toleranceTimer.start();
     brakeTimer.start();
   }
 
@@ -61,6 +68,9 @@ public class CoralActuation extends SubsystemBase {
 
     switch (currentMode) {
       case POSITION:
+        if (!MathUtil.isNear(value, inputs.relativeEncoderPos, tolerance.get())) {
+          toleranceTimer.reset();
+        }
         coralActuationIO.seedMotor();
         coralActuationIO.moveToPos(value);
         break;
@@ -96,7 +106,7 @@ public class CoralActuation extends SubsystemBase {
     return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
   }
 
-  public boolean isAtAngle(double angle, double tolerance) {
-        return MathUtil.isNear(angle, inputs.relativeEncoderPos, tolerance);
+  public boolean isAtAngle() {
+        return toleranceTimer.hasElapsed(toleranceTime.get());
     }
 }

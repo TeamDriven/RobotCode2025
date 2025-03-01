@@ -16,4 +16,5 @@ public class CoralIntakeConstants {
 
     public static final LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("CoralIntake/intakeVelocity", -40);
     public static final LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("CoralIntake/outtakeVelocity", 40);
+    public static final LoggedTunableNumber tuningVoltage = new LoggedTunableNumber("CoralIntake/tuningVoltage", -2);
 }

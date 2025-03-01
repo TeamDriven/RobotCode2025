@@ -69,8 +69,7 @@ public final class Subsystems {
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
-          // climber = new Climber(new ClimberIOKraken(20, 21));
-          climber = new Climber(new ClimberIO() {});
+          climber = new Climber(new ClimberIOKraken(20, 21));
 
           // leds = new LED(new LEDIOCANdle(60));
         }

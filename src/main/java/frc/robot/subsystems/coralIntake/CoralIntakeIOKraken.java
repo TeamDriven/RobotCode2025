@@ -4,6 +4,7 @@ import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
 
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.util.TalonFXUtil.MotorFactory;
@@ -13,6 +14,7 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     private final TalonFX intakeMotor; 
 
     private final VelocityVoltage velocityControl = new VelocityVoltage(0).withEnableFOC(true).withSlot(0).withAcceleration(motorAcceleration);
+    private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
     private final NeutralOut stopMode = new NeutralOut();
 
     public CoralIntakeIOKraken(int motorID) {
@@ -42,6 +44,11 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     @Override
     public void runMotor(double velocity) {
         intakeMotor.setControl(velocityControl.withVelocity(velocity));
+    }
+
+    @Override
+    public void runVoltage(double volts) {
+        intakeMotor.setControl(voltageControl.withOutput(volts));
     }
 
     @Override

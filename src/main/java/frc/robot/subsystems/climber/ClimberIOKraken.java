@@ -19,7 +19,7 @@ public class ClimberIOKraken implements ClimberIO {
     motorFactory = new MotorFactory("climber", tMotorID, bMotorID);
 
     motorFactory.setBrakeMode(true);
-    motorFactory.setInverted(false, false);
+    motorFactory.setInverted(true, true);
     motorFactory.setCurrentLimits(80);
     motorFactory.setVoltageLimits(12);
 

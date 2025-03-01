@@ -12,7 +12,7 @@ public class CoralActuationConstants {
     public static final double tuckPos = -5;
     public static final double pickUpPos = 35;
     public static final double L1Pos = 0;
-    public static final double L2Pos = -15;
+    public static final double L2Pos = -20;
     public static final double L3Pos = -20;
     public static final double L4Pos = -25;
     public static final double dealgifyPos = -15;

@@ -71,7 +71,7 @@ public class FieldConstants {
   }
 
   public class Reef {
-    private static final double placeOffset = Units.inchesToMeters(13.625); // 1.625 is bumper touching
+    private static final double placeOffset = Units.inchesToMeters(5 + 5.625); // 3.625 is bumper touching
 
     public static record ReefFace(Pose2d facePos, double algaeHeight,
         Pose3d[] L2Positions, Pose3d[] L3Positions, Pose3d[] L4Positions) {

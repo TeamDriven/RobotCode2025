@@ -40,11 +40,11 @@ public class Controls {
   public static Trigger coralOuttakeOut = driver.leftBumper();
   
   // Elevator
-  public static Trigger elevatorUp = driver.pov(0);
-  public static Trigger elevatorDown = driver.pov(180);
+  public static Trigger elevatorUp = driver.y();
+  public static Trigger elevatorDown = driver.a();
   public static Trigger resetElevatorPosition = driver.back();
 
   // Climber
-  public static Trigger climberUp = driver.pov(270);
-  public static Trigger climberDown = driver.pov(90);
+  public static Trigger climberUp = driver.pov(90);
+  public static Trigger climberDown = driver.pov(270);
 }

@@ -18,14 +18,14 @@ public class PlaceCoral extends SequentialCommandGroup {
         addCommands(
             Commands.runOnce(() -> elevator.setPos(elevatorHeight), elevator),
             Commands.runOnce(() -> coralActuation.setPos(angle), coralActuation),
-            Commands.waitUntil(() -> elevator.isAtHeight(elevatorHeight, 0.75)),
-            Commands.waitUntil(() -> coralActuation.isAtAngle(angle, 3)),
+            Commands.waitUntil(() -> elevator.isAtHeight(elevatorHeight, 0.25)),
+            Commands.waitUntil(() -> coralActuation.isAtAngle()),
             Commands.runOnce(() -> coralIntake.runVelocity(outtakeSpeed), coralActuation),
             new WaitCommand(0.15),
-            // Commands.waitUntil(() -> !RobotState.getInstance().hasCoral).withTimeout(0.5),
-            Commands.runOnce(() -> coralIntake.runVelocity(0), coralActuation)
-            // Commands.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos), elevator),
-            // Commands.runOnce(() -> coralActuation.setPos(CoralActuationConstants.tuckPos), coralActuation)
+            // Commands.waitUntil(() -> !RobotState.getInstance().hasCoral).withTimeout(0.15),
+            Commands.runOnce(() -> coralIntake.runVelocity(0), coralActuation),
+            Commands.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos), elevator),
+            Commands.runOnce(() -> coralActuation.setPos(CoralActuationConstants.tuckPos), coralActuation)
         );
     }
 

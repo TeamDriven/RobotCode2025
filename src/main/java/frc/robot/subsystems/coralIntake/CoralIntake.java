@@ -14,7 +14,14 @@ public class CoralIntake extends SubsystemBase {
     private CoralIntakeIO coralIntakeIO;
     private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
 
-    private double velocity = 0;
+    private enum mode {
+        VELOCITY,
+        VOLTAGE;
+    }
+
+    private mode currentMode = mode.VELOCITY;
+
+    private double value = 0;
 
     public CoralIntake(CoralIntakeIO coralIntakeIO) {
         this.coralIntakeIO = coralIntakeIO;
@@ -25,18 +32,27 @@ public class CoralIntake extends SubsystemBase {
         coralIntakeIO.updateInputs(inputs);
         Logger.processInputs("CoralIntake", inputs);
 
-        // Should report to robotState when it has a piece
-        if (velocity > 0 && inputs.motorCurrent < detectionCurrent) {
-            coralIntakeIO.runMotor(velocity);
-        } else if (velocity < 0) {
-            coralIntakeIO.runMotor(velocity);
-        } else {
+        // Should report to RobotState when piece status changes
+
+        if (value == 0) {
             coralIntakeIO.stopMotor();
+        } else if (currentMode == mode.VELOCITY) {
+            coralIntakeIO.runMotor(value);
+        } else if (currentMode == mode.VOLTAGE) {
+            coralIntakeIO.runMotor(value);
+        } else {
+            throw new IllegalStateException();
         }
     }
 
     public void runVelocity(double velocity) {
-        this.velocity = velocity;
+        currentMode = mode.VELOCITY;
+        this.value = velocity;
+    }
+
+    public void runVoltage(double volts) {
+        currentMode = mode.VOLTAGE;
+        this.value = volts;
     }
 
     public Command runVelocityCommand(double vel) {

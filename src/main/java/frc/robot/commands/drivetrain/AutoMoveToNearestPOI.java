@@ -26,7 +26,6 @@ public class AutoMoveToNearestPOI extends Command {
         this.poses = poses;
         this.mode = mode;
         this.autoFinish = autoFinish;
-        alignFinished = false;
         addRequirements(drive);
     }
 
@@ -42,6 +41,8 @@ public class AutoMoveToNearestPOI extends Command {
 
     @Override
     public void initialize() {
+        alignFinished = false;
+
         actualPoses = Arrays.stream(poses).map(AllianceFlipUtil::apply).toList();
         findNearestTarget();
         drive.setAutoAlignGoal(() -> this.selectedPose, () -> new Translation2d(), mode);

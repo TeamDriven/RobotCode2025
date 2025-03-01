@@ -208,7 +208,7 @@ public class RobotState {
     inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
   }
 
-  public boolean hasCoral = false;
+  public boolean hasCoral = true;
 
   public static enum actions {
     L4,

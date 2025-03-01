@@ -15,6 +15,8 @@ public interface CoralIntakeIO {
 
     default void runMotor(double velocity) {}
 
+    default void runVoltage(double volts) {}
+
     default void stopMotor() {}
     
 }

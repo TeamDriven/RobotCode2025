@@ -9,8 +9,8 @@ public class PrepareForPlaceCoral extends SequentialCommandGroup {
 
     public PrepareForPlaceCoral(double elevatorHeight, double angle) {
         addCommands(
-            elevator.run(() -> elevator.setPos(elevatorHeight)),
-            coralActuation.run(() -> coralActuation.setPos(angle))
+            elevator.runOnce(() -> elevator.setPos(elevatorHeight)),
+            coralActuation.runOnce(() -> coralActuation.setPos(angle))
         );
     }
 
