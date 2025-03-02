@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.climber.footer;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -11,25 +11,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * provides methods to control the climber motor, set the position of the climber, and run the
  * climber at a specified voltage.
  */
-public class Climber extends SubsystemBase {
-  private final ClimberIO climberIO;
-  private final ClimberIOInputsAutoLogged climberInputs = new ClimberIOInputsAutoLogged();
+public class Footer extends SubsystemBase {
+  private final FooterIO footerIO;
+  private final FooterIOInputsAutoLogged footerInputs = new FooterIOInputsAutoLogged();
 
   private double voltage = 0;
 
-  public Climber(ClimberIO climberIO) {
-    this.climberIO = climberIO;
+  public Footer(FooterIO footerIO) {
+    this.footerIO = footerIO;
   }
 
   @Override
   public void periodic() {
-    climberIO.updateInputs(climberInputs);
-    Logger.processInputs("Climber", climberInputs);
+    footerIO.updateInputs(footerInputs);
+    Logger.processInputs("Climber", footerInputs);
   
     if(voltage != 0) {
-      climberIO.runClimberMotors(voltage);
+      footerIO.runClimberMotors(voltage);
     } else {
-      climberIO.stopClimber();
+      footerIO.stopClimber();
     }
   }
 

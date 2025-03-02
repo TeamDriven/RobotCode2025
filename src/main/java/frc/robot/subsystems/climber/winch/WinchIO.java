@@ -1,10 +1,10 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.climber.winch;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ClimberIO {
+public interface WinchIO {
   @AutoLog
-  class ClimberIOInputs {
+  class WinchIOInputs {
     public double topMotorPos = 0;
     public double topMotorVoltage = 0;
     public double topMotorCurrent = 0;
@@ -18,7 +18,7 @@ public interface ClimberIO {
     public double bottomStallCurrent = 0; //find out what this is then check back
   }
 
-  default void updateInputs(ClimberIOInputs inputs) {}
+  default void updateInputs(WinchIOInputs inputs) {}
 
   default void runClimberMotors(double velocity) {}
 

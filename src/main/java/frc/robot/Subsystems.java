@@ -19,9 +19,12 @@ import frc.robot.subsystems.elevator.ElevatorIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOKraken;
+import frc.robot.subsystems.climber.winch.WinchIO;
+import frc.robot.subsystems.climber.winch.WinchIOKraken;
+import frc.robot.subsystems.climber.footer.Footer;
+import frc.robot.subsystems.climber.footer.FooterIO;
+import frc.robot.subsystems.climber.footer.FooterIOKraken;
+import frc.robot.subsystems.climber.winch.Winch;
 import frc.robot.subsystems.coralActuation.CoralActuation;
 import frc.robot.subsystems.coralActuation.CoralActuationIO;
 import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
@@ -43,7 +46,8 @@ public final class Subsystems {
   // public static final AlgaeActuation algaeActuation;
   // public static final AlgaeIntake algaeIntake;
   public static final Elevator elevator;
-  public static final Climber climber;
+  public static final Winch winch;
+  public static final Footer footer;
 
   // public static final LED leds;
 
@@ -69,7 +73,8 @@ public final class Subsystems {
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
-          climber = new Climber(new ClimberIOKraken(20, 21));
+          winch = new Winch(new WinchIOKraken(20, 21));
+          footer = new Footer(new FooterIOKraken(19));
 
           // leds = new LED(new LEDIOCANdle(60));
         }
@@ -104,7 +109,8 @@ public final class Subsystems {
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
-          climber = new Climber(new ClimberIOKraken(20, 21));
+          winch = new Winch(new WinchIOKraken(20, 21));
+          footer = new Footer(new FooterIOKraken(19));
 
           // leds = new LED(new LEDIOCANdle(60));
         }
@@ -140,7 +146,8 @@ public final class Subsystems {
       // algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
       // algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
       elevator = new Elevator(new ElevatorIO() {});
-      climber = new Climber(new ClimberIO() {});
+      winch = new Winch(new WinchIO() {});
+      footer = new Footer(new FooterIO() {});
 
       // leds = new LED(new LEDIO() {});
     }

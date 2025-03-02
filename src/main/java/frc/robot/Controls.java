@@ -45,6 +45,6 @@ public class Controls {
   public static Trigger resetElevatorPosition = driver.back();
 
   // Climber
-  public static Trigger climberUp = driver.pov(90);
-  public static Trigger climberDown = driver.pov(270);
+  public static Trigger winchUp = driver.pov(90);
+  public static Trigger winchDown = driver.pov(270);
 }

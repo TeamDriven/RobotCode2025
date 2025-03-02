@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.climber.winch;
 
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
-public class ClimberIOKraken implements ClimberIO {
+public class WinchIOKraken implements WinchIO {
   private MotorFactory motorFactory;
 
   private TalonFX topClimberMotor;
@@ -15,7 +15,7 @@ public class ClimberIOKraken implements ClimberIO {
   private VoltageOut voltageControl;
   private NeutralOut StopMode;
 
-  public ClimberIOKraken(int tMotorID, int bMotorID) {
+  public WinchIOKraken(int tMotorID, int bMotorID) {
     motorFactory = new MotorFactory("climber", tMotorID, bMotorID);
 
     motorFactory.setBrakeMode(true);
@@ -35,7 +35,7 @@ public class ClimberIOKraken implements ClimberIO {
   }
   
   @Override
-  public void updateInputs(ClimberIOInputs inputs) {
+  public void updateInputs(WinchIOInputs inputs) {
     inputs.topMotorPos = topClimberMotor.getPosition().getValueAsDouble();
     inputs.topMotorCurrent = topClimberMotor.getSupplyCurrent().getValueAsDouble();
     inputs.topMotorVoltage = topClimberMotor.getMotorVoltage().getValueAsDouble();

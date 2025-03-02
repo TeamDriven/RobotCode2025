@@ -12,8 +12,8 @@ import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
 import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.*;
+import static frc.robot.subsystems.climber.winch.WinchConstants.*;
 import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.*;
-import static frc.robot.subsystems.climber.ClimberConstants.*;
 import static frc.robot.subsystems.led.LEDConstants.*;
 import static frc.robot.commands.automation.PlaceCoral.*;
 
@@ -227,8 +227,8 @@ public class RobotContainer {
 
     // driver.b().onTrue(new PlaceCoral(Constants.l4));
 
-    // climberUp.onTrue(climber.run(() -> climber.runVoltage(12))).onFalse(climber.run(() -> climber.runVoltage(0)));
-    // climberDown.onTrue(climber.run(() -> climber.runVoltage(-12))).onFalse(climber.run(() -> climber.runVoltage(0)));
+    // winchUp.onTrue(winch.run(() -> winch.runVoltage(12))).onFalse(winch.run(() -> winch.runVoltage(0)));
+    // winchDown.onTrue(winch.run(() -> winch.runVoltage(-12))).onFalse(winch.run(() -> winch.runVoltage(0)));
   }
 
   /** Updates the alerts for disconnected controllers. */
