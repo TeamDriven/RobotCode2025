@@ -15,13 +15,10 @@ public class Vision extends SubsystemBase {
 
     private final VisionIO visionIO;
     private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
-
-    private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
     
-    public Vision(String visionName, VisionIO visionIO, Supplier<ChassisSpeeds> chassisSpeedsSuppier) {
+    public Vision(String visionName, VisionIO visionIO) {
         this.visionName = visionName;
         this.visionIO = visionIO;
-        this.chassisSpeedsSupplier = chassisSpeedsSuppier;
     }
 
     @Override
@@ -33,7 +30,7 @@ public class Vision extends SubsystemBase {
         Logger.processInputs(visionName, visionInputs);
 
 
-        final ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
+        final ChassisSpeeds chassisSpeeds = RobotState.getInstance().getRobotVelocity();
         if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 9.42478 || (Math.abs(chassisSpeeds.vxMetersPerSecond) > 2.0
                 || Math.abs(chassisSpeeds.vyMetersPerSecond) > 2.0)) {
             return;

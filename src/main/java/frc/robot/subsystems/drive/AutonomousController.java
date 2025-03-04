@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package frc.robot.subsystems.drive.controllers;
+package frc.robot.subsystems.drive;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,19 +15,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.RobotState;
 
 /** Drive controller for outputting {@link ChassisSpeeds} from driver joysticks. */
-public class AutoDriveController {
+public class AutonomousController {
   private final PIDController xController = new PIDController(1.5, 0.0, 0.5);
   private final PIDController yController = new PIDController(1.5, 0.0, 0.5);
   private final PIDController headingController = new PIDController(2.5, 0.0, 0.35);
 
-  private SwerveSample sample;
-
-  public AutoDriveController() {
+  public AutonomousController() {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-  }
-
-  public void acceptDriveInput(SwerveSample swerveSample) {
-    sample = swerveSample;
   }
 
   /**
@@ -35,7 +29,7 @@ public class AutoDriveController {
    *
    * @return {@link ChassisSpeeds} with driver's requested speeds.
    */
-  public ChassisSpeeds update() {
+  public ChassisSpeeds update(SwerveSample sample) {
     Pose2d curPose = RobotState.getInstance().getEstimatedPose();
     Rotation2d curRot = RobotState.getInstance().getOdometryPose().getRotation();
     

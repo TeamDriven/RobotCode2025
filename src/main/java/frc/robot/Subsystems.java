@@ -57,16 +57,16 @@ public final class Subsystems {
       switch (Constants.getRobot()) {
         case COMPBOT -> {
           drive = new Drive(
-              new GyroIOPigeon2(true, "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
-              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
+              new GyroIOPigeon2(),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2]),
+              new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3]));
 
-          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
-          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
+          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"));
+          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"));
           // rightVision = new Vision("Right Vision", new
-          // VisionIOLimelight("limelight-right"), drive::getSpeeds);
+          // VisionIOLimelight("limelight-right"));
 
           coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14, 0));
@@ -98,11 +98,11 @@ public final class Subsystems {
               new ModuleIO() {
               });
 
-          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"), drive::getSpeeds);
-          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
+          bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"));
+          backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"));
 
           // rightVision = new Vision("Right Vision", new
-          // VisionIOLimelight("limelight-right"), drive::getSpeeds);
+          // VisionIOLimelight("limelight-right"));
 
           coralIntake = new CoralIntake(new CoralIntakeIO() {});
           coralActuation = new CoralActuation(new CoralActuationIO() {});
@@ -135,9 +135,9 @@ public final class Subsystems {
           });
 
       bottomVision = new Vision("Bottom Vision", new VisionIO() {
-      }, drive::getSpeeds);
+      });
       backVision = new Vision("Back Vision", new VisionIO() {
-      }, drive::getSpeeds);
+      });
       // rightVision = new Vision("Right Vision", new VisionIO() {},
       // drive::getSpeeds);
 

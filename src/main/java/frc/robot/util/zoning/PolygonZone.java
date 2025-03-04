@@ -30,13 +30,12 @@ public class PolygonZone implements Zone {
     public boolean isRobotInZone(Pose2d robotPose) {
         var polygon = makePolygon();
 
-        double xOffset = DriveConstants.driveConfig.bumperWidthX() / 2;
-        double yOffset = DriveConstants.driveConfig.bumperWidthY() / 2;
+        double offset = DriveConstants.robotWidth / 2;
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                int x = convertToCoords(robotPose.getY() + (yOffset * i));
-                int y = convertToCoords(robotPose.getX() + (xOffset * j));
+                int x = convertToCoords(robotPose.getY() + (offset * i));
+                int y = convertToCoords(robotPose.getX() + (offset * j));
 
                 if (polygon.contains(x, y)) return true;
             }

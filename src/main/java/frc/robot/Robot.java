@@ -1,4 +1,4 @@
-// Copyright (c) 2024 FRC 6328
+// Copyright (c) 2025 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by an MIT-style
@@ -7,72 +7,83 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.autos.Place4RightSide;
-import frc.robot.util.Alert;
-import frc.robot.util.Alert.AlertType;
+import frc.robot.Constants.RobotType;
+import frc.robot.util.CanivoreReader;
+import frc.robot.util.LoggedTracer;
+import frc.robot.util.NTClientLogger;
+import frc.robot.util.PhoenixUtil;
+import frc.robot.util.SystemTimeValidReader;
 import frc.robot.util.VirtualSubsystem;
 
-import static frc.robot.Subsystems.drive;
-
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.rlog.RLOGServer;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends LoggedRobot {
+  private static final double loopOverrunWarningTimeout = 0.2;
   private static final double canErrorTimeThreshold = 0.5; // Seconds to disable alert
-  // private static final double canivoreErrorTimeThreshold = 0.5;
+  private static final double canivoreErrorTimeThreshold = 0.5;
+  private static final double lowBatteryVoltage = 11.8;
+  private static final double lowBatteryDisabledTime = 1.5;
+  private static final double lowBatteryMinCycleCount = 10;
+  private static int lowBatteryCycleCount = 0;
 
-  private Command autoCommand;
+  private Command autonomousCommand;
   private RobotContainer robotContainer;
-  private final Timer disabledTimer = new Timer();
+  private double autoStart;
+  private boolean autoMessagePrinted;
   private final Timer canInitialErrorTimer = new Timer();
   private final Timer canErrorTimer = new Timer();
-  // private final Timer canivoreErrorTimer = new Timer();
-  private double teleStart;
-  private static double teleElapsedTime = 0.0;
+  private final Timer canivoreErrorTimer = new Timer();
+  private final Timer disabledTimer = new Timer();
+  private final CanivoreReader canivoreReader = new CanivoreReader("*");
 
   private final Alert canErrorAlert =
-      new Alert("CAN errors detected, robot may not be controllable.", AlertType.ERROR);
-  // private final Alert canivoreErrorAlert =
-  //     new Alert("CANivore error detected, robot may not be controllable.", AlertType.ERROR);
-  private final Alert gcAlert =
-      new Alert("Please wait to enable, collecting garbage.", AlertType.WARNING);
+      new Alert("CAN errors detected, robot may not be controllable.", AlertType.kError);
+  private final Alert canivoreErrorAlert =
+      new Alert("CANivore errors detected, robot may not be controllable.", AlertType.kError);
+  private final Alert lowBatteryAlert =
+      new Alert(
+          "Battery voltage is very low, consider turning off the robot or replacing the battery.",
+          AlertType.kWarning);
+  private final Alert jitAlert =
+      new Alert("Please wait to enable, JITing in progress.", AlertType.kWarning);
 
-  public static Trigger createTeleopTimeTrigger(DoubleSupplier teleElapsedTime) {
-    return new Trigger(
-        () ->
-            DriverStation.isFMSAttached()
-                && DriverStation.isTeleopEnabled()
-                && Robot.teleElapsedTime > teleElapsedTime.getAsDouble());
-  }
+  public Robot() {
+    // Reset encoder on pivot
+    if (Constants.getRobot() == RobotType.COMPBOT) {
+      var pivotTalon = new TalonFX(5);
+      PhoenixUtil.tryUntilOk(15, () -> pivotTalon.setPosition(0.0));
+      pivotTalon.close();
+    }
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
     // Record metadata
+    Logger.recordMetadata("Robot", Constants.getRobot().toString());
+    Logger.recordMetadata("TuningMode", Boolean.toString(Constants.tuningMode));
+    Logger.recordMetadata("RuntimeType", getRuntimeType().toString());
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -95,12 +106,15 @@ public class Robot extends LoggedRobot {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
-        Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new RLOGServer());
+        if (Constants.getRobot() == RobotType.COMPBOT) {
+          LoggedPowerDistribution.getInstance(50, ModuleType.kRev);
+        }
         break;
 
       case SIM:
         // Running a physics simulator, log to NT
-        Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new RLOGServer());
         break;
 
       case REPLAY:
@@ -112,8 +126,27 @@ public class Robot extends LoggedRobot {
         break;
     }
 
+    // Set up auto logging for RobotState
+    AutoLogOutputManager.addObject(RobotState.getInstance());
+
     // Start AdvantageKit logger
     Logger.start();
+
+    // Adjust loop overrun warning timeout
+    try {
+      Field watchdogField = IterativeRobotBase.class.getDeclaredField("m_watchdog");
+      watchdogField.setAccessible(true);
+      Watchdog watchdog = (Watchdog) watchdogField.get(this);
+      watchdog.setTimeout(loopOverrunWarningTimeout);
+    } catch (Exception e) {
+      DriverStation.reportWarning("Failed to disable loop overrun warnings.", false);
+    }
+
+    // Start system time valid reader
+    SystemTimeValidReader.start();
+
+    // Rely on our custom alerts for disconnected controllers
+    DriverStation.silenceJoystickConnectionWarning(true);
 
     // Log active commands
     Map<String, Integer> commandCounts = new HashMap<>();
@@ -127,43 +160,65 @@ public class Robot extends LoggedRobot {
           Logger.recordOutput("CommandsAll/" + name, count > 0);
         };
     CommandScheduler.getInstance()
-        .onCommandInitialize(
-            (Command command) -> {
-              logCommandFunction.accept(command, true);
-            });
+        .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
     CommandScheduler.getInstance()
-        .onCommandFinish(
-            (Command command) -> {
-              logCommandFunction.accept(command, false);
-            });
+        .onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
     CommandScheduler.getInstance()
-        .onCommandInterrupt(
-            (Command command) -> {
-              logCommandFunction.accept(command, false);
-            });
+        .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
 
     // Reset alert timers
     canInitialErrorTimer.restart();
     canErrorTimer.restart();
-    // canivoreErrorTimer.restart();
+    canivoreErrorTimer.restart();
     disabledTimer.restart();
 
+    // Configure brownout voltage
     RobotController.setBrownoutVoltage(6.0);
+
+    // Configure DriverStation for sim
+    if (Constants.getRobot() == RobotType.SIMBOT) {
+      DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+      DriverStationSim.notifyNewData();
+    }
+
+    // Create RobotContainer
     robotContainer = new RobotContainer();
+
+    // Switch thread to high priority to improve loop timing
+    Threads.setCurrentThreadPriority(true, 10);
   }
 
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
-    Threads.setCurrentThreadPriority(true, 99);
+    // Refresh all Phoenix signals
+    LoggedTracer.reset();
+    PhoenixUtil.refreshAll();
+    LoggedTracer.record("PhoenixRefresh");
+
+    // Run virtual subsystems
     VirtualSubsystem.periodicAll();
+
+    // Run command scheduler
     CommandScheduler.getInstance().run();
+    LoggedTracer.record("Commands");
+
+    // Print auto duration
+    if (autonomousCommand != null) {
+      if (!autonomousCommand.isScheduled() && !autoMessagePrinted) {
+        if (DriverStation.isAutonomousEnabled()) {
+          System.out.printf(
+              "*** Auto finished in %.2f secs ***%n", Timer.getTimestamp() - autoStart);
+        } else {
+          System.out.printf(
+              "*** Auto cancelled in %.2f secs ***%n", Timer.getTimestamp() - autoStart);
+        }
+        autoMessagePrinted = true;
+      }
+    }
 
     // Robot container periodic methods
-    robotContainer.checkControllers();
     robotContainer.updateDashboardOutputs();
-
-    RobotState.getInstance().updateZones();
 
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
@@ -174,29 +229,51 @@ public class Robot extends LoggedRobot {
         !canErrorTimer.hasElapsed(canErrorTimeThreshold)
             && !canInitialErrorTimer.hasElapsed(canErrorTimeThreshold));
 
-    // // Log CANivore status
-    // if (Constants.getMode() == Mode.REAL) {
-    //   var canivoreStatus = CANBus.getStatus("canivore");
-    //   Logger.recordOutput("CANivoreStatus/Status", canivoreStatus.Status.getName());
-    //   Logger.recordOutput("CANivoreStatus/Utilization", canivoreStatus.BusUtilization);
-    //   Logger.recordOutput("CANivoreStatus/OffCount", canivoreStatus.BusOffCount);
-    //   Logger.recordOutput("CANivoreStatus/TxFullCount", canivoreStatus.TxFullCount);
-    //   Logger.recordOutput("CANivoreStatus/ReceiveErrorCount", canivoreStatus.REC);
-    //   Logger.recordOutput("CANivoreStatus/TransmitErrorCount", canivoreStatus.TEC);
-    //   if (!canivoreStatus.Status.isOK()
-    //       || canStatus.transmitErrorCount > 0
-    //       || canStatus.receiveErrorCount > 0) {
-    //     canivoreErrorTimer.restart();
-    //   }
-    // canivoreErrorAlert.set(
-    //     !canivoreErrorTimer.hasElapsed(canivoreErrorTimeThreshold)
-    //         && !canInitialErrorTimer.hasElapsed(canErrorTimeThreshold));
-    // }
+    // Log CANivore status
+    if (Constants.getMode() == Constants.Mode.REAL) {
+      var canivoreStatus = canivoreReader.getStatus();
+      if (canivoreStatus.isPresent()) {
+        Logger.recordOutput("CANivoreStatus/Status", canivoreStatus.get().Status.getName());
+        Logger.recordOutput("CANivoreStatus/Utilization", canivoreStatus.get().BusUtilization);
+        Logger.recordOutput("CANivoreStatus/OffCount", canivoreStatus.get().BusOffCount);
+        Logger.recordOutput("CANivoreStatus/TxFullCount", canivoreStatus.get().TxFullCount);
+        Logger.recordOutput("CANivoreStatus/ReceiveErrorCount", canivoreStatus.get().REC);
+        Logger.recordOutput("CANivoreStatus/TransmitErrorCount", canivoreStatus.get().TEC);
+        if (!canivoreStatus.get().Status.isOK()
+            || canStatus.transmitErrorCount > 0
+            || canStatus.receiveErrorCount > 0) {
+          canivoreErrorTimer.restart();
+        }
+      }
+      canivoreErrorAlert.set(
+          !canivoreErrorTimer.hasElapsed(canivoreErrorTimeThreshold)
+              && !canInitialErrorTimer.hasElapsed(canErrorTimeThreshold));
+    }
 
-    // GC alert
-    gcAlert.set(Timer.getFPGATimestamp() < 45.0);
+    // Log NT client list
+    NTClientLogger.log();
 
-    Threads.setCurrentThreadPriority(true, 10);
+    // Low battery alert
+    lowBatteryCycleCount += 1;
+    if (DriverStation.isEnabled()) {
+      disabledTimer.reset();
+    }
+    if (RobotController.getBatteryVoltage() <= lowBatteryVoltage
+        && disabledTimer.hasElapsed(lowBatteryDisabledTime)
+        && lowBatteryCycleCount >= lowBatteryMinCycleCount) {
+      lowBatteryAlert.set(true);
+    }
+
+    // JIT alert
+    jitAlert.set(isJITing());
+
+    // Record cycle time
+    LoggedTracer.record("RobotPeriodic");
+  }
+
+  /** Returns whether we should wait to enable because JIT optimizations are in progress. */
+  public static boolean isJITing() {
+    return Timer.getTimestamp() < 45.0;
   }
 
   /** This function is called once when the robot is disabled. */
@@ -210,9 +287,11 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    autoCommand = robotContainer.getAutonomousCommand();
-    if (autoCommand != null) {
-      autoCommand.schedule();
+    autoStart = Timer.getTimestamp();
+    autonomousCommand = robotContainer.getAutonomousCommand();
+
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
   }
 
@@ -223,33 +302,28 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (autoCommand != null) {
-      autoCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
-
-    drive.clearAutoAlignGoal();
-
-    teleStart = Timer.getFPGATimestamp();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    teleElapsedTime = Timer.getFPGATimestamp() - teleStart;
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+  public void testInit() {}
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
+
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
 }

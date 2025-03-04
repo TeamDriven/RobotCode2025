@@ -1,4 +1,4 @@
-// Copyright (c) 2024 FRC 6328
+// Copyright (c) 2025 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by an MIT-style
@@ -11,150 +11,193 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.util.Alert;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.util.LoggedTracer;
 import frc.robot.util.LoggedTunableNumber;
-
-import static frc.robot.subsystems.drive.DriveConstants.driveConfig;
-import static frc.robot.subsystems.drive.DriveConstants.moduleConstants;
 
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
-  private static final LoggedTunableNumber drivekP =
-      new LoggedTunableNumber("Drive/Module/DrivekP", moduleConstants.drivekP());
-  private static final LoggedTunableNumber drivekD =
-      new LoggedTunableNumber("Drive/Module/DrivekD", moduleConstants.drivekD());
   private static final LoggedTunableNumber drivekS =
-      new LoggedTunableNumber("Drive/Module/DrivekS", moduleConstants.ffkS());
+      new LoggedTunableNumber("Drive/Module/DrivekS");
   private static final LoggedTunableNumber drivekV =
-      new LoggedTunableNumber("Drive/Module/DrivekV", moduleConstants.ffkV());
-  private static final LoggedTunableNumber turnkP =
-      new LoggedTunableNumber("Drive/Module/TurnkP", moduleConstants.turnkP());
-  private static final LoggedTunableNumber turnkD =
-      new LoggedTunableNumber("Drive/Module/TurnkD", moduleConstants.turnkD());
-  private static final String[] moduleNames = new String[] {"FL", "FR", "BL", "BR"};
+      new LoggedTunableNumber("Drive/Module/DrivekV");
+  private static final LoggedTunableNumber drivekT =
+      new LoggedTunableNumber("Drive/Module/DrivekT");
+  private static final LoggedTunableNumber drivekP =
+      new LoggedTunableNumber("Drive/Module/DrivekP");
+  private static final LoggedTunableNumber drivekD =
+      new LoggedTunableNumber("Drive/Module/DrivekD");
+  private static final LoggedTunableNumber turnkP = new LoggedTunableNumber("Drive/Module/TurnkP");
+  private static final LoggedTunableNumber turnkD = new LoggedTunableNumber("Drive/Module/TurnkD");
 
-  private final int index;
+  static {
+    switch (Constants.getRobot()) {
+      case COMPBOT, DEVBOT -> {
+        drivekS.initDefault(5.0);
+        drivekV.initDefault(0);
+        // Multiplied by desired wheelTorqueNm
+        drivekT.initDefault(DriveConstants.driveGearReduction / DCMotor.getKrakenX60Foc(1).KtNMPerAmp);
+        drivekP.initDefault(35.0);
+        drivekD.initDefault(0);
+        turnkP.initDefault(4000.0);
+        turnkD.initDefault(50.0);
+      }
+      default -> {
+        drivekS.initDefault(0.014);
+        drivekV.initDefault(0.134);
+        drivekT.initDefault(0);
+        drivekP.initDefault(0.1);
+        drivekD.initDefault(0);
+        turnkP.initDefault(10.0);
+        turnkD.initDefault(0);
+      }
+    }
+  }
+
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
-  private SimpleMotorFeedforward ff =
-      new SimpleMotorFeedforward(moduleConstants.ffkS(), moduleConstants.ffkV(), 0.0);
-  public SwerveModuleState setpointState = new SwerveModuleState();
+  private final int index;
 
-  // Alerts
-  private final Alert driveMotorDisconnected;
-  private final Alert turnMotorDisconnected;
+  private SimpleMotorFeedforward ffModel;
+
+  private final Alert driveDisconnectedAlert;
+  private final Alert turnDisconnectedAlert;
+  private final Alert turnEncoderDisconnectedAlert;
+  private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
   public Module(ModuleIO io, int index) {
     this.io = io;
     this.index = index;
 
-    driveMotorDisconnected =
-        new Alert(moduleNames[index] + " drive motor disconnected!", Alert.AlertType.WARNING);
-    turnMotorDisconnected =
-        new Alert(moduleNames[index] + " turn motor disconnected!", Alert.AlertType.WARNING);
+    ffModel = new SimpleMotorFeedforward(drivekS.get(), drivekV.get());
+
+    driveDisconnectedAlert =
+        new Alert("Disconnected drive motor on module " + index + ".", AlertType.kError);
+    turnDisconnectedAlert =
+        new Alert("Disconnected turn motor on module " + index + ".", AlertType.kError);
+    turnEncoderDisconnectedAlert =
+        new Alert("Disconnected turn encoder on module " + index + ".", AlertType.kError);
   }
 
-  /** Called while blocking odometry thread */
   public void updateInputs() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + index, inputs);
-
-    // Update ff and controllers
-    LoggedTunableNumber.ifChanged(
-        hashCode(),
-        () -> ff = new SimpleMotorFeedforward(drivekS.get(), drivekV.get(), 0),
-        drivekS,
-        drivekV);
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setDrivePID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> io.setTurnPID(turnkP.get(), 0, turnkD.get()), turnkP, turnkD);
-
-    // Display alerts
-    driveMotorDisconnected.set(!inputs.driveMotorConnected);
-    turnMotorDisconnected.set(!inputs.turnMotorConnected);
   }
 
-  /** Runs to {@link SwerveModuleState} */
-  public void runSetpoint(SwerveModuleState setpoint, SwerveModuleState torqueFF) {
-    setpointState = setpoint;
-    double wheelTorqueNm =
-        torqueFF.speedMetersPerSecond; // Using SwerveModuleState for torque for easy logging
-    io.runDriveVelocitySetpoint(
-        setpoint.speedMetersPerSecond / driveConfig.wheelRadius(),
-        ff.calculate(setpoint.speedMetersPerSecond / driveConfig.wheelRadius())
-            + ((wheelTorqueNm / moduleConstants.driveReduction()) * moduleConstants.ffkT()));
-    io.runTurnPositionSetpoint(setpoint.angle.getRadians());
-  }
-
-  /** Runs characterization volts or amps depending on using voltage or current control. */
-  public void runCharacterization(double turnSetpointRads, double input) {
-    io.runTurnPositionSetpoint(turnSetpointRads);
-    io.runCharacterization(input);
-  }
-
-  /** Sets brake mode to {@code enabled}. */
-  public void setBrakeMode(boolean enabled) {
-    io.setDriveBrakeMode(enabled);
-    io.setTurnBrakeMode(enabled);
-  }
-
-  /** Stops motors. */
-  public void stop() {
-    io.stop();
-  }
-
-  /** Get all latest {@link SwerveModulePosition}'s from last cycle. */
-  public SwerveModulePosition[] getModulePositions() {
-    int minOdometryPositions =
-        Math.min(inputs.odometryDrivePositionsMeters.length, inputs.odometryTurnPositions.length);
-    SwerveModulePosition[] positions = new SwerveModulePosition[minOdometryPositions];
-    for (int i = 0; i < minOdometryPositions; i++) {
-      positions[i] =
-          new SwerveModulePosition(
-              inputs.odometryDrivePositionsMeters[i], inputs.odometryTurnPositions[i]);
+  public void periodic() {
+    // Update tunable numbers
+    if (drivekS.hasChanged(hashCode()) || drivekV.hasChanged(hashCode())) {
+      ffModel = new SimpleMotorFeedforward(drivekS.get(), drivekV.get());
     }
-    return positions;
+    if (drivekP.hasChanged(hashCode()) || drivekD.hasChanged(hashCode())) {
+      io.setDrivePID(drivekP.get(), 0, drivekD.get());
+    }
+    if (turnkP.hasChanged(hashCode()) || turnkD.hasChanged(hashCode())) {
+      io.setTurnPID(turnkP.get(), 0, turnkD.get());
+    }
+
+    // Calculate positions for odometry
+    int sampleCount = inputs.odometryDrivePositionsRad.length; // All signals are sampled together
+    odometryPositions = new SwerveModulePosition[sampleCount];
+    for (int i = 0; i < sampleCount; i++) {
+      double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.wheelRadius;
+      Rotation2d angle = inputs.odometryTurnPositions[i];
+      odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+    }
+
+    // Update alerts
+    driveDisconnectedAlert.set(!inputs.data.driveConnected() && !Robot.isJITing());
+    turnDisconnectedAlert.set(!inputs.data.turnConnected() && !Robot.isJITing());
+    turnEncoderDisconnectedAlert.set(!inputs.data.turnEncoderConnected() && !Robot.isJITing());
+
+    // Record cycle time
+    LoggedTracer.record("Drive/Module" + index);
   }
 
-  /** Get turn angle of module as {@link Rotation2d}. */
+  /** Runs the module with the specified setpoint state. */
+  public void runSetpoint(SwerveModuleState state) {
+    // Apply setpoints
+    double speedRadPerSec = state.speedMetersPerSecond / DriveConstants.wheelRadius;
+    io.runDriveVelocity(speedRadPerSec, ffModel.calculate(speedRadPerSec));
+    io.runTurnPosition(state.angle);
+  }
+
+  /**
+   * Runs the module with the specified setpoint state and a setpoint wheel force used for
+   * torque-based feedforward.
+   */
+  public void runSetpoint(SwerveModuleState state, double wheelTorqueNm) {
+    // Apply setpoints
+    double speedRadPerSec = state.speedMetersPerSecond / DriveConstants.wheelRadius;
+    io.runDriveVelocity(
+        speedRadPerSec, ffModel.calculate(speedRadPerSec) + wheelTorqueNm * drivekT.get());
+    io.runTurnPosition(state.angle);
+  }
+
+  /** Runs the module with the specified output while controlling to zero degrees. */
+  public void runCharacterization(double output) {
+    io.runDriveOpenLoop(output);
+    io.runTurnPosition(Rotation2d.kZero);
+  }
+
+  /** Disables all outputs to motors. */
+  public void stop() {
+    io.runDriveOpenLoop(0.0);
+    io.runTurnOpenLoop(0.0);
+  }
+
+  /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
-    return inputs.turnPosition;
+    return inputs.data.turnPosition();
   }
 
-  /** Get turn angle of module as {@link Rotation2d}. */
-  public Rotation2d getAbsoluteAngle() {
-    return inputs.turnAbsolutePosition;
+  public Rotation2d getAbsoulteAngle() {
+    return inputs.data.turnAbsolutePosition();
   }
 
-  /** Get position of wheel rotations in radians */
-  public double getPositionRads() {
-    return inputs.drivePositionRads;
-  }
-
-  /** Get position of wheel in meters. */
+  /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRads * driveConfig.wheelRadius();
+    return inputs.data.drivePositionRad() * DriveConstants.wheelRadius;
   }
 
-  /** Get velocity of wheel in m/s. */
+  /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadsPerSec * driveConfig.wheelRadius();
+    return inputs.data.driveVelocityRadPerSec() * DriveConstants.wheelRadius;
   }
 
-  /** Get current {@link SwerveModulePosition} of module. */
+  /** Returns the module position (turn angle and drive position). */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(getPositionMeters(), getAngle());
   }
 
-  /** Get current {@link SwerveModuleState} of module. */
+  /** Returns the module state (turn angle and drive velocity). */
   public SwerveModuleState getState() {
     return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
   }
 
-  /** Get velocity of drive wheel for characterization */
-  public double getCharacterizationVelocity() {
-    return inputs.driveVelocityRadsPerSec;
+  /** Returns the module positions received this cycle. */
+  public SwerveModulePosition[] getOdometryPositions() {
+    return odometryPositions;
+  }
+
+  /** Returns the module position in radians. */
+  public double getWheelRadiusCharacterizationPosition() {
+    return inputs.data.drivePositionRad();
+  }
+
+  /** Returns the module velocity in rotations/sec (Phoenix native units). */
+  public double getFFCharacterizationVelocity() {
+    return Units.radiansToRotations(inputs.data.driveVelocityRadPerSec());
+  }
+
+  /* Sets brake mode to {@code enabled} */
+  public void setBrakeMode(boolean enabled) {
+    io.setBrakeMode(enabled);
   }
 }

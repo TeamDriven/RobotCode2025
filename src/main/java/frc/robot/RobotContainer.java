@@ -9,22 +9,13 @@ package frc.robot;
 
 import static frc.robot.Subsystems.*;
 import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
-import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.*;
-import static frc.robot.subsystems.climber.winch.WinchConstants.*;
-import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.*;
-import static frc.robot.subsystems.led.LEDConstants.*;
-import static frc.robot.commands.automation.PlaceCoral.*;
-
-import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -34,18 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.FieldConstants.Reef;
-import frc.robot.RobotState.actions;
-import frc.robot.commands.automation.PlaceCoral;
-import frc.robot.commands.automation.PrepareForPlaceCoral;
-import frc.robot.commands.autos.Place4LeftSide;
-import frc.robot.commands.autos.Place4RightSide;
-import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
-import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
+import frc.robot.commands.drivetrain.DriveCommands;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -100,16 +81,16 @@ public class RobotContainer {
   }
 
   private void setupAutos() {
-    autoChooser.setDefaultOption("place 4 right side", new Place4RightSide().getAuto().cmd());
-    autoChooser.addOption("place 4 left side", new Place4LeftSide().getAuto().cmd());
+    // autoChooser.setDefaultOption("place 4 right side", new Place4RightSide().getAuto().cmd());
+    // autoChooser.addOption("place 4 left side", new Place4LeftSide().getAuto().cmd());
 
     SmartDashboard.putData(autoChooser);
   }
 
-  private Command driveCommand = drive.run(
-      () -> drive.acceptTeleopInput(
-          driveX.getAsDouble(), driveY.getAsDouble(), driveOmega.getAsDouble(), false))
-      .withName("Drive Teleop Input");
+  // private Command driveCommand = drive.run(
+  //     () -> drive.acceptTeleopInput(
+  //         driveX.getAsDouble(), driveY.getAsDouble(), driveOmega.getAsDouble(), false))
+  //     .withName("Drive Teleop Input");
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -122,7 +103,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
     // Drivetrain
-    drive.setDefaultCommand(driveCommand);
+    drive.setDefaultCommand(DriveCommands.joystickDrive(driveX, driveY, driveOmega, () -> false));
 
     resetPose.onTrue(
         Commands.runOnce(
@@ -134,56 +115,56 @@ public class RobotContainer {
     resetElevatorPosition.onTrue(elevator.resetPosition());
 
     // Placing
-    placeL4.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L4));
-    placeL3.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L3));
-    placeL2.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L2));
-    placeL1.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L1));
+    // placeL4.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L4));
+    // placeL3.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L3));
+    // placeL2.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L2));
+    // placeL1.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L1));
 
-    // Auto align if trying to place L2+
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-        .or(() -> RobotState.getInstance().desiredAction == actions.L3)
-        .or(() -> RobotState.getInstance().desiredAction == actions.L2)
-        .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.SLOW,
-            Reef.placePoses));
+    // // Auto align if trying to place L2+
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
+    //     .or(() -> RobotState.getInstance().desiredAction == actions.L3)
+    //     .or(() -> RobotState.getInstance().desiredAction == actions.L2)
+    //     .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.SLOW,
+    //         Reef.placePoses));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-        .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new PrepareForPlaceCoral(Constants.l4));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
+    //     .and(RobotState.getInstance()::isInReefZone)
+    //     .onTrue(new PrepareForPlaceCoral(Constants.l4));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-        .and(() -> !driveCommand.isScheduled())
-        .and(drive::isAutoAlignGoalCompleted)
-        .onTrue(
-            Commands.sequence(
-                new PlaceCoral(Constants.l4),
-                Commands.runOnce(AutoMoveToNearestPOI::stop),
-                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
+    //     .and(() -> !driveCommand.isScheduled())
+    //     .and(drive::isAutoAlignGoalCompleted)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             new PlaceCoral(Constants.l4),
+    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
+    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
-        .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new PrepareForPlaceCoral(Constants.l3));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
+    //     .and(RobotState.getInstance()::isInReefZone)
+    //     .onTrue(new PrepareForPlaceCoral(Constants.l3));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
-        .and(() -> !driveCommand.isScheduled())
-        .and(drive::isAutoAlignGoalCompleted)
-        .onTrue(
-            Commands.sequence(
-                new PlaceCoral(Constants.l3),
-                Commands.runOnce(AutoMoveToNearestPOI::stop),
-                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
+    //     .and(() -> !driveCommand.isScheduled())
+    //     .and(drive::isAutoAlignGoalCompleted)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             new PlaceCoral(Constants.l3),
+    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
+    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
-        .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new PrepareForPlaceCoral(Constants.l2));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
+    //     .and(RobotState.getInstance()::isInReefZone)
+    //     .onTrue(new PrepareForPlaceCoral(Constants.l2));
 
-    new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
-        .and(() -> !driveCommand.isScheduled())
-        .and(drive::isAutoAlignGoalCompleted)
-        .onTrue(
-            Commands.sequence(
-                new PlaceCoral(Constants.l2),
-                Commands.runOnce(AutoMoveToNearestPOI::stop),
-                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
+    //     .and(() -> !driveCommand.isScheduled())
+    //     .and(drive::isAutoAlignGoalCompleted)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             new PlaceCoral(Constants.l2),
+    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
+    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
     // intake
     // coralIntake.setDefaultCommand(coralIntake.run(() ->

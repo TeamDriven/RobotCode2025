@@ -30,13 +30,12 @@ public class CircleZone implements Zone {
     public boolean isRobotInZone(Pose2d robotPose) {
         var circle = makeCircle();
 
-        double xOffset = DriveConstants.driveConfig.bumperWidthX() / 2;
-        double yOffset = DriveConstants.driveConfig.bumperWidthY() / 2;
+        double offset = DriveConstants.robotWidth / 2;
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                double x = robotPose.getY() + (yOffset * i);
-                double y = robotPose.getX() + (xOffset * j);
+                double x = robotPose.getY() + (offset * i);
+                double y = robotPose.getX() + (offset * j);
 
                 if (circle.contains(x, y)) return true;
             }

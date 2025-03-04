@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.drive.DriveConstants.driveConfig;
+import static frc.robot.subsystems.drive.DriveConstants.robotWidth;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -182,7 +182,7 @@ public class FieldConstants {
 
         for (int j = 0; j < 2; j++) {
           Pose2d poseDirection = new Pose2d(center, centerFaces[i].getRotation());
-          double adjustX = Units.inchesToMeters(30.738) + (driveConfig.bumperWidthX() / 2) + placeOffset;
+          double adjustX = Units.inchesToMeters(30.738) + (robotWidth / 2) + placeOffset;
           double adjustY = Units.inchesToMeters(6.469);
 
           placePoses[placePoseIndex++] = new Pose2d(
@@ -231,10 +231,10 @@ public class FieldConstants {
         Pose2d chutePose = new Pose2d(x, y, new Rotation2d(Units.degreesToRadians(-55)));
         pickupLocations[i] = new Pose2d(
             chutePose
-                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .transformBy(new Transform2d((robotWidth / 2) + pickupOffset, 0, new Rotation2d()))
                 .getX(),
             chutePose
-                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .transformBy(new Transform2d((robotWidth / 2) + pickupOffset, 0, new Rotation2d()))
                 .getY(),
             chutePose.getRotation().rotateBy(new Rotation2d(Math.PI)));
       }
@@ -255,10 +255,10 @@ public class FieldConstants {
         Pose2d chutePose = new Pose2d(x, y, new Rotation2d(Units.degreesToRadians(55)));
         pickupLocations[i + 9] = new Pose2d(
             chutePose
-                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .transformBy(new Transform2d((robotWidth / 2) + pickupOffset, 0, new Rotation2d()))
                 .getX(),
             chutePose
-                .transformBy(new Transform2d((driveConfig.bumperWidthX() / 2) + pickupOffset, 0, new Rotation2d()))
+                .transformBy(new Transform2d((robotWidth / 2) + pickupOffset, 0, new Rotation2d()))
                 .getY(),
             chutePose.getRotation().rotateBy(new Rotation2d(Math.PI)));
       }
