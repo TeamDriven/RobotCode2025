@@ -47,4 +47,7 @@ public class Controls {
   // Climber
   public static Trigger winchUp = driver.pov(90);
   public static Trigger winchDown = driver.pov(270);
+
+  public static Trigger footerUp = driver.y();
+  public static Trigger footerDown = driver.a();
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import static frc.robot.subsystems.coralActuation.CoralActuationConstants.tuckPos;
 import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
 
 import java.util.function.DoubleSupplier;
@@ -8,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -119,7 +121,30 @@ public class Elevator extends SubsystemBase{
     }
 
     public Command resetPosition() {
-        return Commands.runOnce(elevatorIO::resetPosition, this);
+        return new Command() {
+            Timer timer = new Timer();
+
+            @Override
+            public void initialize() {
+                timer.start();
+            }
+
+            @Override
+            public void execute() {
+                runVelocity(30);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                elevatorIO.resetPosition();
+                setPos(tuckPos);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.1) && elevatorInputs.leftMotorVel < 1);
+            }
+        };
     }
 
     public boolean isAtHeight(double height, double tolerance) {
