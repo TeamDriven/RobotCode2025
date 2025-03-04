@@ -18,7 +18,7 @@ public class ElevatorConstants {
     public static final double tuckPos = 21;
     public static final double pickUpPos = 9.75;
     public static final double L1Pos = 3.8;
-    public static final double L2Pos = 21;
+    public static final double L2Pos = 20;
     public static final double L3Pos = 37.5;
     public static final double L4Pos = 63.3;
     public static final double lowDealgifyPos = 9.5;

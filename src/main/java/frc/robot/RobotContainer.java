@@ -143,7 +143,7 @@ public class RobotContainer {
     new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
         .or(() -> RobotState.getInstance().desiredAction == actions.L3)
         .or(() -> RobotState.getInstance().desiredAction == actions.L2)
-        .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.TWO_STAGE,
+        .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.SLOW,
             Reef.placePoses));
 
     new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
@@ -219,7 +219,7 @@ public class RobotContainer {
     // driver.y().onTrue(elevator.run(() -> elevator.setPos(60)));
 
     // driver.a().whileTrue(
-    //     new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
+    // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
 
     // driver.b().whileTrue(
     // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE,
@@ -227,8 +227,10 @@ public class RobotContainer {
 
     // driver.b().onTrue(new PlaceCoral(Constants.l4));
 
-    // winchUp.onTrue(winch.run(() -> winch.runVoltage(12))).onFalse(winch.run(() -> winch.runVoltage(0)));
-    // winchDown.onTrue(winch.run(() -> winch.runVoltage(-12))).onFalse(winch.run(() -> winch.runVoltage(0)));
+    // winchUp.onTrue(winch.run(() -> winch.runVoltage(12))).onFalse(winch.run(() ->
+    // winch.runVoltage(0)));
+    // winchDown.onTrue(winch.run(() -> winch.runVoltage(-12))).onFalse(winch.run(()
+    // -> winch.runVoltage(0)));
   }
 
   /** Updates the alerts for disconnected controllers. */
