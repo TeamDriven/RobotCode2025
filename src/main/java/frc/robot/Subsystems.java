@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.coralIntake.CoralIntake;
-import frc.robot.subsystems.coralIntake.CoralIntakeIO;
-import frc.robot.subsystems.coralIntake.CoralIntakeIOKraken;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -16,18 +13,21 @@ import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOKraken;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.climber.winch.WinchIO;
 import frc.robot.subsystems.climber.winch.WinchIOKraken;
+import frc.robot.subsystems.actuation.Actuation;
+import frc.robot.subsystems.actuation.ActuationIO;
+import frc.robot.subsystems.actuation.ActuationIOKraken;
 import frc.robot.subsystems.climber.footer.Footer;
 import frc.robot.subsystems.climber.footer.FooterIO;
 import frc.robot.subsystems.climber.footer.FooterIOKraken;
 import frc.robot.subsystems.climber.winch.Winch;
-import frc.robot.subsystems.coralActuation.CoralActuation;
-import frc.robot.subsystems.coralActuation.CoralActuationIO;
-import frc.robot.subsystems.coralActuation.CoralActuationIOKraken;
 
 /**
  * The Subsystems class represents the collection of subsystems used in the
@@ -42,10 +42,8 @@ public final class Subsystems {
   public static final Vision topVision;
   // public static final Vision rightVision;
 
-  public static final CoralIntake coralIntake;
-  public static final CoralActuation coralActuation;
-  // public static final AlgaeActuation algaeActuation;
-  // public static final AlgaeIntake algaeIntake;
+  public static final Intake intake;
+  public static final Actuation actuation;
   public static final Elevator elevator;
   public static final Winch winch;
   public static final Footer footer;
@@ -70,11 +68,8 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13, 2));
-          coralActuation = new CoralActuation(new CoralActuationIOKraken(14, 0));
-          // coralActuation = new CoralActuation(new CoralActuationIO() {});
-          // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
-          // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
+          intake = new Intake(new IntakeIOKraken(13, 2));
+          actuation = new Actuation(new ActuationIOKraken(14, 0));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
           winch = new Winch(new WinchIOKraken(20, 21));
           footer = new Footer(new FooterIOKraken(19));
@@ -108,10 +103,8 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          coralIntake = new CoralIntake(new CoralIntakeIO() {});
-          coralActuation = new CoralActuation(new CoralActuationIO() {});
-          // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
-          // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
+          intake = new Intake(new IntakeIO() {});
+          actuation = new Actuation(new ActuationIO() {});
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
           winch = new Winch(new WinchIOKraken(20, 21));
           footer = new Footer(new FooterIOKraken(19));
@@ -147,10 +140,8 @@ public final class Subsystems {
       // rightVision = new Vision("Right Vision", new VisionIO() {},
       // drive::getSpeeds);
 
-      coralIntake = new CoralIntake(new CoralIntakeIO() {});
-      coralActuation = new CoralActuation(new CoralActuationIO() {});
-      // algaeActuation = new AlgaeActuation(new AlgaeActuationIO() {});
-      // algaeIntake = new AlgaeIntake(new AlgaeIntakeIO() {});
+      intake = new Intake(new IntakeIO() {});
+      actuation = new Actuation(new ActuationIO() {});
       elevator = new Elevator(new ElevatorIO() {});
       winch = new Winch(new WinchIO() {});
       footer = new Footer(new FooterIO() {});

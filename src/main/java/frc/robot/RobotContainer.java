@@ -8,8 +8,7 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
-import static frc.robot.subsystems.elevator.ElevatorConstants.*;
+import static frc.robot.subsystems.intake.IntakeConstants.*;
 
 import java.util.function.BooleanSupplier;
 
@@ -27,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.FieldConstants.CoralStations;
@@ -39,8 +37,7 @@ import frc.robot.commands.automation.TuckCommand;
 import frc.robot.commands.autos.Place4LeftSide;
 import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
-import frc.robot.subsystems.coralActuation.CoralActuationConstants;
-import frc.robot.subsystems.coralIntake.CoralIntake;
+import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
@@ -141,7 +138,7 @@ public class RobotContainer {
     new Trigger(isDesiredAction(actions.NONE))
         .onTrue(Commands.parallel(
           new TuckCommand(),
-          coralIntake.runVelocityCommand(0),
+          intake.runVelocityCommand(0),
           Commands.runOnce(() -> drive.clearAutoAlignGoal()),
           Commands.runOnce(() -> drive.clearHeadingGoal())
         ));
@@ -157,7 +154,7 @@ public class RobotContainer {
     inttake.and(RobotState.getInstance()::isInReefZone).onTrue(setDesiredAction(actions.DEALGIFY));
     inttake.and(() -> !RobotState.getInstance().isInReefZone()).onTrue(setDesiredAction(actions.PICKUP_CORAL));
 
-    outtake.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity));
+    outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity));
 
     processor.onTrue(setDesiredAction(actions.PROCESSOR));
 
@@ -216,11 +213,11 @@ public class RobotContainer {
     new Trigger(isDesiredAction(actions.PICKUP_CORAL))
         .and(RobotState.getInstance()::isInPickupZone)
         .onTrue(Commands.parallel(
-            new SetPosition(ElevatorConstants.pickUpPos, CoralActuationConstants.pickUpPos),
-            coralIntake.runVelocityCommand(intakeVelocity)));
+            new SetPosition(ElevatorConstants.pickUpPos, ActuationConstants.pickUpPos),
+            intake.runVelocityCommand(intakeVelocity)));
 
     new Trigger(isDesiredAction(actions.PICKUP_CORAL)).and(RobotState.getInstance()::hasCoral)
-        .onTrue(coralIntake.runOnce(() -> coralIntake.runVelocity(0)));
+        .onTrue(intake.runOnce(() -> intake.runVelocity(0)));
 
     new Trigger(isDesiredAction(actions.PICKUP_CORAL))
         .and(RobotState.getInstance()::hasCoral)

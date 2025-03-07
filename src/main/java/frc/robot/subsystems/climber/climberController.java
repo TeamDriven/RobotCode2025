@@ -2,12 +2,11 @@ package frc.robot.subsystems.climber;
 
 import static frc.robot.Subsystems.footer;
 import static frc.robot.Subsystems.winch;
-import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.downPos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class climberConroller{
+public class climberController{
 
     public static Command runClimbers(double winchVoltage, double FooterPos) {
         return new SequentialCommandGroup(

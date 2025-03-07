@@ -1,6 +1,4 @@
-package frc.robot.subsystems.coralIntake;
-
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.detectionCurrent;
+package frc.robot.subsystems.intake;
 
 import java.util.function.DoubleSupplier;
 
@@ -11,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 
-public class CoralIntake extends SubsystemBase {
-    private CoralIntakeIO coralIntakeIO;
-    private CoralIntakeIOInputsAutoLogged inputs = new CoralIntakeIOInputsAutoLogged();
+public class Intake extends SubsystemBase {
+    private IntakeIO intakeIO;
+    private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
     private enum mode {
         VELOCITY,
@@ -24,24 +22,24 @@ public class CoralIntake extends SubsystemBase {
 
     private double value = 0;
 
-    public CoralIntake(CoralIntakeIO coralIntakeIO) {
-        this.coralIntakeIO = coralIntakeIO;
+    public Intake(IntakeIO intakeIO) {
+        this.intakeIO = intakeIO;
     }
 
     @Override
     public void periodic() {
-        coralIntakeIO.updateInputs(inputs);
-        Logger.processInputs("CoralIntake", inputs);
+        intakeIO.updateInputs(inputs);
+        Logger.processInputs("Intake", inputs);
 
         // Should report to RobotState when piece status changes
         RobotState.getInstance().setGamePiece(inputs.gamePieceSensor);
 
         if (value == 0) {
-            coralIntakeIO.stopMotor();
+            intakeIO.stopMotor();
         } else if (currentMode == mode.VELOCITY) {
-            coralIntakeIO.runMotor(value);
+            intakeIO.runMotor(value);
         } else if (currentMode == mode.VOLTAGE) {
-            coralIntakeIO.runMotor(value);
+            intakeIO.runMotor(value);
         } else {
             throw new IllegalStateException();
         }

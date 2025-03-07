@@ -1,12 +1,12 @@
-package frc.robot.subsystems.coralActuation;
+package frc.robot.subsystems.actuation;
 
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public interface CoralActuationIO {
+public interface ActuationIO {
     @AutoLog
-    public class CoralActuationIOInputs {
+    public class ActuationIOInputs {
         public double motorPos = 0;
         public double motorVoltage = 0;
         public double motorCurrent = 0;
@@ -16,7 +16,7 @@ public interface CoralActuationIO {
         public Rotation2d relativeEncoderPos = new Rotation2d();
     }
 
-    default void updateInputs(CoralActuationIOInputs inputs) {}
+    default void updateInputs(ActuationIOInputs inputs) {}
 
     default void moveToPos(double pos) {}
 

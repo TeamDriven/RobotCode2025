@@ -1,10 +1,10 @@
-package frc.robot.subsystems.coralIntake;
+package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface CoralIntakeIO {
+public interface IntakeIO {
     @AutoLog
-    public class CoralIntakeIOInputs {
+    public class IntakeIOInputs {
         public double motorVoltage = 0;
         public double motorCurrent = 0;
         public double motorVel = 0;
@@ -13,7 +13,7 @@ public interface CoralIntakeIO {
         public boolean gamePieceSensor = false;
     }
 
-    default void updateInputs(CoralIntakeIOInputs inputs) {}
+    default void updateInputs(IntakeIOInputs inputs) {}
 
     default void runMotor(double velocity) {}
 

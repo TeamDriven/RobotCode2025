@@ -1,6 +1,6 @@
-package frc.robot.subsystems.coralIntake;
+package frc.robot.subsystems.intake;
 
-import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
+import static frc.robot.subsystems.intake.IntakeConstants.*;
 
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -10,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
-public class CoralIntakeIOKraken implements CoralIntakeIO {
+public class IntakeIOKraken implements IntakeIO {
     private MotorFactory motorFactory;
     private final TalonFX intakeMotor; 
     private final DigitalInput gamePieceSensor;
@@ -19,8 +19,8 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
     private final NeutralOut stopMode = new NeutralOut();
 
-    public CoralIntakeIOKraken(int motorID, int sensorChannel) {
-        motorFactory = new MotorFactory("CoralIntake", motorID);
+    public IntakeIOKraken(int motorID, int sensorChannel) {
+        motorFactory = new MotorFactory("Intake", motorID);
 
         motorFactory.setBrakeMode(true);
         motorFactory.setInverted(true);
@@ -36,7 +36,7 @@ public class CoralIntakeIOKraken implements CoralIntakeIO {
     }
 
     @Override
-    public void updateInputs(CoralIntakeIOInputs inputs) {
+    public void updateInputs(IntakeIOInputs inputs) {
         inputs.motorCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
         inputs.motorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();

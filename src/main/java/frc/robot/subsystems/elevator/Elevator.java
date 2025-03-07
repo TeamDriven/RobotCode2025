@@ -1,6 +1,6 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.coralActuation.CoralActuationConstants.tuckPos;
+import static frc.robot.subsystems.actuation.ActuationConstants.tuckPos;
 import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
 
 import java.util.function.DoubleSupplier;

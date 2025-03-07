@@ -9,9 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.coralActuation.CoralActuationConstants;
-import frc.robot.subsystems.coralIntake.CoralIntakeConstants;
+import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 
@@ -83,9 +83,9 @@ public final class Constants {
 
   public static record placeLevel(double elevatorHeight, double angle, double outtakeSpeed) {}
 
-  public static placeLevel l4 = new placeLevel(ElevatorConstants.L4Pos, CoralActuationConstants.L4Pos, CoralIntakeConstants.L4Speed);
-  public static placeLevel l3 = new placeLevel(ElevatorConstants.L3Pos, CoralActuationConstants.L3Pos, CoralIntakeConstants.L3Speed);
-  public static placeLevel l2 = new placeLevel(ElevatorConstants.L2Pos, CoralActuationConstants.L2Pos, CoralIntakeConstants.L2Speed);
-  public static placeLevel l1 = new placeLevel(ElevatorConstants.L1Pos, CoralActuationConstants.L1Pos, CoralIntakeConstants.L1Speed);
+  public static placeLevel l4 = new placeLevel(ElevatorConstants.L4Pos, ActuationConstants.L4Pos, IntakeConstants.L4Speed);
+  public static placeLevel l3 = new placeLevel(ElevatorConstants.L3Pos, ActuationConstants.L3Pos, IntakeConstants.L3Speed);
+  public static placeLevel l2 = new placeLevel(ElevatorConstants.L2Pos, ActuationConstants.L2Pos, IntakeConstants.L2Speed);
+  public static placeLevel l1 = new placeLevel(ElevatorConstants.L1Pos, ActuationConstants.L1Pos, IntakeConstants.L1Speed);
 
 }

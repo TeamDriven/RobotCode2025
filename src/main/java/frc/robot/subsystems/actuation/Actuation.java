@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.coralActuation;
+package frc.robot.subsystems.actuation;
 
 import java.util.function.DoubleSupplier;
 
@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 
-public class CoralActuation extends SubsystemBase {
-  private CoralActuationIO coralActuationIO;
-  private CoralActuationIOInputsAutoLogged inputs = new CoralActuationIOInputsAutoLogged();
+public class Actuation extends SubsystemBase {
+  private ActuationIO actuationIO;
+  private ActuationIOInputsAutoLogged inputs = new ActuationIOInputsAutoLogged();
 
-  private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("CoralActuation/toleranceTime", 0.1);
-  private LoggedTunableNumber tolerance = new LoggedTunableNumber("CoralActuation/tolerance", 1);
+  private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("Actuation/toleranceTime", 0.1);
+  private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 1);
 
   private Timer toleranceTimer = new Timer();
 
@@ -38,9 +38,9 @@ public class CoralActuation extends SubsystemBase {
 
   private double value = 0;
 
-  /** Creates a new CoralActuation. */
-  public CoralActuation(CoralActuationIO coralActuationIO) {
-    this.coralActuationIO = coralActuationIO;
+  /** Creates a new Actuation. */
+  public Actuation(ActuationIO actuationIO) {
+    this.actuationIO = actuationIO;
 
     toleranceTimer.start();
     brakeTimer.start();
@@ -48,20 +48,20 @@ public class CoralActuation extends SubsystemBase {
 
   @Override
   public void periodic() {
-    coralActuationIO.updateInputs(inputs);
-    Logger.processInputs("CoralActuation", inputs);
+    actuationIO.updateInputs(inputs);
+    Logger.processInputs("Actuation", inputs);
 
-    Logger.recordOutput("CoralActuation/mode", currentMode);
-    Logger.recordOutput("CoralActuation/value", value);
+    Logger.recordOutput("Actuation/mode", currentMode);
+    Logger.recordOutput("Actuation/value", value);
 
     if (DriverStation.isEnabled()) {
       brakeTimer.reset();
       if (!brakeMode) {
-        coralActuationIO.setBrakeMode(true);
+        actuationIO.setBrakeMode(true);
         brakeMode = true;
       }
     } else if (brakeTimer.hasElapsed(5) && brakeMode) {
-      coralActuationIO.setBrakeMode(false);
+      actuationIO.setBrakeMode(false);
       brakeMode = false;
     }
 
@@ -70,13 +70,13 @@ public class CoralActuation extends SubsystemBase {
         if (!MathUtil.isNear(value, inputs.relativeEncoderPos.getDegrees(), tolerance.get())) {
           toleranceTimer.reset();
         }
-        coralActuationIO.moveToPos(value);
+        actuationIO.moveToPos(value);
         break;
       case VOLTAGE:
-        coralActuationIO.runVoltage(value);
+        actuationIO.runVoltage(value);
         break;
       case STOPPED:
-        coralActuationIO.stopMotor();
+        actuationIO.stopMotor();
         break;
     }
   }
@@ -84,7 +84,7 @@ public class CoralActuation extends SubsystemBase {
   public void setPos(double pos) {
     currentMode = mode.POSITION;
     value = pos;
-    coralActuationIO.seedMotor(inputs.relativeEncoderPos);
+    actuationIO.seedMotor(inputs.relativeEncoderPos);
   }
 
   public void stop() {

@@ -1,6 +1,6 @@
-package frc.robot.subsystems.coralActuation;
+package frc.robot.subsystems.actuation;
 
-import static frc.robot.subsystems.coralActuation.CoralActuationConstants.offset;
+import static frc.robot.subsystems.actuation.ActuationConstants.offset;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -15,17 +15,17 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.RobotState;
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
-public class CoralActuationIOKraken implements CoralActuationIO {
+public class ActuationIOKraken implements ActuationIO {
     private MotorFactory motorFactory;
-    private TalonFX coralActuationMotor;
+    private TalonFX actuationMotor;
 
     private PositionVoltage positionControl;
     private VoltageOut voltageOut;
     private NeutralOut stopMode;
     private DutyCycleEncoder encoder;
 
-    public CoralActuationIOKraken(int motorID, int encoderChannel) {
-        motorFactory = new MotorFactory("CoralActuation", motorID);
+    public ActuationIOKraken(int motorID, int encoderChannel) {
+        motorFactory = new MotorFactory("Actuation", motorID);
 
         motorFactory.setInverted(false);
         motorFactory.setBrakeMode(true);
@@ -38,11 +38,11 @@ public class CoralActuationIOKraken implements CoralActuationIO {
         motorFactory.setSlot1(50, 0, 7.5);
         motorFactory.setSlot1(3, 0.26, GravityTypeValue.Arm_Cosine);
 
-        motorFactory.setSensorToOutputRatio(CoralActuationConstants.gearRatio);
+        motorFactory.setSensorToOutputRatio(ActuationConstants.gearRatio);
 
         motorFactory.configureMotors();
         var motors = motorFactory.getMotors();
-        coralActuationMotor = motors[0];
+        actuationMotor = motors[0];
 
         encoder = new DutyCycleEncoder(encoderChannel);
         encoder.setInverted(false);
@@ -55,11 +55,11 @@ public class CoralActuationIOKraken implements CoralActuationIO {
     }
 
     @Override
-    public void updateInputs(CoralActuationIOInputs inputs) {
-        inputs.motorPos = coralActuationMotor.getPosition().getValueAsDouble();
-        inputs.motorCurrent = coralActuationMotor.getSupplyCurrent().getValueAsDouble();
-        inputs.motorVel = coralActuationMotor.getVelocity().getValueAsDouble();
-        inputs.motorVoltage = coralActuationMotor.getMotorVoltage().getValueAsDouble();
+    public void updateInputs(ActuationIOInputs inputs) {
+        inputs.motorPos = actuationMotor.getPosition().getValueAsDouble();
+        inputs.motorCurrent = actuationMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.motorVel = actuationMotor.getVelocity().getValueAsDouble();
+        inputs.motorVoltage = actuationMotor.getMotorVoltage().getValueAsDouble();
 
         inputs.absoluteEncoderPos = Rotation2d.fromRotations(encoder.get());
         inputs.relativeEncoderPos = inputs.absoluteEncoderPos.minus(new Rotation2d(offset));
@@ -70,12 +70,12 @@ public class CoralActuationIOKraken implements CoralActuationIO {
     @Override
     public void moveToPos(double pos) {
         pos = Units.degreesToRotations(pos);
-        coralActuationMotor.setControl(positionControl.withPosition(pos).withSlot(RobotState.getInstance().hasCoral() ? 1 : 0));
+        actuationMotor.setControl(positionControl.withPosition(pos).withSlot(RobotState.getInstance().hasCoral() ? 1 : 0));
     }
 
     @Override
     public void runVoltage(double voltage) {
-        coralActuationMotor.setControl(voltageOut.withOutput(voltage));
+        actuationMotor.setControl(voltageOut.withOutput(voltage));
     }
 
     @Override
@@ -86,11 +86,11 @@ public class CoralActuationIOKraken implements CoralActuationIO {
 
     @Override
     public void stopMotor() {
-        coralActuationMotor.setControl(stopMode);
+        actuationMotor.setControl(stopMode);
     }
 
     @Override
     public void seedMotor(Rotation2d currentRot) {
-        coralActuationMotor.setPosition(currentRot.getRotations());
+        actuationMotor.setPosition(currentRot.getRotations());
     }
 }
