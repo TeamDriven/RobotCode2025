@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.coralActuation.CoralActuationIO.CoralActuationIOInputs;
 import frc.robot.util.LoggedTunableNumber;
 
 public class CoralActuation extends SubsystemBase {
@@ -68,10 +67,9 @@ public class CoralActuation extends SubsystemBase {
 
     switch (currentMode) {
       case POSITION:
-        if (!MathUtil.isNear(value, inputs.relativeEncoderPos, tolerance.get())) {
+        if (!MathUtil.isNear(value, inputs.relativeEncoderPos.getDegrees(), tolerance.get())) {
           toleranceTimer.reset();
         }
-        coralActuationIO.seedMotor();
         coralActuationIO.moveToPos(value);
         break;
       case VOLTAGE:
@@ -86,6 +84,7 @@ public class CoralActuation extends SubsystemBase {
   public void setPos(double pos) {
     currentMode = mode.POSITION;
     value = pos;
+    coralActuationIO.seedMotor(inputs.relativeEncoderPos);
   }
 
   public void stop() {

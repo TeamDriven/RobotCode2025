@@ -17,37 +17,21 @@ public class Controls {
       () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
   public static Trigger resetPose = driver.start();
 
-  // Actions
-  public static Trigger placeL4 = rightStickDrive ? driver.pov(0) : driver.y();
-  public static Trigger placeL3 = rightStickDrive ? driver.pov(270) : driver.x();
-  public static Trigger placeL2 = rightStickDrive ? driver.pov(90) : driver.b();
-  public static Trigger placeL1 = rightStickDrive ? driver.pov(180) : driver.a();
-  
-  // Algae Actuation
-  public static Trigger algaeActuationUp = new Trigger(() -> false);
-  public static Trigger algaeActuationDown = new Trigger(() -> false);
-
-  // Algae Intake
-  public static Trigger algaeIntakeIn = new Trigger(() -> false);
-  public static Trigger algaeIntakeOut = new Trigger(() -> false);
-
-  // Coral Actuation
-  public static Trigger coralActuationUp = driver.y();
-  public static Trigger coralActuationDown = driver.a();
-
-  // Coral Intake
-  public static Trigger coralIntakeIn = driver.rightBumper();
-  public static Trigger coralOuttakeOut = driver.leftBumper();
-  
-  // Elevator
-  public static Trigger elevatorUp = driver.y();
-  public static Trigger elevatorDown = driver.a();
   public static Trigger resetElevatorPosition = driver.back();
 
-  // Climber
-  public static Trigger winchUp = driver.pov(90);
-  public static Trigger winchDown = driver.pov(270);
+  // Actions
+  public static Trigger cancelAction = rightStickDrive ? driver.leftStick() : driver.rightStick();
 
-  public static Trigger footerUp = driver.y();
-  public static Trigger footerDown = driver.a();
+  public static Trigger placeL4 = rightStickDrive ? driver.pov(0) : driver.y();
+  public static Trigger placeL3 = rightStickDrive ? driver.pov(90) : driver.b();
+  public static Trigger placeL2 = rightStickDrive ? driver.pov(270) : driver.x();
+  public static Trigger placeL1 = rightStickDrive ? driver.pov(180) : driver.a();
+
+  public static Trigger inttake = driver.rightBumper();
+  public static Trigger outtake = driver.leftBumper();
+
+  public static Trigger processor = driver.rightTrigger(0.1);
+
+  public static Trigger climb = rightStickDrive ? driver.y() : driver.pov(0);
+  public static Trigger deployClimber = rightStickDrive ? driver.a() : driver.pov(180);
 }

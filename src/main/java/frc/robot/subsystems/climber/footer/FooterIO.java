@@ -14,7 +14,9 @@ public interface FooterIO {
 
   default void updateInputs(FooterIOInputs inputs) {}
 
-  default void runClimberMotors(double velocity) {}
+  default void runVoltage(double velocity) {}
 
-  default void stopClimber() {}
+  default void moveToPos(double pos) {}
+
+  default void stopFooter() {}
 }

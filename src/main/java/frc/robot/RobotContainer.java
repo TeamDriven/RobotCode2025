@@ -9,22 +9,15 @@ package frc.robot;
 
 import static frc.robot.Subsystems.*;
 import static frc.robot.subsystems.coralIntake.CoralIntakeConstants.*;
-import static frc.robot.subsystems.coralActuation.CoralActuationConstants.*;
 import static frc.robot.subsystems.elevator.ElevatorConstants.*;
-import static frc.robot.subsystems.algaeIntake.AlgaeIntakeConstants.*;
-import static frc.robot.subsystems.climber.winch.WinchConstants.*;
-import static frc.robot.subsystems.algaeActuation.AlgaeActuationConstants.*;
-import static frc.robot.subsystems.led.LEDConstants.*;
-import static frc.robot.commands.automation.PlaceCoral.*;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.function.BooleanSupplier;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Controls.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -34,18 +27,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotState.actions;
 import frc.robot.commands.automation.PlaceCoral;
-import frc.robot.commands.automation.PrepareForPlaceCoral;
+import frc.robot.commands.automation.SetPosition;
+import frc.robot.commands.automation.TuckCommand;
 import frc.robot.commands.autos.Place4LeftSide;
 import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
+import frc.robot.subsystems.coralActuation.CoralActuationConstants;
+import frc.robot.subsystems.coralIntake.CoralIntake;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -111,6 +108,14 @@ public class RobotContainer {
           driveX.getAsDouble(), driveY.getAsDouble(), driveOmega.getAsDouble(), false))
       .withName("Drive Teleop Input");
 
+  private Command setDesiredAction(actions desiredAction) {
+    return Commands.runOnce(() -> RobotState.getInstance().desiredAction = desiredAction);
+  }
+
+  private BooleanSupplier isDesiredAction(actions desiredAction) {
+    return () -> RobotState.getInstance().desiredAction == desiredAction;
+  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -133,105 +138,94 @@ public class RobotContainer {
 
     resetElevatorPosition.onTrue(elevator.resetPosition());
 
+    new Trigger(isDesiredAction(actions.NONE))
+        .onTrue(Commands.parallel(
+          new TuckCommand(),
+          coralIntake.runVelocityCommand(0),
+          Commands.runOnce(() -> drive.clearAutoAlignGoal()),
+          Commands.runOnce(() -> drive.clearHeadingGoal())
+        ));
+
+    cancelAction.onTrue(setDesiredAction(actions.NONE));
+
     // Placing
-    // placeL4.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L4));
-    // placeL3.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L3));
-    // placeL2.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L2));
-    // placeL1.onTrue(Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.L1));
+    placeL4.onTrue(setDesiredAction(actions.L4));
+    placeL3.onTrue(setDesiredAction(actions.L3));
+    placeL2.onTrue(setDesiredAction(actions.L2));
+    placeL1.onTrue(setDesiredAction(actions.L1));
 
-    // // Auto align if trying to place L2+
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-    //     .or(() -> RobotState.getInstance().desiredAction == actions.L3)
-    //     .or(() -> RobotState.getInstance().desiredAction == actions.L2)
-    //     .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.SLOW,
-    //         Reef.placePoses));
+    inttake.and(RobotState.getInstance()::isInReefZone).onTrue(setDesiredAction(actions.DEALGIFY));
+    inttake.and(() -> !RobotState.getInstance().isInReefZone()).onTrue(setDesiredAction(actions.PICKUP_CORAL));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-    //     .and(RobotState.getInstance()::isInReefZone)
-    //     .onTrue(new PrepareForPlaceCoral(Constants.l4));
+    outtake.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L4)
-    //     .and(() -> !driveCommand.isScheduled())
-    //     .and(drive::isAutoAlignGoalCompleted)
-    //     .onTrue(
-    //         Commands.sequence(
-    //             new PlaceCoral(Constants.l4),
-    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
-    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    processor.onTrue(setDesiredAction(actions.PROCESSOR));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
-    //     .and(RobotState.getInstance()::isInReefZone)
-    //     .onTrue(new PrepareForPlaceCoral(Constants.l3));
+    // Auto align if trying to place L2+
+    new Trigger(isDesiredAction(actions.L4))
+        .or(isDesiredAction(actions.L3))
+        .or(isDesiredAction(actions.L2))
+        .whileTrue(new AutoMoveToNearestPOI(false, allignmentMode.TWO_STAGE,
+            Reef.placePoses));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L3)
-    //     .and(() -> !driveCommand.isScheduled())
-    //     .and(drive::isAutoAlignGoalCompleted)
-    //     .onTrue(
-    //         Commands.sequence(
-    //             new PlaceCoral(Constants.l3),
-    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
-    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    new Trigger(isDesiredAction(actions.L4))
+        .and(RobotState.getInstance()::isInReefZone)
+        .onTrue(new SetPosition(Constants.l4));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
-    //     .and(RobotState.getInstance()::isInReefZone)
-    //     .onTrue(new PrepareForPlaceCoral(Constants.l2));
+    new Trigger(isDesiredAction(actions.L4))
+        .and(() -> !driveCommand.isScheduled())
+        .and(drive::isAutoAlignGoalCompleted)
+        .onTrue(
+            Commands.sequence(
+                new PlaceCoral(Constants.l4),
+                Commands.runOnce(AutoMoveToNearestPOI::stop),
+                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
-    // new Trigger(() -> RobotState.getInstance().desiredAction == actions.L2)
-    //     .and(() -> !driveCommand.isScheduled())
-    //     .and(drive::isAutoAlignGoalCompleted)
-    //     .onTrue(
-    //         Commands.sequence(
-    //             new PlaceCoral(Constants.l2),
-    //             Commands.runOnce(AutoMoveToNearestPOI::stop),
-    //             Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
+    new Trigger(isDesiredAction(actions.L3))
+        .and(RobotState.getInstance()::isInReefZone)
+        .onTrue(new SetPosition(Constants.l3));
 
-    // intake
-    // coralIntake.setDefaultCommand(coralIntake.run(() ->
-    // coralIntake.runVelocity(-10)));
-    coralIntakeIn.whileTrue(coralIntake.runVelocityCommand(intakeVelocity::get));
-    coralOuttakeOut.whileTrue(coralIntake.runVelocityCommand(outtakeVelocity::get));
-    driver.rightTrigger(0.1).whileTrue(Commands.startEnd(() -> coralIntake.runVoltage(tuningVoltage.get()),
-        () -> coralIntake.runVoltage(0), coralIntake));
+    new Trigger(isDesiredAction(actions.L3))
+        .and(() -> !driveCommand.isScheduled())
+        .and(drive::isAutoAlignGoalCompleted)
+        .onTrue(
+            Commands.sequence(
+                new PlaceCoral(Constants.l3),
+                Commands.runOnce(AutoMoveToNearestPOI::stop),
+                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
-    // coralActuationUp.whileTrue(coralActuation.runVoltageCommand(() ->
-    // coralActuationTuningVoltage.get()));
-    // coralActuationDown.whileTrue(coralActuation.runVoltageCommand(() ->
-    // -coralActuationTuningVoltage.get()));
+    new Trigger(isDesiredAction(actions.L2))
+        .and(RobotState.getInstance()::isInReefZone)
+        .onTrue(new SetPosition(Constants.l2));
 
-    // driver.x().onTrue(coralActuation.run(() -> coralActuation.setPos(actuationPos.get())));
+    new Trigger(isDesiredAction(actions.L2))
+        .and(() -> !driveCommand.isScheduled())
+        .and(drive::isAutoAlignGoalCompleted)
+        .onTrue(
+            Commands.sequence(
+                new PlaceCoral(Constants.l2),
+                Commands.runOnce(AutoMoveToNearestPOI::stop),
+                Commands.runOnce(() -> RobotState.getInstance().desiredAction = actions.NONE)));
 
-    // coralActuationDown.onTrue(coralActuation.run(() ->
-    // coralActuation.setPos(actuationPos.get())));
+    new Trigger(isDesiredAction(actions.L1)).onTrue(new SetPosition(Constants.l1));
 
-    // driver.x().onTrue(coralActuation.run(() -> coralActuation.setPos(-25)));
-    // driver.b().onTrue(coralActuation.run(() -> coralActuation.setPos(25)));
+    // Pickup Coral
+    new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        .onTrue(new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, CoralStations.pickupLocations));
 
-    // Elevator
-    // elevatorUp.whileTrue(elevator.runVoltageCommand(() -> elevatorTuningVoltage.get()));
-    // elevatorDown.whileTrue(elevator.runVoltageCommand(() -> -elevatorTuningVoltage.get()));
+    new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        .and(RobotState.getInstance()::isInPickupZone)
+        .onTrue(Commands.parallel(
+            new SetPosition(ElevatorConstants.pickUpPos, CoralActuationConstants.pickUpPos),
+            coralIntake.runVelocityCommand(intakeVelocity)));
 
-    // elevatorUp.onTrue(elevator.run(() -> elevator.setPos(elevatorPos.get())));
+    new Trigger(isDesiredAction(actions.PICKUP_CORAL)).and(RobotState.getInstance()::hasCoral)
+        .onTrue(coralIntake.runOnce(() -> coralIntake.runVelocity(0)));
 
-    // elevatorDown.onTrue(elevator.run(() ->
-    // elevator.setPos(this.elevatorPos.get())));
-
-    // driver.a().onTrue(elevator.run(() -> elevator.setPos(20)));
-    // driver.y().onTrue(elevator.run(() -> elevator.setPos(60)));
-
-    // driver.a().whileTrue(
-    // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses));
-
-    // driver.b().whileTrue(
-    // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE,
-    // CoralStations.pickupLocations));
-
-    // driver.b().onTrue(new PlaceCoral(Constants.l4));
-
-    winchUp.onTrue(winch.run(() -> winch.runVoltage(12))).onFalse(winch.run(() -> winch.runVoltage(0)));
-    winchDown.onTrue(winch.run(() -> winch.runVoltage(-12))).onFalse(winch.run(()-> winch.runVoltage(0)));
-    
-    footerUp.onTrue(footer.run(() -> footer.runVoltage(1))).onFalse(footer.run(() -> footer.runVoltage(0)));
-    footerDown.onTrue(footer.run(() -> footer.runVoltage(-1))).onFalse(footer.run(()-> footer.runVoltage(0)));
+    new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        .and(RobotState.getInstance()::hasCoral)
+        .and(() -> !RobotState.getInstance().isInPickupZone())
+        .onTrue(setDesiredAction(actions.NONE));
   }
 
   /** Updates the alerts for disconnected controllers. */

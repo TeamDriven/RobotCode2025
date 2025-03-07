@@ -16,6 +16,7 @@ public class Footer extends SubsystemBase {
   private final FooterIOInputsAutoLogged footerInputs = new FooterIOInputsAutoLogged();
 
   private double voltage = 0;
+  private double position = 0;
 
   public Footer(FooterIO footerIO) {
     this.footerIO = footerIO;
@@ -24,21 +25,34 @@ public class Footer extends SubsystemBase {
   @Override
   public void periodic() {
     footerIO.updateInputs(footerInputs);
-    Logger.processInputs("Climber", footerInputs);
+    Logger.processInputs("Footer", footerInputs);
   
-    if(voltage != 0) {
-      footerIO.runClimberMotors(voltage);
+    if(voltage != 0 && position == 0) {
+      footerIO.runVoltage(voltage);
+    }else if(voltage == 0 && position != 0) {
+      footerIO.moveToPos(position);
     } else {
-      footerIO.stopClimber();
+      footerIO.stopFooter();
     }
   }
 
   public void runVoltage(double volts) {
+    position = 0;
     voltage = volts;
   }
 
   public Command runVoltageCommand(double volts) {
     return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
+  }
+
+  public void setPos(double pos) {
+    voltage = 0;
+    position = pos;
+  }
+
+  public void stop() {
+    voltage = 0;
+    position = 0;
   }
 
 }

@@ -175,40 +175,61 @@ public class RobotState {
   public Pose2d getOdometryPose() {
     return odometryPose;
   }
-
-  private boolean inReefZone = false;
-  private boolean inLeftPickupZone = false;
-  private boolean inRightPickupZone = false;
-  private boolean inClimbZone = false;
   
   @AutoLogOutput(key = "RobotState/ReefZone")
   public boolean isInReefZone() {
-    return inReefZone;
+    return Zones.reefZone.isRobotInZone(estimatedPose);
   }
 
   @AutoLogOutput(key = "RobotState/LeftPickupZone")
-  public boolean isInLeftPickupZone() {
-    return inLeftPickupZone;
+  private boolean isInLeftPickupZone() {
+    return Zones.leftPickupZone.isRobotInZone(estimatedPose);
   }
 
   @AutoLogOutput(key = "RobotState/RightPickupZone")
-  public boolean isInRightPickupZone() {
-    return inRightPickupZone;
+  private boolean isInRightPickupZone() {
+    return Zones.rightPickupZone.isRobotInZone(estimatedPose);
+  }
+
+  public boolean isInPickupZone() {
+    return isInLeftPickupZone() || isInRightPickupZone();
   }
 
   @AutoLogOutput(key = "RobotState/ClimbZone")
   public boolean isInClimbZone() {
-    return inClimbZone;
+    return Zones.climbZone.isRobotInZone(estimatedPose);
   }
 
-  public void updateZones() {
-    inReefZone = Zones.reefZone.isRobotInZone(estimatedPose);
-    inLeftPickupZone = Zones.leftPickupZone.isRobotInZone(estimatedPose);
-    inRightPickupZone = Zones.rightPickupZone.isRobotInZone(estimatedPose);
-    inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
+  private enum gamePiece {
+    CORAL,
+    ALGAE,
+    NONE;
   }
 
-  public boolean hasCoral = true;
+  private gamePiece storedPiece = gamePiece.NONE;
+
+  @AutoLogOutput(key = "RobotState/hasCoral")
+  public boolean hasCoral() {
+    return storedPiece == gamePiece.CORAL;
+  }
+
+  @AutoLogOutput(key = "RobotState/hasAlgae")
+  public boolean hasAlgae() {
+    return storedPiece == gamePiece.ALGAE;
+  }
+
+  public void setGamePiece(boolean sensorTripped) {
+    if (!sensorTripped) {
+      storedPiece = gamePiece.NONE;
+      return;
+    }
+
+    if (desiredAction == actions.DEALGIFY) {
+      storedPiece = gamePiece.ALGAE;
+    } else {
+      storedPiece = gamePiece.CORAL;
+    }
+  }
 
   public static enum actions {
     L4,
@@ -216,9 +237,10 @@ public class RobotState {
     L2,
     L1,
     PICKUP_CORAL,
-    PICKUP_ALGAE,
     DEALGIFY,
     CLIMB,
+    PROCESSOR,
+    PLACE_NET,
     NONE
   }
 

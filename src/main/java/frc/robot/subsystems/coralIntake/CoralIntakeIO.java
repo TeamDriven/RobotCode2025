@@ -9,6 +9,8 @@ public interface CoralIntakeIO {
         public double motorCurrent = 0;
         public double motorVel = 0;
         public double motorAccel = 0;
+
+        public boolean gamePieceSensor = false;
     }
 
     default void updateInputs(CoralIntakeIOInputs inputs) {}

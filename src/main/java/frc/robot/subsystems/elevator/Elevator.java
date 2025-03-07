@@ -126,25 +126,30 @@ public class Elevator extends SubsystemBase{
 
             @Override
             public void initialize() {
-                timer.start();
+                timer.restart();
             }
 
             @Override
             public void execute() {
-                runVelocity(30);
+                runVoltage(-3);
             }
 
             @Override
             public void end(boolean interrupted) {
+                timer.stop();
                 elevatorIO.resetPosition();
-                setPos(tuckPos);
+                stop();
             }
 
             @Override
             public boolean isFinished() {
-                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.1) && elevatorInputs.leftMotorVel < 1);
+                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.1) && Math.abs(elevatorInputs.leftMotorVel) < 2);
             }
         };
+    }
+
+    public void resetPos() {
+        elevatorIO.resetPosition();
     }
 
     public boolean isAtHeight(double height, double tolerance) {

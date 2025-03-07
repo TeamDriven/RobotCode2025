@@ -6,5 +6,5 @@ public class WinchConstants {
   public static final double upPos = 0;
   public static final double downPos = 0;
 
-  public static final LoggedTunableNumber winchTuningVoltage = new LoggedTunableNumber("Climber/tuningVoltage", 12);
+  public static final LoggedTunableNumber winchTuningVoltage = new LoggedTunableNumber("Climber/Winch/tuningVoltage", 12);
 }

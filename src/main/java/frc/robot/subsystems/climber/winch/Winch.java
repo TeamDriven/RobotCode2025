@@ -24,7 +24,7 @@ public class Winch extends SubsystemBase {
   @Override
   public void periodic() {
     winchIO.updateInputs(winchInputs);
-    Logger.processInputs("Climber", winchInputs);
+    Logger.processInputs("Winch", winchInputs);
   
     if(voltage != 0) {
       winchIO.runClimberMotors(voltage);

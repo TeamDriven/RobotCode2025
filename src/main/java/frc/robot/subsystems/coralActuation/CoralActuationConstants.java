@@ -3,9 +3,9 @@ package frc.robot.subsystems.coralActuation;
 import frc.robot.util.LoggedTunableNumber;
 
 public class CoralActuationConstants {
-    public static final double gearRatio = 5 * 7 * (32.0 / 18);
+    public static final double gearRatio = 5 * 7 * (36.0 / 15);
 
-    public static final double offset = 210.7;
+    public static final double offset = 0.497;
 
     public static final double startPos = 0;
 

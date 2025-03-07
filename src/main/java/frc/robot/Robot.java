@@ -163,8 +163,6 @@ public class Robot extends LoggedRobot {
     robotContainer.checkControllers();
     robotContainer.updateDashboardOutputs();
 
-    RobotState.getInstance().updateZones();
-
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
     if (canStatus.transmitErrorCount > 0 || canStatus.receiveErrorCount > 0) {

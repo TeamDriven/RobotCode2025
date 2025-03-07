@@ -25,7 +25,7 @@ public final class DriveConstants {
 
   public static final DriveConfig driveConfig = switch (Constants.getRobot()) {
     case SIMBOT, COMPBOT -> new DriveConfig(
-        Units.inchesToMeters(1.924437419735719), // Get from Wheel Radius Characterization
+        Units.inchesToMeters(1.93513589892683), // Get from Wheel Radius Characterization
         Units.inchesToMeters(22.75), // Track width X
         Units.inchesToMeters(22.75), // Track width Y
         Units.inchesToMeters(34), // Bumper width X
@@ -57,7 +57,7 @@ public final class DriveConstants {
   public static final double odometryFrequency = switch (Constants.getRobot()) {
     case SIMBOT -> 50.0;
     case DEVBOT -> 100.0;
-    case COMPBOT -> 150.0;
+    case COMPBOT -> 250.0;
   };
 
   public static final Matrix<N3, N1> odometryStateStdDevs = switch (Constants.getRobot()) {
@@ -67,10 +67,10 @@ public final class DriveConstants {
   // Module Constants
   public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConfig[] {
-      new ModuleConfig(1, 2, 3, new Rotation2d(0.015340), true), 
-      new ModuleConfig(4, 5, 6, new Rotation2d(1.544719), true), 
-      new ModuleConfig(7, 8, 9, new Rotation2d(1.049243), true), 
-      new ModuleConfig(10, 11, 12, new Rotation2d(-1.589204), true)
+      new ModuleConfig(1, 2, 3, new Rotation2d(-1.239456), true), 
+      new ModuleConfig(4, 5, 6, new Rotation2d(-1.925146), true), 
+      new ModuleConfig(7, 8, 9, new Rotation2d(-0.113515), true), 
+      new ModuleConfig(10, 11, 12, new Rotation2d(-1.573864), true) 
     };
     case DEVBOT -> new ModuleConfig[] {
         new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true),
@@ -88,8 +88,8 @@ public final class DriveConstants {
 
   public static final ModuleConstants moduleConstants = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConstants(
-        5.11103, // Get these two from FeedForwardCharacterization
-        0.08386,
+        5.55144, // Get these two from FeedForwardCharacterization
+        0.09508,
         1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
         35.0,
         0.0,

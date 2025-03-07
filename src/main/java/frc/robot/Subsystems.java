@@ -70,8 +70,9 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13));
+          coralIntake = new CoralIntake(new CoralIntakeIOKraken(13, 2));
           coralActuation = new CoralActuation(new CoralActuationIOKraken(14, 0));
+          // coralActuation = new CoralActuation(new CoralActuationIO() {});
           // algaeActuation = new AlgaeActuation(new AlgaeActuationIOKraken(18));
           // algaeIntake = new AlgaeIntake(new AlgaeIntakeIOKraken(19));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));

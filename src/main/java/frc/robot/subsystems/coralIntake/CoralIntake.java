@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
 
 public class CoralIntake extends SubsystemBase {
     private CoralIntakeIO coralIntakeIO;
@@ -33,6 +34,7 @@ public class CoralIntake extends SubsystemBase {
         Logger.processInputs("CoralIntake", inputs);
 
         // Should report to RobotState when piece status changes
+        RobotState.getInstance().setGamePiece(inputs.gamePieceSensor);
 
         if (value == 0) {
             coralIntakeIO.stopMotor();
