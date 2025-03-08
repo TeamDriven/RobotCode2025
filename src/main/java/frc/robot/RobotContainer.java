@@ -53,7 +53,7 @@ public class RobotContainer {
   private final Alert driverDisconnected = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
 
   private static double driveMult = 1;
-  private static double turnMult = 0.9;
+  private static double turnMult = 0.8;
 
   private static void setDriveMults(double drive, double turn) {
     driveMult = drive;
@@ -146,8 +146,8 @@ public class RobotContainer {
   private void configureButtonBindings(boolean demo) {
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
-    new Trigger(this::isTryingToPlace).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.45)))
-        .onFalse(Commands.runOnce(() -> setDriveMults(1, 0.9)));
+    new Trigger(this::isTryingToPlace).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.4)))
+        .onFalse(Commands.runOnce(() -> setDriveMults(1, 0.8)));
 
     // Drivetrain
     drive.setDefaultCommand(driveCommand);
@@ -207,7 +207,7 @@ public class RobotContainer {
 
     new Trigger(isDesiredAction(actions.L4))
         .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new SetPosition(Constants.l4));
+        .onTrue(new SetPosition(Constants.l4, -20));
 
     // new Trigger(isDesiredAction(actions.L4))
     // .and(() -> !driveCommand.isScheduled())

@@ -20,7 +20,7 @@ public class ElevatorConstants {
     public static final double L1Pos = 3.8;
     public static final double L2Pos = 22;
     public static final double L3Pos = 38;
-    public static final double L4Pos = 63.3;
+    public static final double L4Pos = 63.8;
     public static final double lowDealgifyPos = 9.5;
     public static final double highDealgifyPos = 27;
     public static final double processorPos = 6;

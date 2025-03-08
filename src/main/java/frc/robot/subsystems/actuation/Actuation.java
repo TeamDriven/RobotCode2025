@@ -25,9 +25,6 @@ public class Actuation extends SubsystemBase {
 
   private Timer toleranceTimer = new Timer();
 
-  private Timer brakeTimer = new Timer();
-  private boolean brakeMode = true;
-
   private enum mode {
     POSITION,
     VOLTAGE,
@@ -43,7 +40,6 @@ public class Actuation extends SubsystemBase {
     this.actuationIO = actuationIO;
 
     toleranceTimer.start();
-    brakeTimer.start();
   }
 
   @Override
@@ -53,17 +49,6 @@ public class Actuation extends SubsystemBase {
 
     Logger.recordOutput("Actuation/mode", currentMode);
     Logger.recordOutput("Actuation/value", value);
-
-    if (DriverStation.isEnabled()) {
-      brakeTimer.reset();
-      if (!brakeMode) {
-        actuationIO.setBrakeMode(true);
-        brakeMode = true;
-      }
-    } else if (brakeTimer.hasElapsed(5) && brakeMode) {
-      actuationIO.setBrakeMode(false);
-      brakeMode = false;
-    }
 
     switch (currentMode) {
       case POSITION:
