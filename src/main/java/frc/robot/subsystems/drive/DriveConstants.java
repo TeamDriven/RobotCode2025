@@ -131,7 +131,7 @@ public final class DriveConstants {
 
   // Swerve Heading Control
   public static final HeadingControllerConstants headingControllerConstants = switch (Constants.getRobot()) {
-    default -> new HeadingControllerConstants(5.0, 0.0, 8.0, 20.0);
+    default -> new HeadingControllerConstants(4.1, 0.1, 8.0, 20.0);
   };
 
   public record DriveConfig(

@@ -182,12 +182,12 @@ public class RobotState {
   }
 
   @AutoLogOutput(key = "RobotState/LeftPickupZone")
-  private boolean isInLeftPickupZone() {
+  public boolean isInLeftPickupZone() {
     return Zones.leftPickupZone.isRobotInZone(estimatedPose);
   }
 
   @AutoLogOutput(key = "RobotState/RightPickupZone")
-  private boolean isInRightPickupZone() {
+  public boolean isInRightPickupZone() {
     return Zones.rightPickupZone.isRobotInZone(estimatedPose);
   }
 
@@ -244,5 +244,14 @@ public class RobotState {
     NONE
   }
 
-  public actions desiredAction = actions.NONE;
+  private actions desiredAction = actions.NONE;
+
+  @AutoLogOutput(key = "RobotState/desiredAction")
+  public actions getDesiredAction() {
+    return desiredAction;
+  }
+
+  public void setDesiredAction(actions action) {
+    desiredAction = action;
+  }
 }

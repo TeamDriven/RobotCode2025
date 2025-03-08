@@ -37,6 +37,9 @@ public class Intake extends SubsystemBase {
         if (value == 0) {
             intakeIO.stopMotor();
         } else if (currentMode == mode.VELOCITY) {
+            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < 5) {
+                value = Math.max(value, 0);
+            }
             intakeIO.runMotor(value);
         } else if (currentMode == mode.VOLTAGE) {
             intakeIO.runMotor(value);
