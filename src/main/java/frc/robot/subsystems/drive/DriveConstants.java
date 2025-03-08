@@ -30,8 +30,8 @@ public final class DriveConstants {
         Units.inchesToMeters(22.75), // Track width Y
         Units.inchesToMeters(34), // Bumper width X
         Units.inchesToMeters(34), // Bumper width Y
-        4.766, // Max Linear Velocity
-        11.722, // Max Linear Acceleration
+        4.804, // Max Linear Velocity
+        8.453, // Max Linear Acceleration
         12.0, // Max Angular Velocity
         6.0); // Max Angular Acceleration
     case DEVBOT -> new DriveConfig(
