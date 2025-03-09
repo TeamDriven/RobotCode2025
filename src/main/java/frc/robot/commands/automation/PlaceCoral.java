@@ -6,7 +6,6 @@ import static frc.robot.Subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.placeLevel;
 import frc.robot.RobotState;
 import frc.robot.subsystems.actuation.ActuationConstants;

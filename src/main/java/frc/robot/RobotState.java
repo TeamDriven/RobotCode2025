@@ -96,6 +96,8 @@ public class RobotState {
     // estimatedPose = estimatedPose.exp(twist);
     if (observation.gyroAngle != null) {
       swerveDrivePoseEstimator.updateWithTime(observation.timestamp(), observation.gyroAngle(), observation.wheelPositions().positions);
+    } else {
+      swerveDrivePoseEstimator.updateWithTime(observation.timestamp(), odometryPose.getRotation(), observation.wheelPositions().positions);
     }
     estimatedPose = swerveDrivePoseEstimator.getEstimatedPosition();
 

@@ -16,10 +16,10 @@ public class ElevatorConstants {
 
     public static final double startPos = 0;
     public static final double tuckPos = 21;
-    public static final double pickUpPos = 12.25;
+    public static final double pickUpPos = 15.25;
     public static final double L1Pos = 3.8;
     public static final double L2Pos = 22;
-    public static final double L3Pos = 38;
+    public static final double L3Pos = 36;
     public static final double L4Pos = 63.8;
     public static final double lowDealgifyPos = 9.5;
     public static final double highDealgifyPos = 27;

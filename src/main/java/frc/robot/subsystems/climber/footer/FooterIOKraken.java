@@ -1,10 +1,11 @@
 package frc.robot.subsystems.climber.footer;
 
+import static frc.robot.subsystems.climber.footer.FooterConstants.gearRatio;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import frc.robot.util.TalonFXUtil.MotorFactory;
 
@@ -27,6 +28,8 @@ public class FooterIOKraken implements FooterIO {
 
     motorFactory.setSlot0(0.1, 0, 0);
     motorFactory.setMotionMagic(100, 60, 120);
+
+    motorFactory.setSensorToOutputRatio(gearRatio / 360);
 
     motorFactory.configureMotors();
 

@@ -43,6 +43,8 @@ import frc.robot.commands.autos.Place4LeftSide;
 import frc.robot.commands.autos.Place4RightSide;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
 import frc.robot.subsystems.actuation.ActuationConstants;
+import frc.robot.subsystems.climber.climberController;
+import frc.robot.subsystems.climber.footer.FooterConstants;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
@@ -185,6 +187,10 @@ public class RobotContainer {
 
     outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity));
 
+    climb.whileTrue(winch.runOnce(() -> winch.runVoltage(12))).onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
+    driver.pov(90).whileTrue(winch.runOnce(() -> winch.runVoltage(-12))).onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
+    deployClimber.whileTrue(footer.runOnce(() -> footer.runVoltage(-0.5))).onFalse(footer.runOnce(() -> footer.runVoltage(0.0)));
+
     // outtake.and(() -> isTryingToPlace()).onTrue(Commands.sequence(
     //     Commands.runOnce(() -> intake.runVelocity(outtakeVelocity.get()), intake),
     //     Commands.waitUntil(() -> !RobotState.getInstance().hasCoral()).withTimeout(0.4),
@@ -207,7 +213,7 @@ public class RobotContainer {
 
     new Trigger(isDesiredAction(actions.L4))
         .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new SetPosition(Constants.l4, -20));
+        .onTrue(new SetPosition(Constants.l4, -25));
 
     // new Trigger(isDesiredAction(actions.L4))
     // .and(() -> !driveCommand.isScheduled())

@@ -13,7 +13,7 @@ public class SetPosition extends SequentialCommandGroup {
         addCommands(
             elevator.runOnce(() -> elevator.setPos(elevatorHeight)),
             actuation.runOnce(() -> actuation.setPos(movementAngle)),
-            Commands.waitUntil(() -> elevator.isAtHeight(elevatorHeight, 1)),
+            Commands.waitUntil(() -> elevator.isAtHeight(elevatorHeight, 2)),
             actuation.runOnce(() -> actuation.setPos(finalAngle))
         );
     }
