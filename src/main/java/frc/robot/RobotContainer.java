@@ -39,8 +39,7 @@ import frc.robot.RobotState.actions;
 import frc.robot.commands.automation.PlaceCoral;
 import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
-import frc.robot.commands.autos.Place4LeftSide;
-import frc.robot.commands.autos.Place4RightSide;
+import frc.robot.commands.autos.Place3LeftSide;
 import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.climber.climberController;
@@ -111,8 +110,7 @@ public class RobotContainer {
   }
 
   private void setupAutos() {
-    autoChooser.setDefaultOption("place 4 right side", new Place4RightSide().getAuto().cmd());
-    autoChooser.addOption("place 4 left side", new Place4LeftSide().getAuto().cmd());
+    autoChooser.addOption("place 3 left side", new Place3LeftSide().getAuto().cmd());
 
     SmartDashboard.putData(autoChooser);
   }
@@ -213,7 +211,7 @@ public class RobotContainer {
 
     new Trigger(isDesiredAction(actions.L4))
         .and(RobotState.getInstance()::isInReefZone)
-        .onTrue(new SetPosition(Constants.l4, -25));
+        .onTrue(new SetPosition(Constants.l4, ActuationConstants.L4MovementPos));
 
     // new Trigger(isDesiredAction(actions.L4))
     // .and(() -> !driveCommand.isScheduled())

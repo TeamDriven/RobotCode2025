@@ -28,8 +28,8 @@ public final class DriveConstants {
         Units.inchesToMeters(1.93513589892683), // Get from Wheel Radius Characterization
         Units.inchesToMeters(22.75), // Track width X
         Units.inchesToMeters(22.75), // Track width Y
-        Units.inchesToMeters(34), // Bumper width X
-        Units.inchesToMeters(34), // Bumper width Y
+        Units.inchesToMeters(28 + (3.5*2)), // Bumper width X
+        Units.inchesToMeters(28 + (3.5*2)), // Bumper width Y
         4.804, // Max Linear Velocity
         8.453, // Max Linear Acceleration
         12.0, // Max Angular Velocity
