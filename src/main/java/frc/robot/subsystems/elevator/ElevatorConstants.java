@@ -21,9 +21,9 @@ public class ElevatorConstants {
     public static final double L2Pos = 22;
     public static final double L3Pos = 36;
     public static final double L4Pos = 62;
-    public static final double lowDealgifyPos = 9.5;
-    public static final double highDealgifyPos = 27;
-    public static final double processorPos = 6;
+    public static final double lowDealgifyPos = 22;
+    public static final double highDealgifyPos = 38;
+    public static final double processorPos = 4;
 
     public static final LoggedTunableNumber elevatorTuningVoltage = new LoggedTunableNumber("Elevator/TuningVoltage", 4);
     public static final LoggedTunableNumber elevatorTuningVelocity = new LoggedTunableNumber("Elevator/TuningVelocity", 65);

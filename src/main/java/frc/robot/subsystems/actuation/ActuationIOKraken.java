@@ -2,7 +2,6 @@ package frc.robot.subsystems.actuation;
 
 import static frc.robot.subsystems.actuation.ActuationConstants.offset;
 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;

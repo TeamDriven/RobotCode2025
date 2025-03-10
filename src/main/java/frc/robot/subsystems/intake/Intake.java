@@ -35,7 +35,11 @@ public class Intake extends SubsystemBase {
         RobotState.getInstance().setGamePiece(inputs.gamePieceSensor);
 
         if (value == 0) {
-            intakeIO.stopMotor();
+            if (RobotState.getInstance().hasAlgae()) {
+                intakeIO.runVoltage(-1.5);
+            } else {
+                intakeIO.stopMotor();
+            }
         } else if (currentMode == mode.VELOCITY) {
             if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < 5) {
                 value = Math.max(value, 0);
