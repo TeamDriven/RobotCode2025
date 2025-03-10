@@ -226,6 +226,8 @@ public class RobotState {
       return;
     }
 
+    if (storedPiece != gamePiece.NONE) return;
+
     if (desiredAction == actions.DEALGIFY) {
       storedPiece = gamePiece.ALGAE;
     } else {

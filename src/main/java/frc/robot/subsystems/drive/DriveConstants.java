@@ -93,7 +93,7 @@ public final class DriveConstants {
         1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
         35.0,
         0.0,
-        3000.0,
+        4000.0,
         50.0,
         Mk4iReductions.L3_16T.reduction, // L3 16 tooth
         Mk4iReductions.TURN.reduction);
