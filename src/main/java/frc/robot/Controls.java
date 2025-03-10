@@ -30,7 +30,7 @@ public class Controls {
   public static Trigger inttake = driver.rightBumper();
   public static Trigger outtake = driver.leftBumper();
 
-  public static Trigger processor = driver.rightTrigger(0.1);
+  public static Trigger dealgify = driver.rightTrigger(0.1);
 
   public static Trigger climb = rightStickDrive ? driver.y() : driver.pov(0);
   public static Trigger deployClimber = rightStickDrive ? driver.a() : driver.pov(180);

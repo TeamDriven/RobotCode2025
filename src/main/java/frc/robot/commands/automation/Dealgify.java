@@ -15,11 +15,8 @@ import frc.robot.FieldConstants.Reef.ReefFace;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.intake.IntakeConstants;
-import frc.robot.util.LoggedTunableNumber;
 
 public class Dealgify extends Command {
-    private LoggedTunableNumber algaeDuration = new LoggedTunableNumber("Dealgify/algaeDuration", 0.25);
-    private Timer algaeTimer = new Timer();
 
     private ReefFace nearestFace;
     
@@ -33,8 +30,6 @@ public class Dealgify extends Command {
         nearestFace = Reef.findNearestReefFace(curPose);
 
         intake.runVelocity(IntakeConstants.intakeVelocity.get());
-
-        algaeTimer.start();
         
         drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 
@@ -47,8 +42,6 @@ public class Dealgify extends Command {
     public void execute() {
         Pose2d curPose = RobotState.getInstance().getEstimatedPose();
         ReefFace face = Reef.findNearestReefFace(curPose);
-
-        if (!RobotState.getInstance().hasAlgae()) algaeTimer.reset();
 
         if (face.equals(nearestFace)) return;
 
@@ -69,6 +62,6 @@ public class Dealgify extends Command {
 
     @Override
     public boolean isFinished() {
-        return algaeTimer.hasElapsed(algaeDuration.get());
+        return false;
     }
 }

@@ -17,6 +17,7 @@ import static frc.robot.Controls.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -178,16 +179,19 @@ public class RobotContainer {
         placeL2.onTrue(setDesiredAction(actions.L2));
         placeL1.onTrue(setDesiredAction(actions.L1));
 
-        inttake.and(RobotState.getInstance()::isInReefZone).onTrue(setDesiredAction(actions.DEALGIFY));
-        inttake.and(() -> !RobotState.getInstance().isInReefZone()).onTrue(setDesiredAction(actions.PICKUP_CORAL));
+        inttake.onTrue(setDesiredAction(actions.PICKUP_CORAL));
 
-        outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity));
+        outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity))
+                .onFalse(Commands.either(setDesiredAction(actions.NONE), Commands.none(), this::isTryingToPlace));
 
-        climb.whileTrue(winch.runOnce(() -> winch.runVoltage(12))).onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
-        driver.pov(90).whileTrue(winch.runOnce(() -> winch.runVoltage(-12)))
-                .onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
-        deployClimber.whileTrue(footer.runOnce(() -> footer.runVoltage(-0.5)))
-                .onFalse(footer.runOnce(() -> footer.runVoltage(0.0)));
+        dealgify.onTrue(setDesiredAction(actions.DEALGIFY));
+
+        // climb.whileTrue(winch.runOnce(() ->
+        // winch.runVoltage(12))).onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
+        // driver.pov(90).whileTrue(winch.runOnce(() -> winch.runVoltage(-12)))
+        // .onFalse(winch.runOnce(() -> winch.runVoltage(0.0)));
+        // deployClimber.whileTrue(footer.runOnce(() -> footer.runVoltage(-0.5)))
+        // .onFalse(footer.runOnce(() -> footer.runVoltage(0.0)));
 
         // outtake.and(() -> isTryingToPlace()).onTrue(Commands.sequence(
         // Commands.runOnce(() -> intake.runVelocity(outtakeVelocity.get()), intake),
@@ -196,12 +200,10 @@ public class RobotContainer {
         // Commands.runOnce(() -> intake.runVelocity(0), intake),
         // Commands.runOnce(AutoMoveToNearestPOI::stop)));
 
-        processor.onTrue(setDesiredAction(actions.PROCESSOR));
-
-        new Trigger(() -> isTryingToPlace())
-                .and(() -> !RobotState.getInstance().hasCoral())
-                .and(() -> !RobotState.getInstance().isInReefZone())
-                .onTrue(setDesiredAction(actions.NONE));
+        // new Trigger(() -> isTryingToPlace())
+        // .and(() -> !RobotState.getInstance().hasCoral())
+        // .and(() -> !RobotState.getInstance().isInReefZone())
+        // .onTrue(setDesiredAction(actions.NONE));
 
         // Auto align if trying to place L2+
         new Trigger(isDesiredAction(actions.L4))
@@ -279,7 +281,8 @@ public class RobotContainer {
 
         new Trigger(isDesiredAction(actions.PICKUP_CORAL))
                 .and(RobotState.getInstance()::hasCoral)
-                .and(() -> !RobotState.getInstance().isInPickupZone())
+                .and(() -> RobotState.getInstance().getEstimatedPose().getTranslation().getDistance(Reef.center) > Units
+                        .inchesToMeters(60))
                 .onTrue(setDesiredAction(actions.NONE));
 
         // Algae
@@ -289,15 +292,6 @@ public class RobotContainer {
 
         new Trigger(isDesiredAction(actions.DEALGIFY))
                 .and(() -> !RobotState.getInstance().isInReefZone())
-                .onTrue(setDesiredAction(actions.NONE));
-
-        new Trigger(isDesiredAction(actions.PROCESSOR))
-                .onTrue(Commands.sequence(
-                        Commands.runOnce(() -> drive.setHeadingGoal(() -> AllianceFlipUtil.apply(Rotation2d.fromDegrees(-90)))),
-                        new SetPosition(ElevatorConstants.processorPos, ActuationConstants.processorPos)));
-
-        new Trigger(isDesiredAction(actions.PROCESSOR))
-                .and(() -> !RobotState.getInstance().hasAlgae())
                 .onTrue(setDesiredAction(actions.NONE));
     }
 

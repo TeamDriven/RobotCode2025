@@ -202,37 +202,15 @@ public class RobotState {
     return Zones.climbZone.isRobotInZone(estimatedPose);
   }
 
-  private enum gamePiece {
-    CORAL,
-    ALGAE,
-    NONE;
-  }
-
-  private gamePiece storedPiece = gamePiece.NONE;
+  private boolean hasCoral = false;
 
   @AutoLogOutput(key = "RobotState/hasCoral")
   public boolean hasCoral() {
-    return storedPiece == gamePiece.CORAL;
-  }
-
-  @AutoLogOutput(key = "RobotState/hasAlgae")
-  public boolean hasAlgae() {
-    return storedPiece == gamePiece.ALGAE;
+    return hasCoral;
   }
 
   public void setGamePiece(boolean sensorTripped) {
-    if (!sensorTripped) {
-      storedPiece = gamePiece.NONE;
-      return;
-    }
-
-    if (storedPiece != gamePiece.NONE) return;
-
-    if (desiredAction == actions.DEALGIFY) {
-      storedPiece = gamePiece.ALGAE;
-    } else {
-      storedPiece = gamePiece.CORAL;
-    }
+    hasCoral = sensorTripped;
   }
 
   public static enum actions {
@@ -243,8 +221,6 @@ public class RobotState {
     PICKUP_CORAL,
     DEALGIFY,
     CLIMB,
-    PROCESSOR,
-    PLACE_NET,
     NONE
   }
 
