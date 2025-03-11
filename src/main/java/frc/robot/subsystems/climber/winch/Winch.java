@@ -21,6 +21,8 @@ public class Winch extends SubsystemBase {
     this.winchIO = winchIO;
   }
 
+  //TODO: 0.2 volts in most of match
+
   @Override
   public void periodic() {
     winchIO.updateInputs(winchInputs);

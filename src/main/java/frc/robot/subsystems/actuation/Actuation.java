@@ -30,7 +30,7 @@ public class Actuation extends SubsystemBase {
     STOPPED;
   }
 
-  private mode currentMode = mode.POSITION;
+  private mode currentMode = mode.STOPPED;
 
   private double value = 0;
 

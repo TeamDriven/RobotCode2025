@@ -1,6 +1,6 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.actuation.ActuationConstants.tuckPos;
+import static frc.robot.subsystems.elevator.ElevatorConstants.tuckPos;
 import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
 
 import java.util.function.DoubleSupplier;
@@ -137,13 +137,15 @@ public class Elevator extends SubsystemBase{
             @Override
             public void end(boolean interrupted) {
                 timer.stop();
+                elevatorIO.stopMotors();
                 elevatorIO.resetPosition();
                 stop();
+                // setPos(tuckPos);
             }
 
             @Override
             public boolean isFinished() {
-                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.1) && Math.abs(elevatorInputs.leftMotorVel) < 2);
+                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.2) && Math.abs(elevatorInputs.leftMotorVel) < 1.5);
             }
         };
     }

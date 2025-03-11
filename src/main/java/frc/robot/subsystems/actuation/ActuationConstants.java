@@ -15,8 +15,7 @@ public class ActuationConstants {
     public static final double L2Pos = -20;
     public static final double L3Pos = -20; 
     public static final double L4Pos = -35;  
-    public static final double L4MovementPos = -25;  
-    public static final double dealgifyPos = -15;
+    public static final double dealgifyPos = 0;
     public static final double processorPos = 0;
 
     public static final LoggedTunableNumber actuationTuningVoltage = new LoggedTunableNumber("Actuation/tuningVoltage", 1);

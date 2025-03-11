@@ -48,7 +48,7 @@ public class Place3LeftSide implements AutoBase {
                                 () -> drive.setAutoAlignGoal(() -> Reef.placePoses[5], () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
-                        new SetPosition(l4, ActuationConstants.L4MovementPos),
+                        new SetPosition(l4),
                         new WaitUntilCommand(drive::isAutoAlignGoalCompleted),
                         Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight(), 0.25)),
                         Commands.waitUntil(() -> actuation.isAtAngle()),

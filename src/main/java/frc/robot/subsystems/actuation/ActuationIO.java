@@ -12,6 +12,8 @@ public interface ActuationIO {
         public double motorCurrent = 0;
         public double motorVel = 0;
 
+        public boolean encoderConnected = false;
+
         public Rotation2d absoluteEncoderPos = new Rotation2d();
         public Rotation2d relativeEncoderPos = new Rotation2d();
     }

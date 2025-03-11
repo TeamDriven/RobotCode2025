@@ -29,7 +29,7 @@ public class Dealgify extends Command {
         Pose2d curPose = RobotState.getInstance().getEstimatedPose();
         nearestFace = Reef.findNearestReefFace(curPose);
 
-        intake.runVelocity(IntakeConstants.intakeVelocity.get());
+        intake.runVelocity(-40);
         
         drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 

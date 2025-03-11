@@ -68,8 +68,8 @@ public final class Subsystems {
           // rightVision = new Vision("Right Vision", new
           // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-          intake = new Intake(new IntakeIOKraken(13, 2));
-          actuation = new Actuation(new ActuationIOKraken(14, 0));
+          intake = new Intake(new IntakeIOKraken(13, 0));
+          actuation = new Actuation(new ActuationIOKraken(14, 2));
           elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
           winch = new Winch(new WinchIOKraken(20, 21));
           footer = new Footer(new FooterIOKraken(19));
