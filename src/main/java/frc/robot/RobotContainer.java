@@ -150,6 +150,9 @@ public class RobotContainer {
     // Drivetrain
     drive.setDefaultCommand(driveCommand);
 
+    driver.x().onTrue(actuation.runOnce(() -> actuation.setPos(-30)));
+    driver.b().onTrue(actuation.runOnce(() -> actuation.setPos(30)));
+    
     resetPose.onTrue(
         Commands.runOnce(
             () -> robotState.resetPose(

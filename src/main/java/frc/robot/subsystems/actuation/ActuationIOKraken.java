@@ -32,10 +32,10 @@ public class ActuationIOKraken implements ActuationIO {
         motorFactory.setCurrentLimits(40);
         
         motorFactory.setSlot0(45, 0.5, 1.5);
-        motorFactory.setSlot0(0, 0.0, GravityTypeValue.Arm_Cosine);
+        motorFactory.setSlot0(0, 0.1, GravityTypeValue.Arm_Cosine);
 
-        motorFactory.setSlot1(50, 0, 7.5);
-        motorFactory.setSlot1(3, 0.05, GravityTypeValue.Arm_Cosine);
+        motorFactory.setSlot1(80, 3, 9);
+        motorFactory.setSlot1(6, 0.2, GravityTypeValue.Arm_Cosine);
 
         motorFactory.setSensorToOutputRatio(ActuationConstants.gearRatio);
 
@@ -65,7 +65,7 @@ public class ActuationIOKraken implements ActuationIO {
         inputs.absoluteEncoderPos = Rotation2d.fromRotations(encoder.get());
         inputs.relativeEncoderPos = inputs.absoluteEncoderPos.minus(new Rotation2d(offset));
 
-        // motorFactory.checkForUpdates();
+        motorFactory.checkForUpdates();
     }
 
     @Override

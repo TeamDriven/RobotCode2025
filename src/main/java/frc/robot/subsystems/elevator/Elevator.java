@@ -145,7 +145,7 @@ public class Elevator extends SubsystemBase{
 
             @Override
             public boolean isFinished() {
-                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.2) && Math.abs(elevatorInputs.leftMotorVel) < 1.5);
+                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.2) && !isMoving());
             }
         };
     }
@@ -155,6 +155,12 @@ public class Elevator extends SubsystemBase{
     }
 
     public boolean isAtHeight(double height, double tolerance) {
+        Logger.recordOutput("Elevator/isAtHeight", MathUtil.isNear(height, elevatorInputs.leftMotorPos, tolerance));
         return MathUtil.isNear(height, elevatorInputs.leftMotorPos, tolerance);
+    }
+
+    public boolean isMoving() {
+        Logger.recordOutput("Elevator/isMoving", Math.abs(elevatorInputs.leftMotorVel) > 1.5);
+        return Math.abs(elevatorInputs.leftMotorVel) > 1.5;
     }
 }

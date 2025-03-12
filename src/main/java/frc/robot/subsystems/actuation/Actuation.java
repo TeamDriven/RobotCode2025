@@ -18,10 +18,12 @@ import frc.robot.util.LoggedTunableNumber;
 public class Actuation extends SubsystemBase {
   private ActuationIO actuationIO;
   private ActuationIOInputsAutoLogged inputs = new ActuationIOInputsAutoLogged();
-
+  
+  private LoggedTunableNumber syncTime = new LoggedTunableNumber("Actuation/syncTime", 0.1);
   private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("Actuation/toleranceTime", 0.1);
   private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 1);
 
+  private Timer syncTimer = new Timer();
   private Timer toleranceTimer = new Timer();
 
   private enum mode {
@@ -38,6 +40,7 @@ public class Actuation extends SubsystemBase {
   public Actuation(ActuationIO actuationIO) {
     this.actuationIO = actuationIO;
 
+    syncTimer.start();
     toleranceTimer.start();
   }
 
@@ -48,6 +51,13 @@ public class Actuation extends SubsystemBase {
 
     Logger.recordOutput("Actuation/mode", currentMode);
     Logger.recordOutput("Actuation/value", value);
+
+    if (syncTimer.hasElapsed(syncTime.get())) {
+      actuationIO.seedMotor(inputs.relativeEncoderPos);
+      syncTimer.reset();
+    }
+
+    isAtAngle();
 
     switch (currentMode) {
       case POSITION:
@@ -68,7 +78,7 @@ public class Actuation extends SubsystemBase {
   public void setPos(double pos) {
     currentMode = mode.POSITION;
     value = pos;
-    actuationIO.seedMotor(inputs.relativeEncoderPos);
+    // actuationIO.seedMotor(inputs.relativeEncoderPos);
   }
 
   public void stop() {
@@ -80,7 +90,7 @@ public class Actuation extends SubsystemBase {
     currentMode = mode.VOLTAGE;
     value = volts;
   }
-  
+
   public Command runVoltageCommand(double volts) {
     return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
   }
@@ -90,6 +100,7 @@ public class Actuation extends SubsystemBase {
   }
 
   public boolean isAtAngle() {
-        return toleranceTimer.hasElapsed(toleranceTime.get());
-    }
+    Logger.recordOutput("Actuation/isAtAngle", toleranceTimer.hasElapsed(toleranceTime.get()));
+    return toleranceTimer.hasElapsed(toleranceTime.get());
+  }
 }

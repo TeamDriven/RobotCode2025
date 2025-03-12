@@ -228,7 +228,7 @@ public class FieldConstants {
         public static final Pose3d[] leftChuteLocations = new Pose3d[9];
         public static final Pose3d[] rightChuteLocations = new Pose3d[9];
 
-        public static final double pickupOffset = Units.inchesToMeters(6);
+        public static final double pickupOffset = Units.inchesToMeters(0);
 
         private static final double chuteHeight = Units.inchesToMeters(37.5);
 
