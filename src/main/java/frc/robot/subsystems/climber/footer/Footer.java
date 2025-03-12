@@ -7,52 +7,56 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * The `Climber` class represents a subsystem that controls the climber mechanism of the robot. It
- * provides methods to control the climber motor, set the position of the climber, and run the
+ * The `Climber` class represents a subsystem that controls the climber
+ * mechanism of the robot. It
+ * provides methods to control the climber motor, set the position of the
+ * climber, and run the
  * climber at a specified voltage.
  */
 public class Footer extends SubsystemBase {
-  private final FooterIO footerIO;
-  private final FooterIOInputsAutoLogged footerInputs = new FooterIOInputsAutoLogged();
+    private final FooterIO footerIO;
+    private final FooterIOInputsAutoLogged footerInputs = new FooterIOInputsAutoLogged();
 
-  private double voltage = 0;
-  private double position = 0;
+    private double voltage = 0;
+    private double position = 0;
 
-  public Footer(FooterIO footerIO) {
-    this.footerIO = footerIO;
-  }
+    // TODO: 0.2 volts in most of match
 
-  @Override
-  public void periodic() {
-    footerIO.updateInputs(footerInputs);
-    Logger.processInputs("Footer", footerInputs);
-  
-    if(voltage != 0 && position == 0) {
-      footerIO.runVoltage(voltage);
-    }else if(voltage == 0 && position != 0) {
-      footerIO.moveToPos(position);
-    } else {
-      footerIO.stopFooter();
+    public Footer(FooterIO footerIO) {
+        this.footerIO = footerIO;
     }
-  }
 
-  public void runVoltage(double volts) {
-    position = 0;
-    voltage = volts;
-  }
+    @Override
+    public void periodic() {
+        footerIO.updateInputs(footerInputs);
+        Logger.processInputs("Footer", footerInputs);
 
-  public Command runVoltageCommand(double volts) {
-    return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
-  }
+        if (voltage != 0 && position == 0) {
+            footerIO.runVoltage(voltage);
+        } else if (voltage == 0 && position != 0) {
+            footerIO.moveToPos(position);
+        } else {
+            footerIO.stopFooter();
+        }
+    }
 
-  public void setPos(double pos) {
-    voltage = 0;
-    position = pos;
-  }
+    public void runVoltage(double volts) {
+        position = 0;
+        voltage = volts;
+    }
 
-  public void stop() {
-    voltage = 0;
-    position = 0;
-  }
+    public Command runVoltageCommand(double volts) {
+        return Commands.startEnd(() -> runVoltage(volts), () -> runVoltage(0), this);
+    }
+
+    public void setPos(double pos) {
+        voltage = 0;
+        position = pos;
+    }
+
+    public void stop() {
+        voltage = 0;
+        position = 0;
+    }
 
 }
