@@ -3,7 +3,6 @@ package frc.robot;
 import static frc.robot.Constants.driver;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.elevator.Elevator;
 
 import java.util.function.DoubleSupplier;
 
@@ -53,7 +52,7 @@ public class Controls {
 
         public static Trigger actuationUp = rightStickDrive ? driver.pov(0) : driver.y();
         public static Trigger actuationDown = rightStickDrive ? driver.pov(180) : driver.a();
-
+            
         public static Trigger intakeIn = driver.rightBumper();
         public static Trigger intakeOut = driver.leftBumper();
 

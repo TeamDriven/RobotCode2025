@@ -14,7 +14,7 @@ public class ActuationConstants {
     public static final double L1Pos = 8;
     public static final double L2Pos = -20;
     public static final double L3Pos = -20; 
-    public static final double L4Pos = -33;  
+    public static final double L4Pos = -31;  
     public static final double dealgifyPos = 0;
     public static final double processorPos = 0;
 

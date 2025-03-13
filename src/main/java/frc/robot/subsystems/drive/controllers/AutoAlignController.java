@@ -23,9 +23,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignController {
-        private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 3.85);
+        private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 5);
         private static final LoggedTunableNumber linearkD = new LoggedTunableNumber("AutoAlign/drivekD", 0.0);
-        private static final LoggedTunableNumber thetakP = new LoggedTunableNumber("AutoAlign/thetakP", 7.25);
+        private static final LoggedTunableNumber thetakP = new LoggedTunableNumber("AutoAlign/thetakP", 9);
         private static final LoggedTunableNumber thetakD = new LoggedTunableNumber("AutoAlign/thetakD", 0.1);
         private static final LoggedTunableNumber linearTolerance = new LoggedTunableNumber(
                         "AutoAlign/controllerLinearTolerance", 0.08);
@@ -34,9 +34,9 @@ public class AutoAlignController {
         private static final LoggedTunableNumber toleranceTime = new LoggedTunableNumber(
                         "AutoAlign/controllerToleranceSecs", 0.25);
         private static final LoggedTunableNumber slowLinearTolerance = new LoggedTunableNumber(
-                        "AutoAlign/slowLinearTolerance", 0.025);
+                        "AutoAlign/slowLinearTolerance", 0.035);
         private static final LoggedTunableNumber slowThetaTolerance = new LoggedTunableNumber(
-                        "AutoAlign/slowThetaTolerance", Units.degreesToRadians(1.0));
+                        "AutoAlign/slowThetaTolerance", Units.degreesToRadians(1.25));
         private static final LoggedTunableNumber maxLinearVelocity = new LoggedTunableNumber(
                         "AutoAlign/maxLinearVelocity", DriveConstants.driveConfig.maxLinearVelocity());
         private static final LoggedTunableNumber maxLinearAcceleration = new LoggedTunableNumber(

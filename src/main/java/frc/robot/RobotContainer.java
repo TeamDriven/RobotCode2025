@@ -159,7 +159,9 @@ public class RobotContainer {
         noLimelightMode.onTrue(Commands.runOnce(() -> configureNoLimelightMode()));
         manualMode.onTrue(Commands.runOnce(() -> configureManualMode()));
 
-        new Trigger(this::isTryingToPlace).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.4)))
+        new Trigger(isDesiredAction(actions.L4))
+                .or(isDesiredAction(actions.L3))
+                .or(isDesiredAction(actions.L2)).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.4)))
                 .onFalse(Commands.runOnce(() -> setDriveMults(1, 0.8)));
 
         // Drivetrain
@@ -252,7 +254,9 @@ public class RobotContainer {
         noLimelightMode.onTrue(Commands.runOnce(() -> configureStandardMode()));
         manualMode.onTrue(Commands.runOnce(() -> configureManualMode()));
 
-        new Trigger(this::isTryingToPlace).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.4)))
+        new Trigger(isDesiredAction(actions.L4))
+                .or(isDesiredAction(actions.L3))
+                .or(isDesiredAction(actions.L2)).onTrue(Commands.runOnce(() -> setDriveMults(0.5, 0.4)))
                 .onFalse(Commands.runOnce(() -> setDriveMults(1, 0.8)));
 
         // Drivetrain

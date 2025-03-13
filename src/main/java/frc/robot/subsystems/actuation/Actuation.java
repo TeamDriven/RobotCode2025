@@ -21,7 +21,7 @@ public class Actuation extends SubsystemBase {
   
   private LoggedTunableNumber syncTime = new LoggedTunableNumber("Actuation/syncTime", 0.1);
   private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("Actuation/toleranceTime", 0.1);
-  private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 1);
+  private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 2);
 
   private Timer syncTimer = new Timer();
   private Timer toleranceTimer = new Timer();
