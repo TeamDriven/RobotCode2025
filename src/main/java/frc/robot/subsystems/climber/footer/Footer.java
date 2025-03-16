@@ -36,7 +36,7 @@ public class Footer extends SubsystemBase {
         } else if (voltage == 0 && position != 0) {
             footerIO.moveToPos(position);
         } else {
-            footerIO.stopFooter();
+            footerIO.runVoltage(0.2);
         }
     }
 

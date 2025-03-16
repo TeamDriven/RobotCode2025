@@ -9,9 +9,7 @@ package frc.robot;
 
 import static frc.robot.subsystems.drive.DriveConstants.driveConfig;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
@@ -305,10 +303,10 @@ public class FieldConstants {
         public static PolygonZone rightPickupZone;
 
         public static Translation2d[] climbZoneCorners = new Translation2d[] {
-                new Translation2d(Units.inchesToMeters(368.438), 0),
-                new Translation2d(Units.inchesToMeters(368.438), fieldWidth),
-                new Translation2d(Units.inchesToMeters(322.438), fieldWidth),
-                new Translation2d(Units.inchesToMeters(322.438), 0) };
+                new Translation2d(Units.inchesToMeters(368.438 + 8), 0),
+                new Translation2d(Units.inchesToMeters(368.438 + 8), fieldWidth),
+                new Translation2d(Units.inchesToMeters(322.438 + 8), fieldWidth),
+                new Translation2d(Units.inchesToMeters(322.438 + 8), 0) };
 
         public static Translation2d[] leftPickupZoneCorners = new Translation2d[] {
                 new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),

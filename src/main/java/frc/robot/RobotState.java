@@ -234,4 +234,40 @@ public class RobotState {
   public void setDesiredAction(actions action) {
     desiredAction = action;
   }
+
+  private static enum controlMode {
+    STANDARD,
+    NO_LIMELIGHT,
+    MANUAL
+  }
+
+  private static controlMode currentMode = controlMode.STANDARD;
+
+  public void setNoLimelightMode() {
+    if (isNoLimelightMode()) {
+      currentMode = controlMode.STANDARD;
+    } else {
+      currentMode = controlMode.NO_LIMELIGHT;
+    }
+  }
+
+  public void setManualMode() {
+    if (isManualMode()) {
+      currentMode = controlMode.STANDARD;
+    } else {
+      currentMode = controlMode.MANUAL;
+    }
+  }
+
+  public boolean isStandardMode() {
+    return currentMode == controlMode.STANDARD;
+  }
+
+  public boolean isNoLimelightMode() {
+    return currentMode == controlMode.NO_LIMELIGHT;
+  }
+
+  public boolean isManualMode() {
+    return currentMode == controlMode.MANUAL;
+  }
 }

@@ -16,91 +16,90 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTunableNumber;
 
 public class Actuation extends SubsystemBase {
-  private ActuationIO actuationIO;
-  private ActuationIOInputsAutoLogged inputs = new ActuationIOInputsAutoLogged();
-  
-  private LoggedTunableNumber syncTime = new LoggedTunableNumber("Actuation/syncTime", 0.1);
-  private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("Actuation/toleranceTime", 0.1);
-  private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 2);
+    private ActuationIO actuationIO;
+    private ActuationIOInputsAutoLogged inputs = new ActuationIOInputsAutoLogged();
 
-  private Timer syncTimer = new Timer();
-  private Timer toleranceTimer = new Timer();
+    private LoggedTunableNumber syncTime = new LoggedTunableNumber("Actuation/syncTime", 0.1);
+    private LoggedTunableNumber toleranceTime = new LoggedTunableNumber("Actuation/toleranceTime", 0.1);
+    private LoggedTunableNumber tolerance = new LoggedTunableNumber("Actuation/tolerance", 2);
 
-  private enum mode {
-    POSITION,
-    VOLTAGE,
-    STOPPED;
-  }
+    private Timer syncTimer = new Timer();
+    private Timer toleranceTimer = new Timer();
 
-  private mode currentMode = mode.STOPPED;
-
-  private double value = 0;
-
-  /** Creates a new Actuation. */
-  public Actuation(ActuationIO actuationIO) {
-    this.actuationIO = actuationIO;
-
-    syncTimer.start();
-    toleranceTimer.start();
-  }
-
-  @Override
-  public void periodic() {
-    actuationIO.updateInputs(inputs);
-    Logger.processInputs("Actuation", inputs);
-
-    Logger.recordOutput("Actuation/mode", currentMode);
-    Logger.recordOutput("Actuation/value", value);
-
-    if (syncTimer.hasElapsed(syncTime.get())) {
-      actuationIO.seedMotor(inputs.relativeEncoderPos);
-      syncTimer.reset();
+    private enum mode {
+        POSITION,
+        VOLTAGE,
+        STOPPED;
     }
 
-    isAtAngle();
+    private mode currentMode = mode.STOPPED;
 
-    switch (currentMode) {
-      case POSITION:
-        if (!MathUtil.isNear(value, inputs.relativeEncoderPos.getDegrees(), tolerance.get())) {
-          toleranceTimer.reset();
+    private double value = 0;
+
+    /** Creates a new Actuation. */
+    public Actuation(ActuationIO actuationIO) {
+        this.actuationIO = actuationIO;
+
+        syncTimer.start();
+        toleranceTimer.start();
+    }
+
+    @Override
+    public void periodic() {
+        actuationIO.updateInputs(inputs);
+        Logger.processInputs("Actuation", inputs);
+
+        Logger.recordOutput("Actuation/mode", currentMode);
+        Logger.recordOutput("Actuation/value", value);
+
+        // isAtAngle();
+
+        switch (currentMode) {
+            case POSITION:
+                if (!MathUtil.isNear(value, inputs.relativeEncoderPos.getDegrees(), tolerance.get())) {
+                    if (syncTimer.hasElapsed(syncTime.get())) {
+                        actuationIO.seedMotor(inputs.relativeEncoderPos);
+                        syncTimer.reset();
+                    }
+                    toleranceTimer.reset();
+                }
+                actuationIO.moveToPos(value);
+                break;
+            case VOLTAGE:
+                actuationIO.runVoltage(value);
+                break;
+            case STOPPED:
+                actuationIO.stopMotor();
+                break;
         }
-        actuationIO.moveToPos(value);
-        break;
-      case VOLTAGE:
-        actuationIO.runVoltage(value);
-        break;
-      case STOPPED:
-        actuationIO.stopMotor();
-        break;
     }
-  }
 
-  public void setPos(double pos) {
-    currentMode = mode.POSITION;
-    value = pos;
-    // actuationIO.seedMotor(inputs.relativeEncoderPos);
-  }
+    public void setPos(double pos) {
+        currentMode = mode.POSITION;
+        value = pos;
+        // actuationIO.seedMotor(inputs.relativeEncoderPos);
+    }
 
-  public void stop() {
-    currentMode = mode.STOPPED;
-    value = 0;
-  }
+    public void stop() {
+        currentMode = mode.STOPPED;
+        value = 0;
+    }
 
-  public void runVoltage(double volts) {
-    currentMode = mode.VOLTAGE;
-    value = volts;
-  }
+    public void runVoltage(double volts) {
+        currentMode = mode.VOLTAGE;
+        value = volts;
+    }
 
-  public Command runVoltageCommand(double volts) {
-    return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
-  }
+    public Command runVoltageCommand(double volts) {
+        return Commands.startEnd(() -> runVoltage(volts), () -> stop(), this);
+    }
 
-  public Command runVoltageCommand(DoubleSupplier volts) {
-    return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
-  }
+    public Command runVoltageCommand(DoubleSupplier volts) {
+        return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
+    }
 
-  public boolean isAtAngle() {
-    Logger.recordOutput("Actuation/isAtAngle", toleranceTimer.hasElapsed(toleranceTime.get()));
-    return toleranceTimer.hasElapsed(toleranceTime.get());
-  }
+    public boolean isAtAngle() {
+        Logger.recordOutput("Actuation/isAtAngle", toleranceTimer.hasElapsed(toleranceTime.get()));
+        return toleranceTimer.hasElapsed(toleranceTime.get());
+    }
 }

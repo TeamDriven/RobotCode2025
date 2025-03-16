@@ -23,7 +23,7 @@ public class IntakeIOKraken implements IntakeIO {
         motorFactory = new MotorFactory("Intake", motorID);
 
         motorFactory.setBrakeMode(true);
-        motorFactory.setInverted(true);
+        motorFactory.setInverted(false);
         motorFactory.setCurrentLimits(40);
         motorFactory.setVoltageLimits(8);
         motorFactory.setSlot0(0.15, 0, 0.0025);

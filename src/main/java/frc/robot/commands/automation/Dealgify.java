@@ -7,14 +7,12 @@ import static frc.robot.Subsystems.intake;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotState;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.Reef.ReefFace;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.intake.IntakeConstants;
 
 public class Dealgify extends Command {
 
@@ -29,9 +27,9 @@ public class Dealgify extends Command {
         Pose2d curPose = RobotState.getInstance().getEstimatedPose();
         nearestFace = Reef.findNearestReefFace(curPose);
 
-        intake.runVelocity(-40);
+        intake.runVelocity(0);
         
-        drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
+        // drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 
         actuation.setPos(ActuationConstants.dealgifyPos);
 
@@ -47,7 +45,7 @@ public class Dealgify extends Command {
 
         nearestFace = face;
 
-        drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
+        // drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 
         actuation.setPos(ActuationConstants.dealgifyPos);
 

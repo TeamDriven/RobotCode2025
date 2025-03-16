@@ -31,9 +31,9 @@ public final class DriveConstants {
         Units.inchesToMeters(28 + (3.5*2)), // Bumper width X
         Units.inchesToMeters(28 + (3.5*2)), // Bumper width Y
         4.804, // Max Linear Velocity
-        8.453, // Max Linear Acceleration
+        Units.feetToMeters(75.0), // Max Linear Acceleration
         12.0, // Max Angular Velocity
-        6.0); // Max Angular Acceleration
+        6.0); //6 // Max Angular Acceleration
     case DEVBOT -> new DriveConfig(
         Units.inchesToMeters(1.924437419735719), // Get from Wheel Radius Characterization
         Units.inchesToMeters(22.75), // Track width X
@@ -67,10 +67,10 @@ public final class DriveConstants {
   // Module Constants
   public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConfig[] {
-      new ModuleConfig(1, 2, 3, new Rotation2d(-1.239456), true), 
-      new ModuleConfig(4, 5, 6, new Rotation2d(-1.925146), true), 
-      new ModuleConfig(7, 8, 9, new Rotation2d(-0.113515), true), 
-      new ModuleConfig(10, 11, 12, new Rotation2d(-1.573864), true) 
+      new ModuleConfig(1, 2, 3, new Rotation2d(-1.221049), true), 
+      new ModuleConfig(4, 5, 6, new Rotation2d(-1.9266807), true), 
+      new ModuleConfig(7, 8, 9, new Rotation2d(-0.164136), true), 
+      new ModuleConfig(10, 11, 12, new Rotation2d(-1.598408), true) 
     };
     case DEVBOT -> new ModuleConfig[] {
         new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true),

@@ -33,8 +33,8 @@ public class Place3LeftSide implements AutoBase {
         AutoRoutine routine = drive.autoFactory.newRoutine("Place3LeftSide");
 
         Transform2d place1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(5), Units.inchesToMeters(-3)), new Rotation2d());
-        Transform2d place2Offset = new Transform2d(new Translation2d(0, 0), new Rotation2d());
-        Transform2d place3Offset = new Transform2d(new Translation2d(0, 0), new Rotation2d());
+        Transform2d place2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(1.5), Units.inchesToMeters(-4)), new Rotation2d());
+        Transform2d place3Offset = new Transform2d(new Translation2d(Units.inchesToMeters(1.5), Units.inchesToMeters(-4)), new Rotation2d());
         
         var place1 = routine.trajectory("Place 3 left side", 0);
         var pickup2 = routine.trajectory("Place 3 left side", 1);
@@ -66,29 +66,34 @@ public class Place3LeftSide implements AutoBase {
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         new WaitCommand(0.25),
-                        new TuckCommand(),
-                        intake.runOnce(() -> intake.runVelocity(0)),
+                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
                         Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        pickup2.cmd()));
+                        Commands.parallel(
+                            new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+                            pickup2.cmd()
+                        )));
 
         place3.atTime("Place Piece 2").onTrue(
                 Commands.sequence(
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[3].transformBy(place2Offset), 
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
+                //         Commands.runOnce(
+                //                 () -> drive.setAutoAlignGoal(
+                //                         () -> Reef.placePoses[3].transformBy(place2Offset), 
+                //                         () -> new Translation2d(),
+                //                         allignmentMode.SLOW),
+                //                 drive),
                         new SetPosition(l4),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+                        // new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
                         Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight(), 0.25) || !elevator.isMoving()),
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         new WaitCommand(0.25),
-                        new TuckCommand(),
-                        intake.runOnce(() -> intake.runVelocity(0)),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        pickup4.cmd()));
+                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+                        // Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+                        Commands.parallel(
+                            new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+                            // pickup4.cmd()
+                            Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime()))
+                        )));
 
         place5.atTime("Place Piece 3").onTrue(
                 Commands.sequence(
@@ -111,18 +116,18 @@ public class Place3LeftSide implements AutoBase {
 
         pickup2.atTime("pickup 1").onTrue(
                 Commands.sequence(
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> CoralStations.pickupLocations[6],
-                                        () -> new Translation2d(),
-                                        allignmentMode.NORMAL),
-                                drive),
+                //         Commands.runOnce(
+                //                 () -> drive.setAutoAlignGoal(
+                //                         () -> CoralStations.pickupLocations[6],
+                //                         () -> new Translation2d(),
+                //                         allignmentMode.NORMAL),
+                //                 drive),
                         new SetPosition(ElevatorConstants.pickUpPos, ActuationConstants.pickUpPos),
-                        new WaitUntilCommand(drive::isAutoAlignGoalCompleted),
+                        // new WaitUntilCommand(drive::isAutoAlignGoalCompleted),
                         Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.pickUpPos, 0.25)),
                         intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
                         Commands.waitUntil(RobotState.getInstance()::hasCoral),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+                        // Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
                         Commands.parallel(
                             place3.cmd(),   
                             new TuckCommand().beforeStarting(Commands.waitSeconds(0.15))

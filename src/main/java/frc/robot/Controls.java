@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 
 public class Controls {
-    private static final boolean rightStickDrive = true;
+    private static final boolean rightStickDrive = false;
 
     // Drivetrain
     public static DoubleSupplier driveX = () -> rightStickDrive ? -driver.getRightY() : -driver.getLeftY();
@@ -22,43 +22,51 @@ public class Controls {
 
     // Actions
     class StandardMode {
-        public static Trigger cancelAction = rightStickDrive ? driver.leftStick() : driver.rightStick();
+        public static Trigger cancelAction = (rightStickDrive ? driver.leftStick() : driver.rightStick())
+                .and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger placeL4 = rightStickDrive ? driver.pov(0) : driver.y();
-        public static Trigger placeL3 = rightStickDrive ? driver.pov(90) : driver.b();
-        public static Trigger placeL2 = rightStickDrive ? driver.pov(270) : driver.x();
-        public static Trigger placeL1 = rightStickDrive ? driver.pov(180) : driver.a();
+        public static Trigger placeL4 = (rightStickDrive ? driver.pov(0) : driver.y())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL3 = (rightStickDrive ? driver.pov(90) : driver.b())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL2 = (rightStickDrive ? driver.pov(270) : driver.x())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL1 = (rightStickDrive ? driver.pov(180) : driver.a())
+                .and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger inttake = driver.rightBumper();
-        public static Trigger outtake = driver.leftBumper();
+        public static Trigger inttake = driver.rightBumper().and(RobotState.getInstance()::isStandardMode);
+        public static Trigger outtake = driver.leftBumper().and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger dealgify = driver.rightTrigger(0.1);
+        public static Trigger dealgify = driver.rightTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger climb = rightStickDrive ? driver.y() : driver.pov(0);
-        public static Trigger deployClimber = rightStickDrive ? driver.a() : driver.pov(180);
+        public static Trigger climb = (rightStickDrive ? driver.y() : driver.pov(0))
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger deployClimber = (rightStickDrive ? driver.a() : driver.pov(180))
+                .and(RobotState.getInstance()::isStandardMode);
     }
 
     class NoLimelightMode {
-
+        
     }
 
     class ManualMode {
-        public static Trigger elevatorUp = driver.rightTrigger(0.1);
+        public static Trigger elevatorUp = driver.rightTrigger(0.1).and(RobotState.getInstance()::isManualMode);
         public static Trigger elevatorDown = driver.leftTrigger(0.1)
                 .and(
                         rightStickDrive ? driver.x().negate() : driver.pov(270).negate())
                 .and(
-                        rightStickDrive ? driver.b().negate() : driver.pov(90).negate());
+                        rightStickDrive ? driver.b().negate() : driver.pov(90).negate())
+                .and(RobotState.getInstance()::isManualMode);
 
-        public static Trigger actuationUp = rightStickDrive ? driver.pov(0) : driver.y();
-        public static Trigger actuationDown = rightStickDrive ? driver.pov(180) : driver.a();
-            
-        public static Trigger intakeIn = driver.rightBumper();
-        public static Trigger intakeOut = driver.leftBumper();
+        public static Trigger actuationUp = (rightStickDrive ? driver.pov(0) : driver.y()).and(RobotState.getInstance()::isManualMode);
+        public static Trigger actuationDown = (rightStickDrive ? driver.pov(180) : driver.a()).and(RobotState.getInstance()::isManualMode);
 
-        public static Trigger winchOut = rightStickDrive ? driver.y() : driver.pov(0);
-        public static Trigger winchIn = rightStickDrive ? driver.a() : driver.pov(180);
+        public static Trigger intakeIn = driver.rightBumper().and(RobotState.getInstance()::isManualMode);
+        public static Trigger intakeOut = driver.leftBumper().and(RobotState.getInstance()::isManualMode);
 
-        public static Trigger footerOut = rightStickDrive ? driver.pov(90) : driver.b();
+        public static Trigger winchOut = (rightStickDrive ? driver.y() : driver.pov(0)).and(RobotState.getInstance()::isManualMode);
+        public static Trigger winchIn = (rightStickDrive ? driver.a() : driver.pov(180)).and(RobotState.getInstance()::isManualMode);
+
+        public static Trigger footerOut = (rightStickDrive ? driver.pov(90) : driver.b()).and(RobotState.getInstance()::isManualMode);
     }
 }

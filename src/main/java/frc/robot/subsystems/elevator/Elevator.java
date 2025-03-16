@@ -117,7 +117,17 @@ public class Elevator extends SubsystemBase{
     }
 
     public Command runVoltageCommand(DoubleSupplier volts) {
-        return Commands.startEnd(() -> runVoltage(volts.getAsDouble()), () -> stop(), this);
+        return new Command() {
+            @Override
+            public void execute() {
+                runVoltage(volts.getAsDouble());
+            }
+
+            @Override
+            public void end(boolean isInterrupted) {
+                stop();
+            }
+        };
     }
 
     public Command resetPosition() {

@@ -34,16 +34,21 @@ public class Intake extends SubsystemBase {
         // Should report to RobotState when piece status changes
         RobotState.getInstance().setGamePiece(inputs.gamePieceSensor);
 
+        
+        Logger.recordOutput("Intake/mode", currentMode);
+        Logger.recordOutput("Intake/value", value);
+
         if (value == 0) {
-            // if (RobotState.getInstance().hasCoral()){
-            //     intakeIO.runVoltage(-1);
-            // } else {
-            //     intakeIO.stopMotor();
-            // }
-            intakeIO.stopMotor();
+            if (RobotState.getInstance().hasCoral()){
+                intakeIO.runVoltage(-0.5);
+            } else {
+                intakeIO.stopMotor();
+            }
+            // intakeIO.stopMotor();
             
         } else if (currentMode == mode.VELOCITY) {
-            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < 5) {
+            Logger.recordOutput("Intake/isMoving", (Math.abs(inputs.motorVel) < Math.abs(value * 0.75)));
+            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < Math.abs(value * 0.75)) {
                 value = Math.max(value, 0);
             }
             intakeIO.runMotor(value);
