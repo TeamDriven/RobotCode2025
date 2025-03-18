@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Controls.ManualMode;
@@ -40,11 +39,9 @@ import frc.robot.commands.automation.Dealgify;
 import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
 import frc.robot.commands.autos.Place3LeftSide;
-import frc.robot.commands.drivetrain.AutoMoveToNearestPOI;
-import frc.robot.subsystems.actuation.Actuation;
+import frc.robot.commands.drivetrain.TeleAutoTurn;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.climber.climberController;
-import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
@@ -98,7 +95,7 @@ public class RobotContainer {
     }
 
     private void setupAutos() {
-        autoChooser.addOption("place 3 left side", new Place3LeftSide().getAuto().cmd());
+        autoChooser.setDefaultOption("place 3 left side", new Place3LeftSide().getAuto().cmd());
 
         SmartDashboard.putData(autoChooser);
     }
@@ -219,9 +216,8 @@ public class RobotContainer {
                 .or(isDesiredAction(actions.L3))
                 .or(isDesiredAction(actions.L2))
                 .and(RobotState.getInstance()::isStandardMode)
-                .onTrue(Commands.runOnce(() -> drive
-                        .setHeadingGoal(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
-                                .facePos().getRotation().rotateBy(new Rotation2d(Math.PI)))))
+                .onTrue(new TeleAutoTurn(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
+                                .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
                 .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
 
         new Trigger(isDesiredAction(actions.L4))
@@ -247,8 +243,7 @@ public class RobotContainer {
                 .and(RobotState.getInstance()::isStandardMode)
                 .and(RobotState.getInstance()::isInLeftPickupZone)
                 .onTrue(Commands.parallel(
-                        Commands.runOnce(() -> drive
-                                .setHeadingGoal(() -> Rotation2d.fromDegrees(125))),
+                        new TeleAutoTurn(() -> Rotation2d.fromDegrees(125)),
                         new SetPosition(ElevatorConstants.pickUpPos,
                                 ActuationConstants.pickUpPos),
                         intake.runVelocityCommand(intakeVelocity)));
@@ -257,8 +252,7 @@ public class RobotContainer {
                 .and(RobotState.getInstance()::isStandardMode)
                 .and(RobotState.getInstance()::isInRightPickupZone)
                 .onTrue(Commands.parallel(
-                        Commands.runOnce(() -> drive
-                                .setHeadingGoal(() -> Rotation2d.fromDegrees(-125))),
+                        new TeleAutoTurn(() -> Rotation2d.fromDegrees(-125)),
                         new SetPosition(ElevatorConstants.pickUpPos,
                                 ActuationConstants.pickUpPos),
                         intake.runVelocityCommand(intakeVelocity)));

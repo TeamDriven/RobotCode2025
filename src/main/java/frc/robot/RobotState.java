@@ -80,10 +80,13 @@ public class RobotState {
     // Check gyro connected
     if (observation.gyroAngle != null) {
       // Update dtheta for twist if gyro connected
+      Logger.recordOutput("RobotState/hasGyro", true);
       twist =
           new Twist2d(
               twist.dx, twist.dy, observation.gyroAngle().minus(lastGyroAngle).getRadians());
       lastGyroAngle = observation.gyroAngle();
+    } else {
+        Logger.recordOutput("RobotState/hasGyro", false);
     }
 
     odometryLock.lock();
