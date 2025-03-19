@@ -26,20 +26,20 @@ import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.RobotState;
 
-public class Place3LeftSide implements AutoBase {
+public class Place3RightSide implements AutoBase {
     @Override
     public AutoRoutine getAuto() {
-        AutoRoutine routine = drive.autoFactory.newRoutine("Place3LeftSide");
+        AutoRoutine routine = drive.autoFactory.newRoutine("Place3RightSide");
 
-        Transform2d place1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(-2)), new Rotation2d());
-        Transform2d place2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1)), new Rotation2d());
-        Transform2d place3Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1)), new Rotation2d());
+        Transform2d place1Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
+        Transform2d place2Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
+        Transform2d place3Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
         
-        var place1 = routine.trajectory("Place 3 left side", 0);
-        var pickup2 = routine.trajectory("Place 3 left side", 1);
-        var place3 = routine.trajectory("Place 3 left side", 2);
-        var pickup4 = routine.trajectory("Place 3 left side", 3);
-        var place5 = routine.trajectory("Place 3 left side", 4);
+        var place1 = routine.trajectory("Place 3 right side", 0);
+        var pickup2 = routine.trajectory("Place 3 right side", 1);
+        var place3 = routine.trajectory("Place 3 right side", 2);
+        var pickup4 = routine.trajectory("Place 3 right side", 3);
+        var place5 = routine.trajectory("Place 3 right side", 4);
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -59,7 +59,7 @@ public class Place3LeftSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[5].transformBy(place1Offset), 
+                                        () -> Reef.placePoses[8].transformBy(place1Offset), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
@@ -80,7 +80,7 @@ public class Place3LeftSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[3].transformBy(place2Offset), 
+                                        () -> Reef.placePoses[10].transformBy(place2Offset), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
@@ -102,7 +102,7 @@ public class Place3LeftSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[2].transformBy(place3Offset), 
+                                        () -> Reef.placePoses[11].transformBy(place3Offset), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
@@ -121,7 +121,7 @@ public class Place3LeftSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> CoralStations.pickupLocations[6],
+                                        () -> CoralStations.pickupLocations[16],
                                         () -> new Translation2d(),
                                         allignmentMode.NORMAL),
                                 drive),
@@ -140,7 +140,7 @@ public class Place3LeftSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> CoralStations.pickupLocations[6],
+                                        () -> CoralStations.pickupLocations[16],
                                         () -> new Translation2d(),
                                         allignmentMode.NORMAL),
                                 drive),

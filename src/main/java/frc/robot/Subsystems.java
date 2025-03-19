@@ -74,7 +74,7 @@ public final class Subsystems {
 
                     intake = new Intake(new IntakeIOKraken(13, 0));
                     actuation = new Actuation(new ActuationIOKraken(14, 2));
-                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
+                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
                     winch = new Winch(new WinchIOKraken(20, 21));
                     footer = new Footer(new FooterIOKraken(19));
 
@@ -118,7 +118,7 @@ public final class Subsystems {
                     });
                     actuation = new Actuation(new ActuationIO() {
                     });
-                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17, 1));
+                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
                     winch = new Winch(new WinchIOKraken(20, 21));
                     footer = new Footer(new FooterIOKraken(19));
 

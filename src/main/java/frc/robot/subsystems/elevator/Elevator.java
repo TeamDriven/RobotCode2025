@@ -155,7 +155,7 @@ public class Elevator extends SubsystemBase{
 
             @Override
             public boolean isFinished() {
-                return elevatorInputs.isZeroButtonPressed || (timer.hasElapsed(0.2) && !isMoving());
+                return timer.hasElapsed(0.2) && !isMoving();
             }
         };
     }

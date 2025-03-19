@@ -23,14 +23,13 @@ public class ElevatorIOKraken implements ElevatorIO {
   private TalonFX elevatorLeftMotor;
   private TalonFX elevatorRightMotor;
   private CANcoder encoder;
-  private DigitalInput zeroButton;
 
   private MotionMagicVoltage motionMagicControl;
   private VelocityVoltage velocityControl;
   private VoltageOut voltageOut;
   private NeutralOut StopMode;
 
-  public ElevatorIOKraken(int leftMotorID, int rightMotorID, int encoderID, int zeroButtonChannel) {
+  public ElevatorIOKraken(int leftMotorID, int rightMotorID, int encoderID) {
     motorFactory = new MotorFactory("Elevator", leftMotorID, rightMotorID);
 
     motorFactory.setInverted(false, true);
@@ -59,8 +58,6 @@ public class ElevatorIOKraken implements ElevatorIO {
 
     encoder = new CANcoder(encoderID);
     CancoderUtil.applySettings(encoder, cancoderFactory.getConfig());
-
-    zeroButton = new DigitalInput(zeroButtonChannel);
 
     if(!tuningMode) {
       resetPosition();
@@ -92,8 +89,6 @@ public class ElevatorIOKraken implements ElevatorIO {
 
     inputs.absoluteEncoderPos = encoder.getAbsolutePosition().getValueAsDouble();
     inputs.relativeEncoderPos = encoder.getPosition().getValueAsDouble();
-
-    inputs.isZeroButtonPressed = !zeroButton.get();
 
     // motorFactory.checkForUpdates();
   }

@@ -79,9 +79,9 @@ public class ModuleIOKrakenFOC implements ModuleIO {
     absoluteEncoderOffset = config.absoluteEncoderOffset();
 
     // Config Motors
-    driveTalonConfig.CurrentLimits.SupplyCurrentLimit = 80;
-    driveTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 80.0;
-    driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
+    driveTalonConfig.CurrentLimits.SupplyCurrentLimit = 70;
+    driveTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 70.0;
+    driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -70.0;
     driveTalonConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.02;
     driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

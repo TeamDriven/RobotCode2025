@@ -1,7 +1,7 @@
 import json
 
-INPUT_DIR = "C:\Projects\RobotCode2025\src\main\deploy\choreo\place 4 right side.traj"
-OUTPUT_DIR = "C:\Projects\RobotCode2025\src\main\deploy\choreo\place 4 left side.traj"
+INPUT_DIR = "C:\Projects\RobotCode2025\src\main\deploy\choreo\Place 3 left side.traj"
+OUTPUT_DIR = "C:\Projects\RobotCode2025\src\main\deploy\choreo\Place 3 right side.traj"
 
 FIELD_LENGTH = 17.548225
 FIELD_WIDTH = 8.0518

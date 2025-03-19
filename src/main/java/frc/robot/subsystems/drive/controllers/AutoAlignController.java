@@ -23,7 +23,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignController {
-        private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 6);
+        private static final LoggedTunableNumber linearkP = new LoggedTunableNumber("AutoAlign/drivekP", 7.5);
         private static final LoggedTunableNumber linearkD = new LoggedTunableNumber("AutoAlign/drivekD", 0.0);
         private static final LoggedTunableNumber thetakP = new LoggedTunableNumber("AutoAlign/thetakP", 9);
         private static final LoggedTunableNumber thetakD = new LoggedTunableNumber("AutoAlign/thetakD", 0.1);

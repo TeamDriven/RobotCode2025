@@ -549,4 +549,8 @@ public class Drive extends SubsystemBase {
                 .map(translation -> translation.getAngle().plus(new Rotation2d(Math.PI / 2.0)))
                 .toArray(Rotation2d[]::new);
     }
+
+    public void setDriveCurrentLimits(int limit) {
+        
+    }
 }
