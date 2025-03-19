@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.CancoderUtil;
 import frc.robot.util.CancoderUtil.ConfigFactory;
 import frc.robot.util.TalonFXUtil.MotorFactory;

@@ -3,7 +3,6 @@ package frc.robot.commands.automation;
 import static frc.robot.Subsystems.actuation;
 import static frc.robot.Subsystems.elevator;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.placeLevel;
 

@@ -5,7 +5,6 @@ import static frc.robot.Subsystems.drive;
 import static frc.robot.Subsystems.elevator;
 
 import choreo.auto.AutoRoutine;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.drive.Drive;

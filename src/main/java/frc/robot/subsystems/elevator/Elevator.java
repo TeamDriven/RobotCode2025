@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.tuckPos;
 import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
 
 import java.util.function.DoubleSupplier;
