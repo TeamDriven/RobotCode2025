@@ -204,6 +204,8 @@ public class RobotContainer {
                 .onFalse(Commands.either(setDesiredAction(actions.NONE), Commands.none(),
                         this::isTryingToPlace));
 
+        StandardMode.maintainIntake.whileTrue(intake.runVelocityCommand(-30));
+
         StandardMode.dealgify.onTrue(setDesiredAction(actions.DEALGIFY));
 
         StandardMode.climb.whileTrue(climberController.climb());

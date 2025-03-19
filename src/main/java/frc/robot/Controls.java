@@ -3,11 +3,10 @@ package frc.robot;
 import static frc.robot.Constants.driver;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import java.util.function.DoubleSupplier;
 
 public class Controls {
-    private static final boolean rightStickDrive = true;
+    private static final boolean rightStickDrive = false;
 
     // Drivetrain
     public static DoubleSupplier driveX = () -> rightStickDrive ? -driver.getRightY() : -driver.getLeftY();
@@ -17,8 +16,8 @@ public class Controls {
 
     public static Trigger resetElevatorPosition = driver.back();
 
-    public static Trigger noLimelightMode = driver.leftTrigger().and(rightStickDrive ? driver.x() : driver.pov(270));
-    public static Trigger manualMode = driver.leftTrigger().and(rightStickDrive ? driver.b() : driver.pov(90));
+    public static Trigger noLimelightMode = rightStickDrive ? driver.x() : driver.pov(270);
+    public static Trigger manualMode = rightStickDrive ? driver.b() : driver.pov(90);
 
     // Actions
     class StandardMode {
@@ -37,6 +36,8 @@ public class Controls {
         public static Trigger inttake = driver.rightBumper().and(RobotState.getInstance()::isStandardMode);
         public static Trigger outtake = driver.leftBumper().and(RobotState.getInstance()::isStandardMode);
 
+        public static Trigger maintainIntake = driver.leftTrigger().and(RobotState.getInstance()::isStandardMode);
+
         public static Trigger dealgify = driver.rightTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
 
         public static Trigger climb = (rightStickDrive ? driver.y() : driver.pov(0))
@@ -51,12 +52,7 @@ public class Controls {
 
     class ManualMode {
         public static Trigger elevatorUp = driver.rightTrigger(0.1).and(RobotState.getInstance()::isManualMode);
-        public static Trigger elevatorDown = driver.leftTrigger(0.1)
-                .and(
-                        rightStickDrive ? driver.x().negate() : driver.pov(270).negate())
-                .and(
-                        rightStickDrive ? driver.b().negate() : driver.pov(90).negate())
-                .and(RobotState.getInstance()::isManualMode);
+        public static Trigger elevatorDown = driver.leftTrigger(0.1).and(RobotState.getInstance()::isManualMode);
 
         public static Trigger actuationUp = (rightStickDrive ? driver.pov(0) : driver.y()).and(RobotState.getInstance()::isManualMode);
         public static Trigger actuationDown = (rightStickDrive ? driver.pov(180) : driver.a()).and(RobotState.getInstance()::isManualMode);
