@@ -30,7 +30,7 @@ public class HeadingController {
   private static final LoggedTunableNumber kD =
       new LoggedTunableNumber("HeadingController/kD", headingControllerConstants.kD());
   private static final LoggedTunableNumber maxVelocityMultipler =
-      new LoggedTunableNumber("HeadingController/MaxVelocityMultipler", 0.8);
+      new LoggedTunableNumber("HeadingController/MaxVelocityMultipler", 0.75);
   private static final LoggedTunableNumber maxAccelerationMultipler =
       new LoggedTunableNumber("HeadingController/MaxAccelerationMultipler", 0.8);
   private static final LoggedTunableNumber toleranceDegrees =

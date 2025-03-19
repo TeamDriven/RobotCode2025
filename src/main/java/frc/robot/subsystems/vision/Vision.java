@@ -39,9 +39,9 @@ public class Vision extends SubsystemBase {
             return;
         }
 
-        if (visionInputs.tagCount == 0) {
-            return;
-        }
+        if (visionInputs.tagCount == 0) return;
+
+        if (visionInputs.avgTagArea < 0.075) return;
 
         RobotState.getInstance().addVisionObservation(new VisionObservation(visionInputs.pose, visionInputs.timestampSeconds, VecBuilder.fill(
                         Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,

@@ -70,20 +70,22 @@ public class ModuleIOKrakenFOC implements ModuleIO {
       new PositionTorqueCurrentFOC(0).withUpdateFreqHz(0);
   private final NeutralOut neutralControl = new NeutralOut().withUpdateFreqHz(0);
 
-  public ModuleIOKrakenFOC(ModuleConfig config) {
+  public ModuleIOKrakenFOC(ModuleConfig config, String CANbus) {
     // Init controllers and encoders from config constants
-    driveTalon = new TalonFX(config.driveID());
-    turnTalon = new TalonFX(config.turnID());
+    driveTalon = new TalonFX(config.driveID(), CANbus);
+    turnTalon = new TalonFX(config.turnID(), CANbus);
     // turnAbsoluteEncoder = new AnalogInput(config.absoluteEncoderChannel());
-    turnAbsoluteEncoder = new CANcoder(config.absoluteEncoderChannel());
+    turnAbsoluteEncoder = new CANcoder(config.absoluteEncoderChannel(), CANbus);
     absoluteEncoderOffset = config.absoluteEncoderOffset();
 
     // Config Motors
-    driveTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 80.0;
-    driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80.0;
+    driveTalonConfig.CurrentLimits.SupplyCurrentLimit = 70;
+    driveTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 70.0;
+    driveTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -70.0;
     driveTalonConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.02;
     driveTalonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    turnTalonConfig.CurrentLimits.SupplyCurrentLimit = 60;
     turnTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 40.0;
     turnTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -40.0;
     turnTalonConfig.MotorOutput.Inverted =

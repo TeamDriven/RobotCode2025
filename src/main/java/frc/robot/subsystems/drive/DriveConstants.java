@@ -23,126 +23,116 @@ import frc.robot.util.swerve.ModuleLimits;
 public final class DriveConstants {
   public static final boolean shouldPrintZeros = false;
 
-  public static final DriveConfig driveConfig =
-      switch (Constants.getRobot()) {
-        case SIMBOT, COMPBOT -> new DriveConfig(
-            Units.inchesToMeters(0), // Get from Wheel Radius Characterization
-            Units.inchesToMeters(0), // Track width X
-            Units.inchesToMeters(0), // Track width Y
-            Units.inchesToMeters(0), // Bumper width X
-            Units.inchesToMeters(0), // Bumper width Y
-            Units.feetToMeters(0), // Max Linear Velocity
-            Units.feetToMeters(0), // Max Linear Acceleration
-            0, // Max Angular Velocity
-            0); // Max Angular Acceleration
-        case DEVBOT -> new DriveConfig(
-          Units.inchesToMeters(1.958795080364683), // Get from Wheel Radius Characterization
-          Units.inchesToMeters(22.75), // Track width X
-          Units.inchesToMeters(22.75), // Track width Y
-          Units.inchesToMeters(34), // Bumper width X
-          Units.inchesToMeters(34), // Bumper width Y
-          5.641, // Max Linear Velocity
-          Units.feetToMeters(75.0), // Max Linear Acceleration
-          12.0, // Max Angular Velocity
-          6.0); // Max Angular Acceleration
-      };
-  public static final Translation2d[] moduleTranslations =
-      new Translation2d[] {
-        new Translation2d(driveConfig.trackWidthX() / 2.0, driveConfig.trackWidthY() / 2.0),
-        new Translation2d(driveConfig.trackWidthX() / 2.0, -driveConfig.trackWidthY() / 2.0),
-        new Translation2d(-driveConfig.trackWidthX() / 2.0, driveConfig.trackWidthY() / 2.0),
-        new Translation2d(-driveConfig.trackWidthX() / 2.0, -driveConfig.trackWidthY() / 2.0)
-      };
-  public static final SwerveDriveKinematics kinematics =
-      new SwerveDriveKinematics(moduleTranslations);
+  public static final DriveConfig driveConfig = switch (Constants.getRobot()) {
+    case SIMBOT, COMPBOT -> new DriveConfig(
+        Units.inchesToMeters(1.93513589892683), // Get from Wheel Radius Characterization
+        Units.inchesToMeters(22.75), // Track width X
+        Units.inchesToMeters(22.75), // Track width Y
+        Units.inchesToMeters(28 + (3.5*2)), // Bumper width X
+        Units.inchesToMeters(28 + (3.5*2)), // Bumper width Y
+        4.804, // Max Linear Velocity
+        Units.feetToMeters(75.0), // Max Linear Acceleration
+        12.0, // Max Angular Velocity
+        6.0); //6 // Max Angular Acceleration
+    case DEVBOT -> new DriveConfig(
+        Units.inchesToMeters(1.924437419735719), // Get from Wheel Radius Characterization
+        Units.inchesToMeters(22.75), // Track width X
+        Units.inchesToMeters(22.75), // Track width Y
+        Units.inchesToMeters(34), // Bumper width X
+        Units.inchesToMeters(34), // Bumper width Y
+        5.641, // Max Linear Velocity
+        Units.feetToMeters(75.0), // Max Linear Acceleration
+        12.0, // Max Angular Velocity
+        6.0); // Max Angular Acceleration
+  };
+  public static final Translation2d[] moduleTranslations = new Translation2d[] {
+      new Translation2d(driveConfig.trackWidthX() / 2.0, driveConfig.trackWidthY() / 2.0),
+      new Translation2d(driveConfig.trackWidthX() / 2.0, -driveConfig.trackWidthY() / 2.0),
+      new Translation2d(-driveConfig.trackWidthX() / 2.0, driveConfig.trackWidthY() / 2.0),
+      new Translation2d(-driveConfig.trackWidthX() / 2.0, -driveConfig.trackWidthY() / 2.0)
+  };
+  public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
 
   // Odometry Constants
-  public static final double odometryFrequency =
-      switch (Constants.getRobot()) {
-        case SIMBOT -> 50.0;
-        case DEVBOT -> 100.0;
-        case COMPBOT -> 150.0;
-      };
+  public static final double odometryFrequency = switch (Constants.getRobot()) {
+    case SIMBOT -> 50.0;
+    case DEVBOT -> 100.0;
+    case COMPBOT -> 250.0;
+  };
 
-  public static final Matrix<N3, N1> odometryStateStdDevs =
-      switch (Constants.getRobot()) {
-        default -> new Matrix<>(VecBuilder.fill(0.003, 0.003, 0.0002));
-      };
+  public static final Matrix<N3, N1> odometryStateStdDevs = switch (Constants.getRobot()) {
+    default -> new Matrix<>(VecBuilder.fill(0.003, 0.003, 0.0002));
+  };
 
   // Module Constants
-  public static final ModuleConfig[] moduleConfigs =
-      switch (Constants.getRobot()) {
-        case COMPBOT -> new ModuleConfig[] {
-          new ModuleConfig(1, 2, 3, new Rotation2d(0), true),
-          new ModuleConfig(4, 5, 6, new Rotation2d(0), true),
-          new ModuleConfig(7, 8, 9, new Rotation2d(0), true),
-          new ModuleConfig(10, 11, 12, new Rotation2d(0), true)
-        };
-        case DEVBOT -> new ModuleConfig[] {
-          new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true), 
-          new ModuleConfig(4, 5, 6, new Rotation2d(1.575398), true), 
-          new ModuleConfig(7, 8, 9, new Rotation2d(0.013806), true), 
-          new ModuleConfig(10, 11, 12, new Rotation2d(-1.547787), true) 
-        };
-        case SIMBOT -> {
-          ModuleConfig[] configs = new ModuleConfig[4];
-          for (int i = 0; i < configs.length; i++)
-            configs[i] = new ModuleConfig(0, 0, 0, new Rotation2d(0), false);
-          yield configs;
-        }
-      };
+  public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
+    case COMPBOT -> new ModuleConfig[] {
+      new ModuleConfig(1, 2, 3, new Rotation2d(-1.221049), true), 
+      new ModuleConfig(4, 5, 6, new Rotation2d(-1.9266807), true), 
+      new ModuleConfig(7, 8, 9, new Rotation2d(-0.164136), true), 
+      new ModuleConfig(10, 11, 12, new Rotation2d(-1.598408), true) 
+    };
+    case DEVBOT -> new ModuleConfig[] {
+        new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true),
+        new ModuleConfig(4, 5, 6, new Rotation2d(1.575398), true),
+        new ModuleConfig(7, 8, 9, new Rotation2d(0.013806), true),
+        new ModuleConfig(10, 11, 12, new Rotation2d(-1.547787), true)
+    };
+    case SIMBOT -> {
+      ModuleConfig[] configs = new ModuleConfig[4];
+      for (int i = 0; i < configs.length; i++)
+        configs[i] = new ModuleConfig(0, 0, 0, new Rotation2d(0), false);
+      yield configs;
+    }
+  };
 
-  public static final ModuleConstants moduleConstants =
-      switch (Constants.getRobot()) {
-        case COMPBOT -> new ModuleConstants(
-            5.11103, // Get these two from FeedForwardCharacterization
-            0.08386,
-            1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
-            35.0,
-            0.0,
-            4000.0,
-            50.0,
-            Mk4iReductions.L3_16T.reduction, // L3 16 tooth
-            Mk4iReductions.TURN.reduction);
-        case DEVBOT -> new ModuleConstants(
-            3.51413,
-            0.05551,
-            1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp,
-            35.0,
-            0.0,
-            2000.0,
-            50.0,
-            Mk4iReductions.L3_16T.reduction,
-            Mk4iReductions.TURN.reduction);
-        case SIMBOT -> new ModuleConstants(
-            0.014,
-            0.134,
-            0.0,
-            0.1,
-            0.0,
-            10.0,
-            0.0,
-            Mk4iReductions.L3_16T.reduction,
-            Mk4iReductions.TURN.reduction);
-      };
+  public static final ModuleConstants moduleConstants = switch (Constants.getRobot()) {
+    case COMPBOT -> new ModuleConstants(
+        5.55144, // Get these two from FeedForwardCharacterization
+        0.09508,
+        1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
+        35.0,
+        0.0,
+        4000.0,
+        50.0,
+        Mk4iReductions.L3_16T.reduction, // L3 16 tooth
+        Mk4iReductions.TURN.reduction);
+    case DEVBOT -> new ModuleConstants(
+        5.07453,
+        0.05741,
+        1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp,
+        35.0,
+        0.0,
+        3000.0,
+        50.0,
+        Mk4iReductions.L3_16T.reduction,
+        Mk4iReductions.TURN.reduction);
+    case SIMBOT -> new ModuleConstants(
+        0.014,
+        0.134,
+        0.0,
+        0.1,
+        0.0,
+        10.0,
+        0.0,
+        Mk4iReductions.L3_16T.reduction,
+        Mk4iReductions.TURN.reduction);
+  };
 
-  public static final ModuleLimits moduleLimitsFree =
-      new ModuleLimits(
-          driveConfig.maxLinearVelocity(),
-          driveConfig.maxLinearAcceleration(),
-          Units.degreesToRadians(1080.0));
+  public static final ModuleLimits moduleLimitsFree = new ModuleLimits(
+      driveConfig.maxLinearVelocity(),
+      driveConfig.maxLinearAcceleration(),
+      Units.degreesToRadians(1080.0));
 
-  public static final ModuleLimits moduleLimitsFlywheelSpinup =
-      new ModuleLimits(
-          driveConfig.maxLinearVelocity(),
-          driveConfig.maxLinearAcceleration() / 2.0,
-          Units.degreesToRadians(1080.0));
+  public static final ModuleLimits moduleLimitsFlywheelSpinup = new ModuleLimits(
+      driveConfig.maxLinearVelocity(),
+      driveConfig.maxLinearAcceleration() / 2.0,
+      Units.degreesToRadians(1080.0));
 
   // Swerve Heading Control
-  public static final HeadingControllerConstants headingControllerConstants =
-      switch (Constants.getRobot()) {
-        default -> new HeadingControllerConstants(5.0, 0.0, 8.0, 20.0);
-      };
+  public static final HeadingControllerConstants headingControllerConstants = switch (Constants.getRobot()) {
+    default -> new HeadingControllerConstants(4.1, 0.1, 8.0, 20.0);
+  };
 
   public record DriveConfig(
       double wheelRadius,
@@ -164,7 +154,8 @@ public final class DriveConstants {
       int turnID,
       int absoluteEncoderChannel,
       Rotation2d absoluteEncoderOffset,
-      boolean turnMotorInverted) {}
+      boolean turnMotorInverted) {
+  }
 
   public record ModuleConstants(
       double ffkS,
@@ -175,7 +166,8 @@ public final class DriveConstants {
       double turnkP,
       double turnkD,
       double driveReduction,
-      double turnReduction) {}
+      double turnReduction) {
+  }
 
   public record AutoAlignConstants(
       double linearkP,
@@ -187,10 +179,12 @@ public final class DriveConstants {
       double maxLinearVelocity,
       double maxLinearAcceleration,
       double maxAngularVelocity,
-      double maxAngularAcceleration) {}
+      double maxAngularAcceleration) {
+  }
 
   public record HeadingControllerConstants(
-      double kP, double kD, double maxVelocity, double maxAcceleration) {}
+      double kP, double kD, double maxVelocity, double maxAcceleration) {
+  }
 
   private enum Mk4iReductions {
     L2((50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)),

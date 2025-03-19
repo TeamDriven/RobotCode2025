@@ -80,10 +80,13 @@ public class RobotState {
     // Check gyro connected
     if (observation.gyroAngle != null) {
       // Update dtheta for twist if gyro connected
+      Logger.recordOutput("RobotState/hasGyro", true);
       twist =
           new Twist2d(
               twist.dx, twist.dy, observation.gyroAngle().minus(lastGyroAngle).getRadians());
       lastGyroAngle = observation.gyroAngle();
+    } else {
+        Logger.recordOutput("RobotState/hasGyro", false);
     }
 
     odometryLock.lock();
@@ -96,6 +99,8 @@ public class RobotState {
     // estimatedPose = estimatedPose.exp(twist);
     if (observation.gyroAngle != null) {
       swerveDrivePoseEstimator.updateWithTime(observation.timestamp(), observation.gyroAngle(), observation.wheelPositions().positions);
+    } else {
+      swerveDrivePoseEstimator.updateWithTime(observation.timestamp(), odometryPose.getRotation(), observation.wheelPositions().positions);
     }
     estimatedPose = swerveDrivePoseEstimator.getEstimatedPosition();
 
@@ -175,36 +180,97 @@ public class RobotState {
   public Pose2d getOdometryPose() {
     return odometryPose;
   }
-
-  private boolean inReefZone = false;
-  private boolean inLeftPickupZone = false;
-  private boolean inRightPickupZone = false;
-  private boolean inClimbZone = false;
   
   @AutoLogOutput(key = "RobotState/ReefZone")
   public boolean isInReefZone() {
-    return inReefZone;
+    return Zones.reefZone.isRobotInZone(estimatedPose);
   }
 
   @AutoLogOutput(key = "RobotState/LeftPickupZone")
   public boolean isInLeftPickupZone() {
-    return inLeftPickupZone;
+    return Zones.leftPickupZone.isRobotInZone(estimatedPose);
   }
 
   @AutoLogOutput(key = "RobotState/RightPickupZone")
   public boolean isInRightPickupZone() {
-    return inRightPickupZone;
+    return Zones.rightPickupZone.isRobotInZone(estimatedPose);
+  }
+
+  public boolean isInPickupZone() {
+    return isInLeftPickupZone() || isInRightPickupZone();
   }
 
   @AutoLogOutput(key = "RobotState/ClimbZone")
   public boolean isInClimbZone() {
-    return inClimbZone;
+    return Zones.climbZone.isRobotInZone(estimatedPose);
   }
 
-  public void updateZones() {
-    inReefZone = Zones.reefZone.isRobotInZone(estimatedPose);
-    inLeftPickupZone = Zones.leftPickupZone.isRobotInZone(estimatedPose);
-    inRightPickupZone = Zones.rightPickupZone.isRobotInZone(estimatedPose);
-    inClimbZone = Zones.climbZone.isRobotInZone(estimatedPose);
+  private boolean hasCoral = false;
+
+  @AutoLogOutput(key = "RobotState/hasCoral")
+  public boolean hasCoral() {
+    return hasCoral;
+  }
+
+  public void setGamePiece(boolean sensorTripped) {
+    hasCoral = sensorTripped;
+  }
+
+  public static enum actions {
+    L4,
+    L3,
+    L2,
+    L1,
+    PICKUP_CORAL,
+    DEALGIFY,
+    CLIMB,
+    NONE
+  }
+
+  private actions desiredAction = actions.NONE;
+
+  @AutoLogOutput(key = "RobotState/desiredAction")
+  public actions getDesiredAction() {
+    return desiredAction;
+  }
+
+  public void setDesiredAction(actions action) {
+    desiredAction = action;
+  }
+
+  private static enum controlMode {
+    STANDARD,
+    NO_LIMELIGHT,
+    MANUAL
+  }
+
+  private static controlMode currentMode = controlMode.STANDARD;
+
+  public void setNoLimelightMode() {
+    if (isNoLimelightMode()) {
+      currentMode = controlMode.STANDARD;
+    } else {
+      currentMode = controlMode.NO_LIMELIGHT;
+    }
+  }
+
+  public void setManualMode() {
+    if (isManualMode()) {
+      currentMode = controlMode.STANDARD;
+    } else {
+      currentMode = controlMode.MANUAL;
+    }
+  }
+
+  public boolean isStandardMode() {
+    return currentMode == controlMode.STANDARD;
+  }
+
+  public boolean isNoLimelightMode() {
+    return currentMode == controlMode.NO_LIMELIGHT;
+  }
+
+  public boolean isManualMode() {
+    return currentMode == controlMode.MANUAL;
   }
 }

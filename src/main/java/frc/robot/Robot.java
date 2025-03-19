@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 import frc.robot.util.VirtualSubsystem;
+
+import static frc.robot.Subsystems.drive;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -159,8 +162,6 @@ public class Robot extends LoggedRobot {
     robotContainer.checkControllers();
     robotContainer.updateDashboardOutputs();
 
-    RobotState.getInstance().updateZones();
-
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
     if (canStatus.transmitErrorCount > 0 || canStatus.receiveErrorCount > 0) {
@@ -226,6 +227,8 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+
+    drive.clearAutoAlignGoal();
 
     teleStart = Timer.getFPGATimestamp();
   }

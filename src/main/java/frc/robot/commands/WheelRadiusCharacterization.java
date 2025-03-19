@@ -19,11 +19,11 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class WheelRadiusCharacterization extends Command {
-  private static final LoggedTunableNumber characterizationSpeed =
-      new LoggedTunableNumber("WheelRadiusCharacterization/SpeedRadsPerSec", 0.1);
+  private static final LoggedTunableNumber characterizationSpeed = new LoggedTunableNumber(
+      "WheelRadiusCharacterization/SpeedRadsPerSec", 0.1);
   private static final double driveRadius = DriveConstants.driveConfig.driveBaseRadius();
-  private static final DoubleSupplier gyroYawRadsSupplier =
-      () -> RobotState.getInstance().getOdometryPose().getRotation().getRadians();
+  private static final DoubleSupplier gyroYawRadsSupplier = () -> RobotState.getInstance().getOdometryPose()
+      .getRotation().getRadians();
 
   public enum Direction {
     CLOCKWISE(-1),

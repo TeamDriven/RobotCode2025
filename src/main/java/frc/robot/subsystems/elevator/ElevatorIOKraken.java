@@ -1,75 +1,71 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.rotationsToInches;
+import static frc.robot.Constants.tuningMode;
+import static frc.robot.subsystems.elevator.ElevatorConstants.*;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.MotionMagicIsRunningValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.util.CancoderUtil;
+import frc.robot.util.CancoderUtil.ConfigFactory;
+import frc.robot.util.TalonFXUtil.MotorFactory;
 
 public class ElevatorIOKraken implements ElevatorIO {
+  private MotorFactory motorFactory;
   private TalonFX elevatorLeftMotor;
   private TalonFX elevatorRightMotor;
+  private CANcoder encoder;
 
   private MotionMagicVoltage motionMagicControl;
   private VelocityVoltage velocityControl;
+  private VoltageOut voltageOut;
   private NeutralOut StopMode;
 
-  public ElevatorIOKraken(int leftMotorID, int rightMotorID) {
-    elevatorLeftMotor = new TalonFX(leftMotorID);
-    elevatorRightMotor = new TalonFX(rightMotorID);
+  public ElevatorIOKraken(int leftMotorID, int rightMotorID, int encoderID) {
+    motorFactory = new MotorFactory("Elevator", leftMotorID, rightMotorID);
+
+    motorFactory.setInverted(false, true);
+    motorFactory.setBrakeMode(true);
+    motorFactory.setVoltageLimits(12);
+    motorFactory.setCurrentLimits(80);
+    
+    motorFactory.setSlot0(13, 0.5, 0.065);
+    motorFactory.setSlot0(1.8, 0.4, GravityTypeValue.Elevator_Static);
+    motorFactory.setMotionMagic(10000, 6000, 12000);
+
+    motorFactory.setSlot1(0.5, 0, 0.001);
+    motorFactory.setSlot1(0.135, 0.4, GravityTypeValue.Elevator_Static);
+
+    motorFactory.setExternalEncoder(encoderID, FeedbackSensorSourceValue.FusedCANcoder, gearRatio);
+    motorFactory.setSensorToOutputRatio(sensorToInches);
+
+    motorFactory.configureMotors();
+    var motors = motorFactory.getMotors();
+    elevatorLeftMotor = motors[0];
+    elevatorRightMotor = motors[1];
+
+    ConfigFactory cancoderFactory = new ConfigFactory();
+    cancoderFactory.setInverted(true);
+    cancoderFactory.setOffset(0);
+
+    encoder = new CANcoder(encoderID);
+    CancoderUtil.applySettings(encoder, cancoderFactory.getConfig());
+
+    if(!tuningMode) {
+      resetPosition();
+    }
 
     motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true).withSlot(0);
     velocityControl = new VelocityVoltage(0).withEnableFOC(true).withSlot(1);
+    voltageOut = new VoltageOut(0).withEnableFOC(true);
     StopMode = new NeutralOut();
-
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-
-    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    configs.MotionMagic.MotionMagicCruiseVelocity = 100;
-    configs.MotionMagic.MotionMagicAcceleration = 250;
-    configs.MotionMagic.MotionMagicJerk = 350;
-
-    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 10; // An error of 1 rotation per second results in 2V output
-    configs.Slot0.kI =
-        0.0; // An error of 1 rotation per second increases output by 0.5V every second
-    configs.Slot0.kD =
-        0.0; // A change of 1 rotation per second squared results in 0.01 volts output
-    configs.Slot0.kV =
-        0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts /
-    // Rotation per second
-
-    // Peak output of 12 volts
-    configs.Voltage.PeakForwardVoltage = 12;
-    configs.Voltage.PeakReverseVoltage = -12;
-
-    StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = elevatorLeftMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
-
-    configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-
-    status = StatusCode.StatusCodeNotInitialized;
-    for (int i = 0; i < 5; ++i) {
-      status = elevatorRightMotor.getConfigurator().apply(configs);
-      if (status.isOK()) break;
-    }
-    if (!status.isOK()) {
-      System.out.println("Could not apply configs, error code: " + status.toString());
-    }
   }
 
   @Override
@@ -77,7 +73,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.leftMotorPos = elevatorLeftMotor.getPosition().getValueAsDouble();
     inputs.leftMotorCurrent = elevatorLeftMotor.getSupplyCurrent().getValueAsDouble();
     inputs.leftMotorVel = elevatorLeftMotor.getVelocity().getValueAsDouble();
-    inputs.leftMotorVoltage = elevatorLeftMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.leftMotorVoltage = elevatorLeftMotor.getMotorVoltage().getValueAsDouble();
     inputs.leftMotorAccel = elevatorLeftMotor.getAcceleration().getValueAsDouble();
     inputs.leftIsMotionMagic = elevatorLeftMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
@@ -85,17 +81,21 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
     inputs.rightMotorCurrent = elevatorRightMotor.getSupplyCurrent().getValueAsDouble();
     inputs.rightMotorVel = elevatorRightMotor.getVelocity().getValueAsDouble();
-    inputs.rightMotorVoltage = elevatorRightMotor.getSupplyVoltage().getValueAsDouble();
+    inputs.rightMotorVoltage = elevatorRightMotor.getMotorVoltage().getValueAsDouble();
     inputs.rightMotorAccel = elevatorRightMotor.getAcceleration().getValueAsDouble();
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
+    inputs.absoluteEncoderPos = encoder.getAbsolutePosition().getValueAsDouble();
+    inputs.relativeEncoderPos = encoder.getPosition().getValueAsDouble();
+
+    // motorFactory.checkForUpdates();
   }
 
   @Override
   public void moveToPos(double pos) {
-    elevatorLeftMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
-    elevatorRightMotor.setControl(motionMagicControl.withPosition(pos / rotationsToInches));
+    elevatorLeftMotor.setControl(motionMagicControl.withPosition(pos));
+    elevatorRightMotor.setControl(motionMagicControl.withPosition(pos));
   }
 
   @Override
@@ -105,8 +105,23 @@ public class ElevatorIOKraken implements ElevatorIO {
   }
 
   @Override
+  public void runVoltage(double volts) {
+    elevatorLeftMotor.setControl(voltageOut.withOutput(volts));
+    elevatorRightMotor.setControl(voltageOut.withOutput(volts));
+  }
+
+  @Override
   public void stopMotors() {
     elevatorLeftMotor.setControl(StopMode);
     elevatorRightMotor.setControl(StopMode);
   }
+
+  @Override
+  public void resetPosition() {
+    elevatorLeftMotor.setPosition(0);
+    elevatorRightMotor.setPosition(0);
+    encoder.setPosition(0);
+  }
+
+  
 }

@@ -3,39 +3,70 @@ package frc.robot;
 import static frc.robot.Constants.driver;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.function.DoubleSupplier;
 
 public class Controls {
-  private static final boolean rightStickDrive = true;
+    private static final boolean rightStickDrive = true;
 
-  // Drivetrain
-  public static DoubleSupplier driveX =
-      () -> rightStickDrive ? -driver.getRightY() : -driver.getLeftY();
-  public static DoubleSupplier driveY =
-      () -> rightStickDrive ? -driver.getRightX() : -driver.getLeftX();
-  public static DoubleSupplier driveOmega =
-      () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
-  public static Trigger resetPose = driver.start();
+    // Drivetrain
+    public static DoubleSupplier driveX = () -> rightStickDrive ? -driver.getRightY() : -driver.getLeftY();
+    public static DoubleSupplier driveY = () -> rightStickDrive ? -driver.getRightX() : -driver.getLeftX();
+    public static DoubleSupplier driveOmega = () -> rightStickDrive ? -driver.getLeftX() : -driver.getRightX();
+    public static Trigger resetPose = driver.start();
 
-  //coralIntake
-  public static Trigger intake = driver.x();
-  public static Trigger outtake = driver.b();
+    public static Trigger resetElevatorPosition = driver.back();
 
-  public static Trigger coralActuationUp = new Trigger(() -> false);
-  public static Trigger coralActuationDown = new Trigger(() -> false);
+    public static Trigger noLimelightMode = driver.leftTrigger().and(rightStickDrive ? driver.x() : driver.pov(270));
+    public static Trigger manualMode = driver.leftTrigger().and(rightStickDrive ? driver.b() : driver.pov(90));
 
-  // Algae Actuation
-  public static Trigger algaeActuationUp = new Trigger(() -> false);
-  public static Trigger algaeActuationDown = new Trigger(() -> false);
+    // Actions
+    class StandardMode {
+        public static Trigger cancelAction = (rightStickDrive ? driver.leftStick() : driver.rightStick())
+                .and(RobotState.getInstance()::isStandardMode);
 
-  // Algae Intake
-  public static Trigger algaeIntakeIn = new Trigger(() -> false);
-  public static Trigger algaeIntakeOut = new Trigger(() -> false);
-  
-  public static Trigger elevatorUp = new Trigger(() -> false);
-  public static Trigger elevatorDown = new Trigger(() -> false);
+        public static Trigger placeL4 = (rightStickDrive ? driver.pov(0) : driver.y())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL3 = (rightStickDrive ? driver.pov(90) : driver.b())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL2 = (rightStickDrive ? driver.pov(270) : driver.x())
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger placeL1 = (rightStickDrive ? driver.pov(180) : driver.a())
+                .and(RobotState.getInstance()::isStandardMode);
 
-  // Climber
-  public static Trigger climberUp = new Trigger(() -> false);
-  public static Trigger climberDown = new Trigger(() -> false);
+        public static Trigger inttake = driver.rightBumper().and(RobotState.getInstance()::isStandardMode);
+        public static Trigger outtake = driver.leftBumper().and(RobotState.getInstance()::isStandardMode);
+
+        public static Trigger dealgify = driver.rightTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
+
+        public static Trigger climb = (rightStickDrive ? driver.y() : driver.pov(0))
+                .and(RobotState.getInstance()::isStandardMode);
+        public static Trigger deployClimber = (rightStickDrive ? driver.a() : driver.pov(180))
+                .and(RobotState.getInstance()::isStandardMode);
+    }
+
+    class NoLimelightMode {
+        
+    }
+
+    class ManualMode {
+        public static Trigger elevatorUp = driver.rightTrigger(0.1).and(RobotState.getInstance()::isManualMode);
+        public static Trigger elevatorDown = driver.leftTrigger(0.1)
+                .and(
+                        rightStickDrive ? driver.x().negate() : driver.pov(270).negate())
+                .and(
+                        rightStickDrive ? driver.b().negate() : driver.pov(90).negate())
+                .and(RobotState.getInstance()::isManualMode);
+
+        public static Trigger actuationUp = (rightStickDrive ? driver.pov(0) : driver.y()).and(RobotState.getInstance()::isManualMode);
+        public static Trigger actuationDown = (rightStickDrive ? driver.pov(180) : driver.a()).and(RobotState.getInstance()::isManualMode);
+
+        public static Trigger intakeIn = driver.rightBumper().and(RobotState.getInstance()::isManualMode);
+        public static Trigger intakeOut = driver.leftBumper().and(RobotState.getInstance()::isManualMode);
+
+        public static Trigger winchOut = (rightStickDrive ? driver.y() : driver.pov(0)).and(RobotState.getInstance()::isManualMode);
+        public static Trigger winchIn = (rightStickDrive ? driver.a() : driver.pov(180)).and(RobotState.getInstance()::isManualMode);
+
+        public static Trigger footerOut = (rightStickDrive ? driver.pov(90) : driver.b()).and(RobotState.getInstance()::isManualMode);
+    }
 }
