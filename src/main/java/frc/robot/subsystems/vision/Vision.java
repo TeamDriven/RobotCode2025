@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionObservation;
@@ -17,7 +18,7 @@ public class Vision extends SubsystemBase {
     private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
 
     private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
-    
+
     public Vision(String visionName, VisionIO visionIO, Supplier<ChassisSpeeds> chassisSpeedsSuppier) {
         this.visionName = visionName;
         this.visionIO = visionIO;
@@ -28,10 +29,16 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         final double yaw = RobotState.getInstance().getOdometryPose().getRotation().getDegrees();
         visionIO.setRobotOrientation(yaw);
-        
+
+        if (DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            visionIO.setPipeline(1);
+        } else {
+            visionIO.setPipeline(0);
+        }
+
         visionIO.updateInputs(visionInputs);
         Logger.processInputs(visionName, visionInputs);
-
 
         final ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
         if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 9.42478 || (Math.abs(chassisSpeeds.vxMetersPerSecond) > 2.0
@@ -39,14 +46,18 @@ public class Vision extends SubsystemBase {
             return;
         }
 
-        if (visionInputs.tagCount == 0) return;
+        if (visionInputs.tagCount == 0)
+            return;
 
-        if (visionInputs.avgTagArea < 0.075) return;
+        if (visionInputs.avgTagArea < 0.075)
+            return;
 
-        RobotState.getInstance().addVisionObservation(new VisionObservation(visionInputs.pose, visionInputs.timestampSeconds, VecBuilder.fill(
-                        Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
-                        Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
-                        9999999)));
+        RobotState.getInstance()
+                .addVisionObservation(new VisionObservation(visionInputs.pose, visionInputs.timestampSeconds,
+                        VecBuilder.fill(
+                                Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
+                                Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
+                                9999999)));
 
     }
 
