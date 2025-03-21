@@ -41,7 +41,7 @@ public class Place1 implements AutoBase {
         place1.done().onTrue(
                 Commands.sequence(
                         Commands.waitUntil(
-                                () -> elevator.isAtHeight(l4.elevatorHeight(), 0.25) || !elevator.isMoving()),
+                                () -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25) || !elevator.isMoving()),
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         Commands.waitUntil(() -> false).withTimeout(0.25),

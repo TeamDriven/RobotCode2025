@@ -36,9 +36,10 @@ public class Controls {
         public static Trigger inttake = driver.rightBumper().and(RobotState.getInstance()::isStandardMode);
         public static Trigger outtake = driver.leftBumper().and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger maintainIntake = driver.leftTrigger().and(RobotState.getInstance()::isStandardMode);
+        // public static Trigger maintainIntake = driver.leftTrigger().and(RobotState.getInstance()::isStandardMode);
 
-        public static Trigger dealgify = driver.rightTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
+        public static Trigger highDealgify = driver.rightTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
+        public static Trigger lowDealgify = driver.leftTrigger(0.1).and(RobotState.getInstance()::isStandardMode);
 
         public static Trigger climb = (rightStickDrive ? driver.y() : driver.pov(0))
                 .and(RobotState.getInstance()::isStandardMode);

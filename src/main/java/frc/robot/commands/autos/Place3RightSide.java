@@ -23,6 +23,7 @@ import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.RobotState;
 
 public class Place3RightSide implements AutoBase {
@@ -30,9 +31,9 @@ public class Place3RightSide implements AutoBase {
     public AutoRoutine getAuto() {
         AutoRoutine routine = drive.autoFactory.newRoutine("Place3RightSide");
 
-        Transform2d place1Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
-        Transform2d place2Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
-        Transform2d place3Offset = new Transform2d(new Translation2d(0,0), new Rotation2d());
+        Transform2d place1Offset = new Transform2d(new Translation2d(5.5,2), new Rotation2d());
+        Transform2d place2Offset = new Transform2d(new Translation2d(3.5, 1), new Rotation2d());
+        Transform2d place3Offset = new Transform2d(new Translation2d(3.5, 1), new Rotation2d());
         
         var place1 = routine.trajectory("Place 3 right side", 0);
         var pickup2 = routine.trajectory("Place 3 right side", 1);
@@ -58,13 +59,13 @@ public class Place3RightSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[8].transformBy(place1Offset), 
+                                        () -> AllianceFlipUtil.apply(Reef.placePoses[8].transformBy(place1Offset)), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
                         new SetPosition(l4),
                         new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight(), 0.25) || !elevator.isMoving()),
+                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25) || !elevator.isMoving()),
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         Commands.waitUntil(() -> false).withTimeout(0.25),
@@ -79,13 +80,13 @@ public class Place3RightSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[10].transformBy(place2Offset), 
+                                        () -> AllianceFlipUtil.apply(Reef.placePoses[10].transformBy(place2Offset)), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
                         new SetPosition(l4),
                         new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight(), 0.25) || !elevator.isMoving()),
+                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25) || !elevator.isMoving()),
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         Commands.waitUntil(() -> false).withTimeout(0.25),
@@ -101,13 +102,13 @@ public class Place3RightSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> Reef.placePoses[11].transformBy(place3Offset), 
+                                        () -> AllianceFlipUtil.apply(Reef.placePoses[11].transformBy(place3Offset)), 
                                         () -> new Translation2d(),
                                         allignmentMode.SLOW),
                                 drive),
                         new SetPosition(l4),
                         new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight(), 0.25) || !elevator.isMoving()),
+                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25) || !elevator.isMoving()),
                         Commands.waitUntil(() -> actuation.isAtAngle()),
                         intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
                         Commands.waitUntil(() -> false).withTimeout(0.25),
@@ -120,13 +121,13 @@ public class Place3RightSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> CoralStations.pickupLocations[16],
+                                        () -> AllianceFlipUtil.apply(CoralStations.pickupLocations[16]),
                                         () -> new Translation2d(),
                                         allignmentMode.NORMAL),
                                 drive),
                         new SetPosition(ElevatorConstants.pickUpPos, ActuationConstants.pickUpPos),
                         new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted() || RobotState.getInstance().hasCoral()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.pickUpPos, 0.25)),
+                        Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.pickUpPos.get(), 0.25)),
                         intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
                         Commands.waitUntil(RobotState.getInstance()::hasCoral),
                         Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
@@ -139,13 +140,13 @@ public class Place3RightSide implements AutoBase {
                 Commands.sequence(
                         Commands.runOnce(
                                 () -> drive.setAutoAlignGoal(
-                                        () -> CoralStations.pickupLocations[16],
+                                        () -> AllianceFlipUtil.apply(CoralStations.pickupLocations[16]),
                                         () -> new Translation2d(),
                                         allignmentMode.NORMAL),
                                 drive),
                         new SetPosition(ElevatorConstants.pickUpPos, ActuationConstants.pickUpPos),
                         new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted() || RobotState.getInstance().hasCoral()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.pickUpPos, 0.25)),
+                        Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.pickUpPos.get(), 0.25)),
                         intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
                         Commands.waitUntil(RobotState.getInstance()::hasCoral),
                         Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
