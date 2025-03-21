@@ -5,7 +5,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class ActuationConstants {
     public static final double gearRatio = 5 * 7 * (36.0 / 15);
 
-    public static final double offset = 0.577;
+    public static final double offset = 0.570;
 
     public static final double startPos = 0;
 
