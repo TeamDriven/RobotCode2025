@@ -40,15 +40,15 @@ public class Intake extends SubsystemBase {
 
         if (value == 0) {
             if (RobotState.getInstance().hasCoral()){
-                intakeIO.runVoltage(-0.5);
+                intakeIO.runVoltage(-0.75);
             } else {
                 intakeIO.stopMotor();
             }
             // intakeIO.stopMotor();
             
         } else if (currentMode == mode.VELOCITY) {
-            Logger.recordOutput("Intake/isMoving", (Math.abs(inputs.motorVel) < Math.abs(value * 0.7)));
-            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < Math.abs(value * 0.7)) {
+            Logger.recordOutput("Intake/isMoving", (Math.abs(inputs.motorVel) < Math.abs(value * 0.1)));
+            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < Math.abs(value * 0.1)) {
                 value = Math.max(value, 0);
             }
             intakeIO.runMotor(value);

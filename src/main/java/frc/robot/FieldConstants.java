@@ -226,7 +226,7 @@ public class FieldConstants {
         public static final Pose3d[] leftChuteLocations = new Pose3d[9];
         public static final Pose3d[] rightChuteLocations = new Pose3d[9];
 
-        public static final double pickupOffset = Units.inchesToMeters(3);
+        public static final double pickupOffset = Units.inchesToMeters(-13.5);
 
         private static final double chuteHeight = Units.inchesToMeters(37.5);
 
@@ -293,7 +293,7 @@ public class FieldConstants {
     }
 
     public class Zones {
-        private static final double pickupZoneLength = 60; // Not real units
+        private static final double pickupZoneLength = 150; // Not real units
 
         public static PolygonZone climbZone;
 
@@ -333,7 +333,7 @@ public class FieldConstants {
 
             reefZone = new CircleZone(
                     Reef.center,
-                    Units.inchesToMeters(55));
+                    Units.inchesToMeters(67));
 
             leftPickupZone = new PolygonZone(
                     leftPickupZoneCorners);

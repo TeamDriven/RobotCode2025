@@ -8,6 +8,9 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
+import static frc.robot.subsystems.actuation.ActuationConstants.dealgifyPos;
+import static frc.robot.subsystems.elevator.ElevatorConstants.highDealgifyPos;
+import static frc.robot.subsystems.elevator.ElevatorConstants.lowDealgifyPos;
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
 import java.util.function.BooleanSupplier;
@@ -204,7 +207,10 @@ public class RobotContainer {
                 .onFalse(Commands.either(setDesiredAction(actions.NONE), Commands.none(),
                         this::isTryingToPlace));
 
-        StandardMode.dealgify.onTrue(setDesiredAction(actions.DEALGIFY));
+        // StandardMode.maintainIntake.whileTrue(intake.runVelocityCommand(intakeVelocity));
+
+        StandardMode.highDealgify.onTrue(new SetPosition(highDealgifyPos, dealgifyPos));
+        StandardMode.lowDealgify.onTrue(new SetPosition(lowDealgifyPos, dealgifyPos));
 
         StandardMode.climb.whileTrue(climberController.climb());
         StandardMode.deployClimber.whileTrue(climberController.climberOut());
@@ -218,13 +224,13 @@ public class RobotContainer {
         // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses)
         // .until(isDesiredAction(actions.NONE)));
 
-        new Trigger(isDesiredAction(actions.L4))
-                .or(isDesiredAction(actions.L3))
-                .or(isDesiredAction(actions.L2))
-                .and(RobotState.getInstance()::isStandardMode)
-                .onTrue(new TeleAutoTurn(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
-                                .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
-                .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
+        // new Trigger(isDesiredAction(actions.L4))
+        //         .or(isDesiredAction(actions.L3))
+        //         .or(isDesiredAction(actions.L2))
+        //         .and(RobotState.getInstance()::isStandardMode)
+        //         .onTrue(new TeleAutoTurn(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
+        //                         .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
+        //         .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
 
         new Trigger(isDesiredAction(actions.L4))
                 .and(RobotState.getInstance()::isStandardMode)
@@ -249,18 +255,18 @@ public class RobotContainer {
                 .and(RobotState.getInstance()::isStandardMode)
                 .and(RobotState.getInstance()::isInLeftPickupZone)
                 .onTrue(Commands.parallel(
-                        new TeleAutoTurn(() -> Rotation2d.fromDegrees(125)),
-                        new SetPosition(ElevatorConstants.pickUpPos,
-                                ActuationConstants.pickUpPos),
+                        new TeleAutoTurn(() -> AllianceFlipUtil.apply(Rotation2d.fromDegrees(125))),
+                        new SetPosition(ElevatorConstants.pickUpPos.get(),
+                                ActuationConstants.pickUpPos.get()),
                         intake.runVelocityCommand(intakeVelocity)));
 
         new Trigger(isDesiredAction(actions.PICKUP_CORAL))
                 .and(RobotState.getInstance()::isStandardMode)
                 .and(RobotState.getInstance()::isInRightPickupZone)
                 .onTrue(Commands.parallel(
-                        new TeleAutoTurn(() -> Rotation2d.fromDegrees(-125)),
-                        new SetPosition(ElevatorConstants.pickUpPos,
-                                ActuationConstants.pickUpPos),
+                        new TeleAutoTurn(() -> AllianceFlipUtil.apply(Rotation2d.fromDegrees(-125))),
+                        new SetPosition(ElevatorConstants.pickUpPos.get(),
+                                ActuationConstants.pickUpPos.get()),
                         intake.runVelocityCommand(intakeVelocity)));
 
         new Trigger(isDesiredAction(actions.PICKUP_CORAL))

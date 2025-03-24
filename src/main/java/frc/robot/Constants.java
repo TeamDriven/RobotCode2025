@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.actuation.ActuationConstants;
@@ -81,11 +83,11 @@ public final class Constants {
     }
   }
 
-  public static record placeLevel(double elevatorHeight, double angle, double outtakeSpeed) {}
+  public static record placeLevel(DoubleSupplier elevatorHeight, DoubleSupplier angle, double outtakeSpeed) {}
 
-  public static placeLevel l4 = new placeLevel(ElevatorConstants.L4Pos, ActuationConstants.L4Pos, IntakeConstants.L4Speed);
-  public static placeLevel l3 = new placeLevel(ElevatorConstants.L3Pos, ActuationConstants.L3Pos, IntakeConstants.L3Speed);
-  public static placeLevel l2 = new placeLevel(ElevatorConstants.L2Pos, ActuationConstants.L2Pos, IntakeConstants.L2Speed);
-  public static placeLevel l1 = new placeLevel(ElevatorConstants.L1Pos, ActuationConstants.L1Pos, IntakeConstants.L1Speed);
+  public static placeLevel l4 = new placeLevel(ElevatorConstants.L4Pos::get, ActuationConstants.L4Pos::get, IntakeConstants.L4Speed);
+  public static placeLevel l3 = new placeLevel(ElevatorConstants.L3Pos::get, ActuationConstants.L3Pos::get, IntakeConstants.L3Speed);
+  public static placeLevel l2 = new placeLevel(ElevatorConstants.L2Pos::get, ActuationConstants.L2Pos::get, IntakeConstants.L2Speed);
+  public static placeLevel l1 = new placeLevel(ElevatorConstants.L1Pos::get, ActuationConstants.L1Pos::get, IntakeConstants.L1Speed);
 
 }
