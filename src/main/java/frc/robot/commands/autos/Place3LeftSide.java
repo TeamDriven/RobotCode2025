@@ -33,7 +33,7 @@ public class Place3LeftSide implements AutoBase {
         AutoRoutine routine = drive.autoFactory.newRoutine("Place3LeftSide");
 
         Transform2d place1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(0)), new Rotation2d());
-        Transform2d place2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1.5)), new Rotation2d());
+        Transform2d place2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1)), new Rotation2d());
         Transform2d place3Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1)), new Rotation2d());
         
         var place1 = routine.trajectory("Place 3 left side", 0);

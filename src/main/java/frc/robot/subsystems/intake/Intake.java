@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
 
         if (value == 0) {
             if (RobotState.getInstance().hasCoral()){
-                intakeIO.runVoltage(-0.5);
+                intakeIO.runVoltage(-0.75);
             } else {
                 intakeIO.stopMotor();
             }
