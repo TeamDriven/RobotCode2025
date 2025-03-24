@@ -12,7 +12,7 @@ public class LEDIOCANdle implements LEDIO {
     public LEDIOCANdle(int id) {
         candle = new CANdle(id);
         candle.configLEDType(LEDStripType.RGB);
-        candle.configBrightnessScalar(0.3);
+        candle.configBrightnessScalar(1.0);
     }
 
     @Override

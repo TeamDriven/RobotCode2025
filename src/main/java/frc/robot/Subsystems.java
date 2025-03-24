@@ -16,6 +16,9 @@ import frc.robot.subsystems.elevator.ElevatorIOKraken;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOKraken;
+import frc.robot.subsystems.led.LED;
+import frc.robot.subsystems.led.LEDIO;
+import frc.robot.subsystems.led.LEDIOCANdle;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -48,7 +51,7 @@ public final class Subsystems {
     public static final Winch winch;
     public static final Footer footer;
 
-    // public static final LED leds;
+    public static final LED leds;
 
     static {
         // Create subsystems
@@ -84,7 +87,7 @@ public final class Subsystems {
                     // winch = new Winch(new WinchIO() {});
                     // footer = new Footer(new FooterIO() {});
 
-                    // leds = new LED(new LEDIOCANdle(60));
+                    leds = new LED(new LEDIOCANdle(30));
                 }
                 case DEVBOT -> {
                     // drive = new Drive(
@@ -122,7 +125,7 @@ public final class Subsystems {
                     winch = new Winch(new WinchIOKraken(20, 21));
                     footer = new Footer(new FooterIOKraken(19));
 
-                    // leds = new LED(new LEDIOCANdle(60));
+                    leds = new LED(new LEDIO() {});
                 }
                 case SIMBOT -> {
                     throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
@@ -164,7 +167,7 @@ public final class Subsystems {
             footer = new Footer(new FooterIO() {
             });
 
-            // leds = new LED(new LEDIO() {});
+            leds = new LED(new LEDIO() {});
         }
     }
 }

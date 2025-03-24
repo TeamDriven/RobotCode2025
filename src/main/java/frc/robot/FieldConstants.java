@@ -303,10 +303,10 @@ public class FieldConstants {
         public static PolygonZone rightPickupZone;
 
         public static Translation2d[] climbZoneCorners = new Translation2d[] {
-                new Translation2d(Units.inchesToMeters(368.438 + 8), 0),
-                new Translation2d(Units.inchesToMeters(368.438 + 8), fieldWidth),
-                new Translation2d(Units.inchesToMeters(322.438 + 8), fieldWidth),
-                new Translation2d(Units.inchesToMeters(322.438 + 8), 0) };
+                new Translation2d(Units.inchesToMeters(368.438 + 16), 0),
+                new Translation2d(Units.inchesToMeters(368.438 + 16), fieldWidth),
+                new Translation2d(Units.inchesToMeters(322.438 + 16), fieldWidth),
+                new Translation2d(Units.inchesToMeters(322.438 + 16), 0) };
 
         public static Translation2d[] leftPickupZoneCorners = new Translation2d[] {
                 new Translation2d(0, fieldWidth - Units.inchesToMeters(48.7015)),
