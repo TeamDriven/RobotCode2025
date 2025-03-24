@@ -222,8 +222,8 @@ public class RobotState {
     L2,
     L1,
     PICKUP_CORAL,
-    DEALGIFY,
-    CLIMB,
+    DEALGIFY_HIGH,
+    DEALGIFY_LOW,
     NONE
   }
 

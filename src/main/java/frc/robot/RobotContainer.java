@@ -208,9 +208,9 @@ public class RobotContainer {
                         this::isTryingToPlace));
 
         // StandardMode.maintainIntake.whileTrue(intake.runVelocityCommand(intakeVelocity));
-
-        StandardMode.highDealgify.onTrue(new SetPosition(highDealgifyPos, dealgifyPos));
-        StandardMode.lowDealgify.onTrue(new SetPosition(lowDealgifyPos, dealgifyPos));
+        
+        StandardMode.highDealgify.onTrue(setDesiredAction(actions.DEALGIFY_HIGH));
+        StandardMode.lowDealgify.onTrue(setDesiredAction(actions.DEALGIFY_LOW));
 
         StandardMode.climb.whileTrue(climberController.climb());
         StandardMode.deployClimber.whileTrue(climberController.climberOut());
@@ -281,15 +281,13 @@ public class RobotContainer {
                 .onTrue(setDesiredAction(actions.NONE));
 
         // Algae
-        new Trigger(isDesiredAction(actions.DEALGIFY))
+        new Trigger(isDesiredAction(actions.DEALGIFY_HIGH))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInReefZone)
-                .whileTrue(new Dealgify());
+                .whileTrue(new SetPosition(highDealgifyPos, dealgifyPos));
 
-        new Trigger(isDesiredAction(actions.DEALGIFY))
+        new Trigger(isDesiredAction(actions.DEALGIFY_LOW))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(() -> !RobotState.getInstance().isInReefZone())
-                .onTrue(setDesiredAction(actions.NONE));
+                .whileTrue(new SetPosition(lowDealgifyPos, dealgifyPos));
 
         new Trigger(RobotState.getInstance()::isInClimbZone)
                 .and(RobotState.getInstance()::isStandardMode)
