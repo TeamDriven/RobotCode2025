@@ -9,11 +9,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
+import frc.robot.RobotState.actions;
 
 public class LED extends SubsystemBase {
     private final LEDIO ledIO;
 
     private Animation curAnimation = LEDConstants.IDLE_ANIMATION;
+    private int[] curColor = null;
 
     public LED(LEDIO ledIO) {
         this.ledIO = ledIO;
@@ -43,23 +45,32 @@ public class LED extends SubsystemBase {
                 default -> curAnimation;
             };
         } else { // Solid
-            desiredAnimation = switch (RobotState.getInstance().getDesiredAction()) {
-                case L4 -> LEDConstants.normalAnimations[0];
-                case L3 -> LEDConstants.normalAnimations[1];
-                case L2 -> LEDConstants.normalAnimations[2];
-                case L1 -> LEDConstants.normalAnimations[3];
-                case PICKUP_CORAL -> LEDConstants.normalAnimations[4];
-                case DEALGIFY_HIGH -> LEDConstants.normalAnimations[5];
-                case DEALGIFY_LOW -> LEDConstants.normalAnimations[6];
-                case NONE -> LEDConstants.IDLE_ANIMATION;
-                default -> curAnimation;
-            };
+            if (RobotState.getInstance().getDesiredAction().equals(actions.NONE)) {
+                desiredAnimation = LEDConstants.IDLE_ANIMATION;
+            } else {
+                var desiredColor = switch (RobotState.getInstance().getDesiredAction()) {
+                    case L4 -> LEDConstants.L4Color;
+                    case L3 -> LEDConstants.L3Color;
+                    case L2 -> LEDConstants.L2Color;
+                    case L1 -> LEDConstants.L1Color;
+                    case PICKUP_CORAL -> LEDConstants.pickupColor;
+                    case DEALGIFY_HIGH -> LEDConstants.highDealgifyColor;
+                    case DEALGIFY_LOW -> LEDConstants.lowDealgifyColor;
+                    default -> LEDConstants.noneColor;
+                };
+
+                if (curColor == null || !desiredColor.equals(curColor)) {
+                    curColor = desiredColor;
+                    curAnimation = null;
+                    ledIO.setColor(desiredColor[0], desiredColor[1], desiredColor[2]);
+                }
+                return;
+            }
         }
 
-        Logger.recordOutput("LEDs/animation", desiredAnimation.toString());
-
-        if (!curAnimation.equals(desiredAnimation)) {
+        if (curAnimation == null || !curAnimation.equals(desiredAnimation)) {
             curAnimation = desiredAnimation;
+            curColor = null;
             ledIO.animate(curAnimation);
         }
     }
