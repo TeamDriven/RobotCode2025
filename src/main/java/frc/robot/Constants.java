@@ -90,4 +90,6 @@ public final class Constants {
   public static placeLevel l2 = new placeLevel(ElevatorConstants.L2Pos::get, ActuationConstants.L2Pos::get, IntakeConstants.L2Speed);
   public static placeLevel l1 = new placeLevel(ElevatorConstants.L1Pos::get, ActuationConstants.L1Pos::get, IntakeConstants.L1Speed);
 
+  public static placeLevel barge = new placeLevel(ElevatorConstants.bargePos::get, ActuationConstants.bargePos::get, IntakeConstants.outtakeVelocity.getAsDouble());
+
 }

@@ -21,6 +21,7 @@ public class ElevatorConstants {
     public static final LoggedTunableNumber L2Pos = new LoggedTunableNumber("Elevator/L2", 21);
     public static final LoggedTunableNumber L3Pos = new LoggedTunableNumber("Elevator/L3", 36);
     public static final LoggedTunableNumber L4Pos = new LoggedTunableNumber("Elevator/L4", 63.75);
+    public static final LoggedTunableNumber bargePos = new LoggedTunableNumber("Elevator/Barge", 0);
     public static final double lowDealgifyPos = 20;
     public static final double highDealgifyPos = 36;
     public static final double processorPos = 4;
