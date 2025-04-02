@@ -21,7 +21,7 @@ import frc.robot.util.swerve.ModuleLimits;
 
 /** All Constants Measured in Meters and Radians (m/s, m/s^2, rad/s, rad/s^2) */
 public final class DriveConstants {
-  public static final boolean shouldPrintZeros = false;
+  public static final boolean shouldPrintZeros = true;
 
   public static final DriveConfig driveConfig = switch (Constants.getRobot()) {
     case SIMBOT, COMPBOT -> new DriveConfig(
@@ -67,10 +67,11 @@ public final class DriveConstants {
   // Module Constants
   public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConfig[] {
-        new ModuleConfig(1, 2, 3, new Rotation2d(-1.201107), true), 
-        new ModuleConfig(4, 5, 6, new Rotation2d(-1.981903), true), 
-        new ModuleConfig(7, 8, 9, new Rotation2d(-0.179476), true), 
-        new ModuleConfig(10, 11, 12, new Rotation2d(-1.520175), true) 
+        new ModuleConfig(1, 2, 3, new Rotation2d(-1.228719), true), 
+        new ModuleConfig(4, 5, 6, new Rotation2d(-1.940486), true), 
+        new ModuleConfig(7, 8, 9, new Rotation2d(-0.139592), true), 
+        new ModuleConfig(10, 11, 12, new Rotation2d(-1.569262), true) 
+
 
     };
     case DEVBOT -> new ModuleConfig[] {

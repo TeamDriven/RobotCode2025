@@ -203,12 +203,14 @@ public class RobotContainer {
 
         StandardMode.inttake.onTrue(setDesiredAction(actions.PICKUP_CORAL));
 
-        StandardMode.outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity))
+        StandardMode.outtake
+                .whileTrue(Commands.either(intake.runVelocityCommand(22), intake.runVelocityCommand(outtakeVelocity),
+                        isDesiredAction(actions.L1)))
                 .onFalse(Commands.either(setDesiredAction(actions.NONE), Commands.none(),
                         this::isTryingToPlace));
 
         // StandardMode.maintainIntake.whileTrue(intake.runVelocityCommand(intakeVelocity));
-        
+
         StandardMode.highDealgify.onTrue(setDesiredAction(actions.DEALGIFY_HIGH));
         StandardMode.lowDealgify.onTrue(setDesiredAction(actions.DEALGIFY_LOW));
 
@@ -225,12 +227,13 @@ public class RobotContainer {
         // .until(isDesiredAction(actions.NONE)));
 
         // new Trigger(isDesiredAction(actions.L4))
-        //         .or(isDesiredAction(actions.L3))
-        //         .or(isDesiredAction(actions.L2))
-        //         .and(RobotState.getInstance()::isStandardMode)
-        //         .onTrue(new TeleAutoTurn(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
-        //                         .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
-        //         .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
+        // .or(isDesiredAction(actions.L3))
+        // .or(isDesiredAction(actions.L2))
+        // .and(RobotState.getInstance()::isStandardMode)
+        // .onTrue(new TeleAutoTurn(() ->
+        // Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
+        // .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
+        // .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
 
         new Trigger(isDesiredAction(actions.L4))
                 .and(RobotState.getInstance()::isStandardMode)

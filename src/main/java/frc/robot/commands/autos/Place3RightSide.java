@@ -12,6 +12,7 @@ import choreo.auto.AutoRoutine;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -30,10 +31,10 @@ public class Place3RightSide implements AutoBase {
     @Override
     public AutoRoutine getAuto() {
         AutoRoutine routine = drive.autoFactory.newRoutine("Place3RightSide");
-
-        Transform2d place1Offset = new Transform2d(new Translation2d(5.5,2), new Rotation2d());
-        Transform2d place2Offset = new Transform2d(new Translation2d(3.5, 1), new Rotation2d());
-        Transform2d place3Offset = new Transform2d(new Translation2d(3.5, 1), new Rotation2d());
+        
+        Transform2d place1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(5.7), Units.inchesToMeters(1.8)), new Rotation2d());
+        Transform2d place2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-1)), new Rotation2d());
+        Transform2d place3Offset = new Transform2d(new Translation2d(Units.inchesToMeters(3.5), Units.inchesToMeters(-0.9)), new Rotation2d());
         
         var place1 = routine.trajectory("Place 3 right side", 0);
         var pickup2 = routine.trajectory("Place 3 right side", 1);
