@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -13,14 +15,16 @@ import frc.robot.RobotState.VisionObservation;
 
 public class Vision extends SubsystemBase {
     private final String visionName;
+    private final int visionNum;
 
     private final VisionIO visionIO;
     private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
 
     private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
-    public Vision(String visionName, VisionIO visionIO, Supplier<ChassisSpeeds> chassisSpeedsSuppier) {
+    public Vision(String visionName, int visionNum, VisionIO visionIO, Supplier<ChassisSpeeds> chassisSpeedsSuppier) {
         this.visionName = visionName;
+        this.visionNum = visionNum;
         this.visionIO = visionIO;
         this.chassisSpeedsSupplier = chassisSpeedsSuppier;
     }
@@ -49,15 +53,18 @@ public class Vision extends SubsystemBase {
         if (visionInputs.tagCount == 0)
             return;
 
-        if (visionInputs.avgTagArea < 0.075)
-            return;
+        double xyStdDev =
+            xyStdDevCoefficient
+                * Math.pow(visionInputs.avgTagDist, 2.0)
+                / visionInputs.tagCount
+                * cameraStdDevFactors[visionNum];
 
         RobotState.getInstance()
                 .addVisionObservation(new VisionObservation(visionInputs.pose, visionInputs.timestampSeconds,
                         VecBuilder.fill(
-                                Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
-                                Math.pow(0.8, visionInputs.tagCount) * (visionInputs.avgTagDist) * 2,
-                                9999999)));
+                                xyStdDev,
+                                xyStdDev,
+                                Double.POSITIVE_INFINITY)));
 
     }
 

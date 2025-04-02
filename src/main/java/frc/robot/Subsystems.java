@@ -62,10 +62,11 @@ public final class Subsystems {
                             new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
                             new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
 
-                    bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"),
+                    bottomVision = new Vision("Bottom Vision", 0, new VisionIOLimelight("limelight-bottom"),
                             drive::getSpeeds);
-                    backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
-                    topVision = new Vision("Top Vision", new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    backVision = new Vision("Back Vision", 2, new VisionIOLimelight("limelight-back"),
+                            drive::getSpeeds);
                     // bottomVision = new Vision("v1", new VisionIO() {}, drive::getSpeeds);
                     // backVision = new Vision("v2", new VisionIO() {}, drive::getSpeeds);
                     // topVision = new Vision("v3", new VisionIO() {}, drive::getSpeeds);
@@ -106,10 +107,11 @@ public final class Subsystems {
                             new ModuleIO() {
                             });
 
-                    bottomVision = new Vision("Bottom Vision", new VisionIOLimelight("limelight-bottom"),
+                    bottomVision = new Vision("Bottom Vision", 0, new VisionIOLimelight("limelight-bottom"),
                             drive::getSpeeds);
-                    backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
-                    topVision = new Vision("Top Vision", new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    backVision = new Vision("Back Vision", 2, new VisionIOLimelight("limelight-back"),
+                            drive::getSpeeds);
 
                     // rightVision = new Vision("Right Vision", new
                     // VisionIOLimelight("limelight-right"), drive::getSpeeds);
@@ -144,11 +146,11 @@ public final class Subsystems {
                     new ModuleIO() {
                     });
 
-            bottomVision = new Vision("Bottom Vision", new VisionIO() {
+            bottomVision = new Vision("Bottom Vision", 0, new VisionIO() {
             }, drive::getSpeeds);
-            backVision = new Vision("Back Vision", new VisionIO() {
+            topVision = new Vision("Top Vision", 1, new VisionIO() {
             }, drive::getSpeeds);
-            topVision = new Vision("Top Vision", new VisionIO() {
+            backVision = new Vision("Back Vision", 2, new VisionIO() {
             }, drive::getSpeeds);
             // rightVision = new Vision("Right Vision", new VisionIO() {},
             // drive::getSpeeds);
