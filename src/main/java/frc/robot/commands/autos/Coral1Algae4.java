@@ -36,7 +36,15 @@ public class Coral1Algae4 implements AutoBase {
     public AutoRoutine getAuto() {
         AutoRoutine routine = drive.autoFactory.newRoutine("Coral1Algae4");
 
-        Transform2d place1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+        Transform2d coral1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+                new Rotation2d());
+        Transform2d pickup1Offset = new Transform2d(new Translation2d(Units.inchesToMeters(-15), Units.inchesToMeters(0)),
+                new Rotation2d());
+        Transform2d pickup2Offset = new Transform2d(new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+                new Rotation2d());
+        Transform2d pickup3Offset = new Transform2d(new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
+                new Rotation2d());
+        Transform2d pickup4Offset = new Transform2d(new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
                 new Rotation2d());
 
         var pickup1 = routine.trajectory("coral 1 algae 4", 0);
@@ -59,151 +67,159 @@ public class Coral1Algae4 implements AutoBase {
                                         elevator.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos)),
                                         Commands.waitSeconds(0.25),
                                         actuation.runOnce(() -> actuation.setPos(ActuationConstants.tuckPos))))));
+        
+        pickup1.done().onTrue(place1.cmd());
+        place1.done().onTrue(pickup2.cmd());
+        pickup2.done().onTrue(place2.cmd());
+        place2.done().onTrue(pickup3.cmd());
+        pickup3.done().onTrue(place3.cmd());
+        place3.done().onTrue(pickup4.cmd());
+        pickup4.done().onTrue(place4.cmd());
         // Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime()))));
-        pickup1.atTime("Pick up Algae 1").onTrue(
-                Commands.sequence(
-                        // Place Coral
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> AllianceFlipUtil.apply(Reef.placePoses[5].transformBy(place1Offset)),
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
-                        new SetPosition(l4),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        actuation.runOnce(() -> actuation.setPos(L4Pos.getAsDouble() - 10)),
-                        Commands.waitUntil(() -> false).withTimeout(0.25),
-                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        // Pickup Algae
-                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> AllianceFlipUtil.apply(Reef.reefFaces[3].facePos()),
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
-                        new SetPosition(lowAlgae),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(lowAlgae.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        intake.runOnce(() -> intake.runVelocity(0)),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                place1.cmd())));
+        // pickup1.atTime("Pick up Algae 1").onTrue(
+        //         Commands.sequence(
+        //                 // Place Coral
+        //                 Commands.runOnce(
+        //                         () -> drive.setAutoAlignGoal(
+        //                                 () -> AllianceFlipUtil.apply(Reef.placePoses[5].transformBy(coral1Offset)),
+        //                                 () -> new Translation2d(),
+        //                                 allignmentMode.SLOW),
+        //                         drive),
+        //                 new SetPosition(l4),
+        //                 new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(l4.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 actuation.runOnce(() -> actuation.setPos(L4Pos.getAsDouble() - 10)),
+        //                 Commands.waitUntil(() -> false).withTimeout(0.25),
+        //                 intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+        //                 Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+        //                 // Pickup Algae
+        //                 intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+        //                 Commands.runOnce(
+        //                         () -> drive.setAutoAlignGoal(
+        //                                 () -> AllianceFlipUtil.apply(Reef.reefFaces[3].facePos().transformBy(pickup1Offset)),
+        //                                 () -> new Translation2d(),
+        //                                 allignmentMode.SLOW),
+        //                         drive),
+        //                 new SetPosition(lowAlgae),
+        //                 new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(lowAlgae.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+        //                 intake.runOnce(() -> intake.runVelocity(0)),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         place1.cmd())));
 
-        place1.atTime("place Algae 1").onTrue(
-                Commands.sequence(
-                        new SetPosition(barge),
-                        Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
-                        Commands.waitUntil(() -> false).withTimeout(0.25),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                pickup2.cmd())));
+        // place1.atTime("place Algae 1").onTrue(
+        //         Commands.sequence(
+        //                 new SetPosition(barge),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
+        //                 Commands.waitUntil(() -> false).withTimeout(0.25),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         pickup2.cmd())));
 
-        pickup2.atTime("Pick up Algae 2").onTrue(
-                Commands.sequence(
-                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> AllianceFlipUtil.apply(Reef.reefFaces[4].facePos()),
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
-                        new SetPosition(highAlgae),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(highAlgae.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        intake.runOnce(() -> intake.runVelocity(0)),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                place1.cmd())));
+        // pickup2.atTime("Pick up Algae 2").onTrue(
+        //         Commands.sequence(
+        //                 intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+        //                 Commands.runOnce(
+        //                         () -> drive.setAutoAlignGoal(
+        //                                 () -> AllianceFlipUtil.apply(Reef.reefFaces[4].facePos().transformBy(pickup2Offset)),
+        //                                 () -> new Translation2d(),
+        //                                 allignmentMode.SLOW),
+        //                         drive),
+        //                 new SetPosition(highAlgae),
+        //                 new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(highAlgae.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+        //                 intake.runOnce(() -> intake.runVelocity(0)),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         place2.cmd())));
 
-        place2.atTime("place Algae 1").onTrue(
-                Commands.sequence(
-                        new SetPosition(barge),
-                        Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
-                        Commands.waitUntil(() -> false).withTimeout(0.25),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                pickup2.cmd())));
+        // place2.atTime("place Algae 2").onTrue(
+        //         Commands.sequence(
+        //                 new SetPosition(barge),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
+        //                 Commands.waitUntil(() -> false).withTimeout(0.25),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         pickup3.cmd())));
 
-        pickup3.atTime("Pick up Algae 2").onTrue(
-                Commands.sequence(
-                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> AllianceFlipUtil.apply(Reef.reefFaces[2].facePos()),
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
-                        new SetPosition(highAlgae),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(highAlgae.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        intake.runOnce(() -> intake.runVelocity(0)),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                place1.cmd())));
+        // pickup3.atTime("Pick up Algae 3").onTrue(
+        //         Commands.sequence(
+        //                 intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+        //                 Commands.runOnce(
+        //                         () -> drive.setAutoAlignGoal(
+        //                                 () -> AllianceFlipUtil.apply(Reef.reefFaces[2].facePos().transformBy(pickup3Offset)),
+        //                                 () -> new Translation2d(),
+        //                                 allignmentMode.SLOW),
+        //                         drive),
+        //                 new SetPosition(highAlgae),
+        //                 new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(highAlgae.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+        //                 intake.runOnce(() -> intake.runVelocity(0)),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         place3.cmd())));
 
-        place3.atTime("place Algae 1").onTrue(
-                Commands.sequence(
-                        new SetPosition(barge),
-                        Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
-                        Commands.waitUntil(() -> false).withTimeout(0.25),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                pickup2.cmd())));
+        // place3.atTime("place Algae 3").onTrue(
+        //         Commands.sequence(
+        //                 new SetPosition(barge),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
+        //                 Commands.waitUntil(() -> false).withTimeout(0.25),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         pickup4.cmd())));
 
-        pickup4.atTime("Pick up Algae 2").onTrue(
-                Commands.sequence(
-                        intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
-                        Commands.runOnce(
-                                () -> drive.setAutoAlignGoal(
-                                        () -> AllianceFlipUtil.apply(Reef.reefFaces[1].facePos()),
-                                        () -> new Translation2d(),
-                                        allignmentMode.SLOW),
-                                drive),
-                        new SetPosition(lowAlgae),
-                        new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
-                        Commands.waitUntil(() -> elevator.isAtHeight(lowAlgae.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
-                        intake.runOnce(() -> intake.runVelocity(0)),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                place1.cmd())));
+        // pickup4.atTime("Pick up Algae 4").onTrue(
+        //         Commands.sequence(
+        //                 intake.runOnce(() -> intake.runVelocity(intakeVelocity.get())),
+        //                 Commands.runOnce(
+        //                         () -> drive.setAutoAlignGoal(
+        //                                 () -> AllianceFlipUtil.apply(Reef.reefFaces[1].facePos().transformBy(pickup4Offset)),
+        //                                 () -> new Translation2d(),
+        //                                 allignmentMode.SLOW),
+        //                         drive),
+        //                 new SetPosition(lowAlgae),
+        //                 new WaitUntilCommand(() -> drive.isAutoAlignGoalCompleted()),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(lowAlgae.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 Commands.runOnce(() -> drive.clearAutoAlignGoal(), drive),
+        //                 intake.runOnce(() -> intake.runVelocity(0)),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         place4.cmd())));
 
-        place4.atTime("place Algae 1").onTrue(
-                Commands.sequence(
-                        new SetPosition(barge),
-                        Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
-                                || !elevator.isMoving()),
-                        Commands.waitUntil(() -> actuation.isAtAngle()),
-                        intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
-                        Commands.waitUntil(() -> false).withTimeout(0.25),
-                        Commands.parallel(
-                                new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
-                                pickup2.cmd())));
+        // place4.atTime("place Algae 4").onTrue(
+        //         Commands.sequence(
+        //                 new SetPosition(barge),
+        //                 Commands.waitUntil(() -> elevator.isAtHeight(barge.elevatorHeight().getAsDouble(), 0.25)
+        //                         || !elevator.isMoving()),
+        //                 Commands.waitUntil(() -> actuation.isAtAngle()),
+        //                 intake.runOnce(() -> intake.runVelocity(outtakeVelocity.get())),
+        //                 Commands.waitUntil(() -> false).withTimeout(0.25),
+        //                 Commands.parallel(
+        //                         new TuckCommand().beforeStarting(Commands.waitSeconds(0.15)),
+        //                         pickup2.cmd())));
 
         return routine;
     }
