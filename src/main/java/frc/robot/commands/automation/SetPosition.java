@@ -6,7 +6,7 @@ import static frc.robot.Subsystems.elevator;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.placeLevel;
+import frc.robot.Constants.setLevel;
 
 public class SetPosition extends SequentialCommandGroup {
 
@@ -31,7 +31,7 @@ public class SetPosition extends SequentialCommandGroup {
                 actuation.runOnce(() -> actuation.setPos(angle.getAsDouble())));
     }
 
-    public SetPosition(placeLevel level) {
+    public SetPosition(setLevel level) {
         this(level.elevatorHeight(), level.angle());
     }
 

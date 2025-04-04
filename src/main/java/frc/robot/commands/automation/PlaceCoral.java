@@ -9,7 +9,7 @@ import static frc.robot.Subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.placeLevel;
+import frc.robot.Constants.setLevel;
 import frc.robot.RobotState;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
@@ -46,7 +46,7 @@ public class PlaceCoral extends SequentialCommandGroup {
         );
     }
 
-    public PlaceCoral(placeLevel level) {
+    public PlaceCoral(setLevel level) {
         this(level.elevatorHeight(), level.angle(), level.outtakeSpeed());
     }
 }
