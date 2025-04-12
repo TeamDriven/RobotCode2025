@@ -24,7 +24,7 @@ public class PlaceCoral extends SequentialCommandGroup {
             Commands.waitUntil(() -> actuation.isAtAngle()),
             Commands.runOnce(() -> intake.runVelocity(outtakeSpeed), actuation),
             // new WaitCommand(0.15),
-            Commands.waitUntil(() -> !RobotState.getInstance().hasCoral()).withTimeout(0.15),
+            Commands.waitUntil(() -> !RobotState.getInstance().hasAlgae()).withTimeout(0.15),
             Commands.runOnce(() -> intake.runVelocity(0), actuation),
             Commands.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos), elevator),
             Commands.runOnce(() -> actuation.setPos(ActuationConstants.tuckPos), actuation)
@@ -39,7 +39,7 @@ public class PlaceCoral extends SequentialCommandGroup {
             Commands.waitUntil(() -> actuation.isAtAngle()),
             Commands.runOnce(() -> intake.runVelocity(outtakeSpeed), actuation),
             // new WaitCommand(0.15),
-            Commands.waitUntil(() -> !RobotState.getInstance().hasCoral()).withTimeout(0.15),
+            Commands.waitUntil(() -> !RobotState.getInstance().hasAlgae()).withTimeout(0.15),
             Commands.runOnce(() -> intake.runVelocity(0), actuation),
             Commands.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos), elevator),
             Commands.runOnce(() -> actuation.setPos(ActuationConstants.tuckPos), actuation)

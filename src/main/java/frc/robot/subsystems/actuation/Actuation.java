@@ -102,4 +102,8 @@ public class Actuation extends SubsystemBase {
         Logger.recordOutput("Actuation/isAtAngle", toleranceTimer.hasElapsed(toleranceTime.get()));
         return toleranceTimer.hasElapsed(toleranceTime.get());
     }
+
+    public boolean isAboveAngle(double desiredAngle) {
+        return inputs.relativeEncoderPos.getDegrees() > desiredAngle;
+    }
 }

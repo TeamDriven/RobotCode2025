@@ -59,14 +59,14 @@ public class Elevator extends SubsystemBase{
 
         switch (currentMode) {
             case POSITION:
-                double velocity = MathUtil.clamp(posPid.calculate(elevatorInputs.leftMotorPos, value), -maxStableVelocity, maxStableVelocity);
-                Logger.recordOutput("Elevator/posVelocity", velocity);
+                // double velocity = MathUtil.clamp(posPid.calculate(elevatorInputs.leftMotorPos, value), -maxStableVelocity, maxStableVelocity);
+                // Logger.recordOutput("Elevator/posVelocity", velocity);
 
-                if (posPid.atSetpoint()) {
-                    elevatorIO.moveToPos(value);
-                } else {
-                    elevatorIO.runVelocity(velocity);
-                }
+                // if (posPid.atSetpoint()) {
+                elevatorIO.moveToPos(value);
+                // } else {
+                //     elevatorIO.runVelocity(velocity);
+                // }
                 break;
         
             case VELOCITY:
@@ -140,7 +140,7 @@ public class Elevator extends SubsystemBase{
 
             @Override
             public void execute() {
-                runVoltage(-3);
+                runVoltage(-2);
             }
 
             @Override

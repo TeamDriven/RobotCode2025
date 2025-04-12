@@ -9,6 +9,7 @@ public interface IntakeIO {
         public double motorCurrent = 0;
         public double motorVel = 0;
         public double motorAccel = 0;
+        public double motorTemp = 0;
 
         public boolean gamePieceSensor = false;
     }

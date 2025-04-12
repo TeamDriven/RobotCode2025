@@ -25,7 +25,7 @@ public final class DriveConstants {
 
   public static final DriveConfig driveConfig = switch (Constants.getRobot()) {
     case SIMBOT, COMPBOT -> new DriveConfig(
-        Units.inchesToMeters(1.93513589892683), // Get from Wheel Radius Characterization
+        Units.inchesToMeters(1.9579309048831377), // Get from Wheel Radius Characterization
         Units.inchesToMeters(22.75), // Track width X
         Units.inchesToMeters(22.75), // Track width Y
         Units.inchesToMeters(28 + (3.5*2)), // Bumper width X
@@ -67,11 +67,10 @@ public final class DriveConstants {
   // Module Constants
   public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConfig[] {
-        new ModuleConfig(1, 2, 3, new Rotation2d(-1.201107), true), 
-        new ModuleConfig(4, 5, 6, new Rotation2d(-1.981903), true), 
-        new ModuleConfig(7, 8, 9, new Rotation2d(-0.179476), true), 
-        new ModuleConfig(10, 11, 12, new Rotation2d(-1.520175), true) 
-
+        new ModuleConfig(1, 2, 3, new Rotation2d(-1.205709), true),
+        new ModuleConfig(4, 5, 6, new Rotation2d(-1.940486), true),
+        new ModuleConfig(7, 8, 9, new Rotation2d(-0.119651), true),
+        new ModuleConfig(10, 11, 12, new Rotation2d(-1.552389), true)
     };
     case DEVBOT -> new ModuleConfig[] {
         new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true),
@@ -89,8 +88,8 @@ public final class DriveConstants {
 
   public static final ModuleConstants moduleConstants = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConstants(
-        5.55144, // Get these two from FeedForwardCharacterization
-        0.09508,
+        5.86908, // Get these two from FeedForwardCharacterization
+        0.09108,
         1.0 / DCMotor.getKrakenX60Foc(1).KtNMPerAmp, // A/(N*m)
         35.0,
         0.0,

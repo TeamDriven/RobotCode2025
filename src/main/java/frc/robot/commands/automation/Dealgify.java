@@ -30,9 +30,9 @@ public class Dealgify extends Command {
         
         // drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 
-        actuation.setPos(ActuationConstants.dealgifyPos);
+        actuation.setPos(ActuationConstants.dealgifyPos.getAsDouble());
 
-        elevator.setPos(nearestFace.isAlgaeHigh() ? ElevatorConstants.highDealgifyPos : ElevatorConstants.lowDealgifyPos);
+        elevator.setPos(nearestFace.isAlgaeHigh() ? ElevatorConstants.highDealgifyPos.getAsDouble() : ElevatorConstants.lowDealgifyPos.getAsDouble());
     }
 
     @Override
@@ -46,9 +46,9 @@ public class Dealgify extends Command {
 
         // drive.setHeadingGoal(() -> nearestFace.facePos().getRotation().rotateBy(new Rotation2d(Math.PI)));
 
-        actuation.setPos(ActuationConstants.dealgifyPos);
+        actuation.setPos(ActuationConstants.dealgifyPos.getAsDouble());
 
-        elevator.setPos(nearestFace.isAlgaeHigh() ? ElevatorConstants.highDealgifyPos : ElevatorConstants.lowDealgifyPos);
+        elevator.setPos(nearestFace.isAlgaeHigh() ? ElevatorConstants.highDealgifyPos.getAsDouble() : ElevatorConstants.lowDealgifyPos.getAsDouble());
     }
 
     @Override

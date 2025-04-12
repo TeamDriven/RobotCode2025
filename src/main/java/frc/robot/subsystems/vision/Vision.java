@@ -10,6 +10,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionObservation;
 
@@ -34,8 +35,9 @@ public class Vision extends SubsystemBase {
         final double yaw = RobotState.getInstance().getOdometryPose().getRotation().getDegrees();
         visionIO.setRobotOrientation(yaw);
 
-        if (DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        // if (DriverStation.getAlliance().isPresent()
+        //         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        if (RobotState.getInstance().getEstimatedPose().getX() > (FieldConstants.fieldLength / 2)) {
             visionIO.setPipeline(1);
         } else {
             visionIO.setPipeline(0);

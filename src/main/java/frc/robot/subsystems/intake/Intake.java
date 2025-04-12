@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,21 +40,16 @@ public class Intake extends SubsystemBase {
         Logger.recordOutput("Intake/value", value);
 
         if (value == 0) {
-            if (RobotState.getInstance().hasCoral()){
-                intakeIO.runVoltage(-0.75);
-            } else {
-                intakeIO.stopMotor();
-            }
-            // intakeIO.stopMotor();
+            intakeIO.runVoltage(-1.0);
             
         } else if (currentMode == mode.VELOCITY) {
-            Logger.recordOutput("Intake/isMoving", (Math.abs(inputs.motorVel) < Math.abs(value * 0.1)));
-            if (RobotState.getInstance().hasCoral() && Math.abs(inputs.motorVel) < Math.abs(value * 0.1)) {
+            Logger.recordOutput("Intake/isMoving", (Math.abs(inputs.motorVel) < Math.abs(value * 0.25)));
+            if (RobotState.getInstance().hasAlgae() && Math.abs(inputs.motorVel) < Math.abs(value * 0.25)) {
                 value = Math.max(value, 0);
             }
             intakeIO.runMotor(value);
         } else if (currentMode == mode.VOLTAGE) {
-            intakeIO.runMotor(value);
+            intakeIO.runVoltage(value);
         } else {
             throw new IllegalStateException();
         }

@@ -39,7 +39,7 @@ public final class Subsystems {
 
     public static final Vision bottomVision;
     public static final Vision backVision;
-    public static final Vision topVision;
+    // public static final Vision topVision;
     // public static final Vision rightVision;
 
     public static final Intake intake;
@@ -62,54 +62,54 @@ public final class Subsystems {
                             new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
                             new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
 
-                    bottomVision = new Vision("Bottom Vision", 0, new VisionIOLimelight("limelight-bottom"),
+                    bottomVision = new Vision("Bottom Vision", 0, new VisionIOLimelight("limelight"),
                             drive::getSpeeds);
-                    topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
-                    backVision = new Vision("Back Vision", 2, new VisionIOLimelight("limelight-back"),
-                            drive::getSpeeds);
-                    // bottomVision = new Vision("v1", new VisionIO() {}, drive::getSpeeds);
-                    // backVision = new Vision("v2", new VisionIO() {}, drive::getSpeeds);
-                    // topVision = new Vision("v3", new VisionIO() {}, drive::getSpeeds);
+                    // topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    // backVision = new Vision("Back Vision", 2, new VisionIOLimelight("limelight-back"),
+                    //         drive::getSpeeds);
+                    // bottomVision = new Vision("v0", 0, new VisionIO() {}, drive::getSpeeds);
+                    backVision = new Vision("v1",1 , new VisionIO() {}, drive::getSpeeds);
+                    // topVision = new Vision("v2", 2, new VisionIO() {}, drive::getSpeeds);
                     // rightVision = new Vision("Right Vision", new
                     // VisionIOLimelight("limelight-right"), drive::getSpeeds);
 
-                    intake = new Intake(new IntakeIOKraken(13, 0));
-                    // actuation = new Actuation(new ActuationIOKraken(14, 2));
-                    // elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
+                    intake = new Intake(new IntakeIOKraken(13, 7));
+                    actuation = new Actuation(new ActuationIOKraken(14, 4));
+                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
                     winch = new Winch(new WinchIOKraken(20, 21));
                     footer = new Footer(new FooterIOKraken(19));
 
                     // intake = new Intake(new IntakeIO() {});
-                    actuation = new Actuation(new ActuationIO() {});
-                    elevator = new Elevator(new ElevatorIO() {});
+                    // actuation = new Actuation(new ActuationIO() {});
+                    // elevator = new Elevator(new ElevatorIO() {});
                     // winch = new Winch(new WinchIO() {});
                     // footer = new Footer(new FooterIO() {});
 
                     // leds = new LED(new LEDIOCANdle(60));
                 }
                 case DEVBOT -> {
-                    // drive = new Drive(
-                    // new GyroIOPigeon2(true),
-                    // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "DriveBus"),
-                    // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "DriveBus"),
-                    // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "DriveBus"),
-                    // new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "DriveBus"));
-
                     drive = new Drive(
-                            new GyroIO() {
-                            },
-                            new ModuleIO() {
-                            },
-                            new ModuleIO() {
-                            },
-                            new ModuleIO() {
-                            },
-                            new ModuleIO() {
-                            });
+                            new GyroIOPigeon2(true, "*"),
+                            new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[0], "*"),
+                            new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[1], "*"),
+                            new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[2], "*"),
+                            new ModuleIOKrakenFOC(DriveConstants.moduleConfigs[3], "*"));
+
+                    // drive = new Drive(
+                    //         new GyroIO() {
+                    //         },
+                    //         new ModuleIO() {
+                    //         },
+                    //         new ModuleIO() {
+                    //         },
+                    //         new ModuleIO() {
+                    //         },
+                    //         new ModuleIO() {
+                    //         });
 
                     bottomVision = new Vision("Bottom Vision", 0, new VisionIOLimelight("limelight-bottom"),
                             drive::getSpeeds);
-                    topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
+                    // topVision = new Vision("Top Vision", 1, new VisionIOLimelight("limelight-top"), drive::getSpeeds);
                     backVision = new Vision("Back Vision", 2, new VisionIOLimelight("limelight-back"),
                             drive::getSpeeds);
 
@@ -120,9 +120,15 @@ public final class Subsystems {
                     });
                     actuation = new Actuation(new ActuationIO() {
                     });
-                    elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
-                    winch = new Winch(new WinchIOKraken(20, 21));
-                    footer = new Footer(new FooterIOKraken(19));
+                    elevator = new Elevator(new ElevatorIO() {
+                    });
+                    winch = new Winch(new WinchIO() {
+                    });
+                    footer = new Footer(new FooterIO() {
+                    });
+                    // elevator = new Elevator(new ElevatorIOKraken(15, 16, 17));
+                    // winch = new Winch(new WinchIOKraken(20, 21));
+                    // footer = new Footer(new FooterIOKraken(19));
 
                     // leds = new LED(new LEDIOCANdle(60));
                 }
@@ -148,8 +154,8 @@ public final class Subsystems {
 
             bottomVision = new Vision("Bottom Vision", 0, new VisionIO() {
             }, drive::getSpeeds);
-            topVision = new Vision("Top Vision", 1, new VisionIO() {
-            }, drive::getSpeeds);
+            // topVision = new Vision("Top Vision", 1, new VisionIO() {
+            // }, drive::getSpeeds);
             backVision = new Vision("Back Vision", 2, new VisionIO() {
             }, drive::getSpeeds);
             // rightVision = new Vision("Right Vision", new VisionIO() {},

@@ -13,6 +13,7 @@ import static frc.robot.subsystems.elevator.ElevatorConstants.highDealgifyPos;
 import static frc.robot.subsystems.elevator.ElevatorConstants.lowDealgifyPos;
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.Constants.*;
@@ -32,12 +33,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Controls.ManualMode;
 import frc.robot.Controls.StandardMode;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotState.actions;
+import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.commands.automation.Dealgify;
 import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
@@ -47,6 +51,8 @@ import frc.robot.commands.autos.Place1;
 import frc.robot.commands.drivetrain.TeleAutoTurn;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.climber.climberController;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
@@ -90,7 +96,6 @@ public class RobotContainer {
         setupAutos();
         universalControls();
         configureStandardMode();
-        configureNoLimelightMode();
         configureManualMode();
 
         // Alerts for constants
@@ -120,13 +125,6 @@ public class RobotContainer {
 
     private BooleanSupplier isDesiredAction(actions desiredAction) {
         return () -> RobotState.getInstance().getDesiredAction() == desiredAction;
-    }
-
-    private boolean isTryingToPlace() {
-        return switch (RobotState.getInstance().getDesiredAction()) {
-            case L4, L3, L2, L1 -> true;
-            default -> false;
-        };
     }
 
     private void universalControls() {
@@ -159,7 +157,6 @@ public class RobotContainer {
 
         resetElevatorPosition.onTrue(elevator.resetPosition());
 
-        noLimelightMode.onTrue(Commands.runOnce(() -> RobotState.getInstance().setNoLimelightMode()));
         manualMode.onTrue(Commands.runOnce(() -> RobotState.getInstance().setManualMode()));
     }
 
@@ -171,17 +168,30 @@ public class RobotContainer {
      * XboxController}), and then passing it to a {@link JoystickButton}.
      */
     private void configureStandardMode() {
-        new Trigger(isDesiredAction(actions.L4))
-                .and(RobotState.getInstance()::isStandardMode)
-                .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.5, maxDriveSpeed * 0.5)))
-                .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
+        // new Trigger(isDesiredAction(actions.L4))
+        // .and(RobotState.getInstance()::isStandardMode)
+        // .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.5,
+        // maxDriveSpeed * 0.5)))
+        // .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
 
-        new Trigger(isDesiredAction(actions.L3))
-                .or(isDesiredAction(actions.L2))
-                .and(RobotState.getInstance()::isStandardMode)
-                .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.75, maxTurnSpeed * 0.75)))
-                .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
+        // new Trigger(isDesiredAction(actions.L3))
+        // .or(isDesiredAction(actions.L2))
+        // .and(RobotState.getInstance()::isStandardMode)
+        // .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.75,
+        // maxTurnSpeed * 0.75)))
+        // .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
 
+        // new Trigger(isDesiredAction(actions.DEALGIFY_LOW))
+        // .or(isDesiredAction(actions.DEALGIFY_HIGH))
+        // .and(RobotState.getInstance()::isStandardMode)
+        // .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.75,
+        // maxTurnSpeed * 0.75)))
+        // .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
+
+        new Trigger(isDesiredAction(actions.PLACE_ALGAE))
+                .and(RobotState.getInstance()::isStandardMode)
+                .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.5, maxTurnSpeed * 0.5)))
+                .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
         // Drivetrain
         new Trigger(isDesiredAction(actions.NONE))
                 .and(RobotState.getInstance()::isStandardMode)
@@ -194,125 +204,66 @@ public class RobotContainer {
         StandardMode.cancelAction.onTrue(setDesiredAction(actions.NONE));
 
         // Placing
-        StandardMode.placeL4.onTrue(setDesiredAction(actions.L4));
-        StandardMode.placeL3.onTrue(setDesiredAction(actions.L3));
-        StandardMode.placeL2.onTrue(setDesiredAction(actions.L2));
-        StandardMode.placeL1.onTrue(setDesiredAction(actions.L1));
 
-        StandardMode.inttake.onTrue(setDesiredAction(actions.PICKUP_CORAL));
+        StandardMode.inttake.onTrue(setDesiredAction(actions.FLOOR_PICKUP));
 
         StandardMode.outtake.whileTrue(intake.runVelocityCommand(outtakeVelocity))
-                .onFalse(Commands.either(setDesiredAction(actions.NONE), Commands.none(),
-                        this::isTryingToPlace));
+                .onFalse(setDesiredAction(actions.NONE));
 
-        // StandardMode.maintainIntake.whileTrue(intake.runVelocityCommand(intakeVelocity));
+        StandardMode.highDealgify.onTrue(setDesiredAction(actions.DEALGIFY_HIGH));
+        StandardMode.lowDealgify.onTrue(setDesiredAction(actions.DEALGIFY_LOW));
 
-        StandardMode.highDealgify.onTrue(new SetPosition(highDealgifyPos, dealgifyPos));
-        StandardMode.lowDealgify.onTrue(new SetPosition(lowDealgifyPos, dealgifyPos));
+        StandardMode.placeAlgae.onTrue(setDesiredAction(actions.PLACE_ALGAE));
+        StandardMode.processor.onTrue(setDesiredAction(actions.PROCESSOR));
 
         StandardMode.climb.whileTrue(climberController.climb());
         StandardMode.deployClimber.whileTrue(climberController.climberOut());
 
-        // Auto align if trying to place L2+
-        // new Trigger(isDesiredAction(actions.L4))
-        // .and(RobotState.getInstance()::isStandardMode)
-        // .or(isDesiredAction(actions.L3))
-        // .or(isDesiredAction(actions.L2))
-        // .whileTrue(
-        // new AutoMoveToNearestPOI(allignmentMode.TWO_STAGE, Reef.placePoses)
-        // .until(isDesiredAction(actions.NONE)));
+        StandardMode.turtleMode.onTrue(setDesiredAction(actions.TURTLE));
 
-        // new Trigger(isDesiredAction(actions.L4))
-        //         .or(isDesiredAction(actions.L3))
-        //         .or(isDesiredAction(actions.L2))
-        //         .and(RobotState.getInstance()::isStandardMode)
-        //         .onTrue(new TeleAutoTurn(() -> Reef.findNearestReefFace(RobotState.getInstance().getEstimatedPose())
-        //                         .facePos().getRotation().rotateBy(new Rotation2d(Math.PI))))
-        //         .onFalse(Commands.runOnce(() -> drive.clearHeadingGoal()));
-
-        new Trigger(isDesiredAction(actions.L4))
+        new Trigger(isDesiredAction(actions.FLOOR_PICKUP))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInReefZone)
-                .onTrue(new SetPosition(Constants.l4));
+                .onTrue(
+                        new SequentialCommandGroup(
+                                new SetPosition(pickup),
+                                intake.runOnce(() -> intake.runVelocity(intakeVelocity.getAsDouble())),
+                                Commands.waitUntil(RobotState.getInstance()::hasAlgae),
+                                Commands.waitSeconds(0.25),
+                                setDesiredAction(actions.NONE)));
 
-        new Trigger(isDesiredAction(actions.L3))
+        // Dealgify
+        new Trigger(isDesiredAction(actions.DEALGIFY_HIGH))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInReefZone)
-                .onTrue(new SetPosition(Constants.l3));
-
-        new Trigger(isDesiredAction(actions.L2))
-                .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInReefZone)
-                .onTrue(new SetPosition(Constants.l2));
-
-        new Trigger(isDesiredAction(actions.L1)).and(RobotState.getInstance()::isStandardMode)
-                .onTrue(new SetPosition(Constants.l1));
-
-        // Pickup Coral
-        new Trigger(isDesiredAction(actions.PICKUP_CORAL))
-                .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInLeftPickupZone)
-                .onTrue(Commands.parallel(
-                        new TeleAutoTurn(() -> AllianceFlipUtil.apply(Rotation2d.fromDegrees(125))),
-                        new SetPosition(ElevatorConstants.pickUpPos.get(),
-                                ActuationConstants.pickUpPos.get()),
+                .whileTrue(new SequentialCommandGroup(
+                        new SetPosition(highAlgae),
                         intake.runVelocityCommand(intakeVelocity)));
 
-        new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        new Trigger(isDesiredAction(actions.DEALGIFY_LOW))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInRightPickupZone)
-                .onTrue(Commands.parallel(
-                        new TeleAutoTurn(() -> AllianceFlipUtil.apply(Rotation2d.fromDegrees(-125))),
-                        new SetPosition(ElevatorConstants.pickUpPos.get(),
-                                ActuationConstants.pickUpPos.get()),
+                .whileTrue(new SequentialCommandGroup(
+                        new SetPosition(lowAlgae),
                         intake.runVelocityCommand(intakeVelocity)));
 
-        new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        new Trigger(() -> isDesiredAction(actions.DEALGIFY_HIGH).getAsBoolean()
+                || isDesiredAction(actions.DEALGIFY_LOW).getAsBoolean())
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::hasCoral)
-                .onTrue(Commands.runOnce(() -> drive.clearHeadingGoal()));
+                .and(RobotState.getInstance()::hasAlgae)
+                .and(() -> !RobotState.getInstance().isInAReefZone())
+                .whileTrue(setDesiredAction(actions.NONE));
 
-        new Trigger(isDesiredAction(actions.PICKUP_CORAL))
+        // Barge
+        new Trigger(isDesiredAction(actions.PLACE_ALGAE))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::hasCoral)
-                .and(() -> !RobotState.getInstance().isInPickupZone())
-                .onTrue(setDesiredAction(actions.NONE));
+                .whileTrue(new SetPosition(Constants.barge));
 
-        // Algae
-        new Trigger(isDesiredAction(actions.DEALGIFY))
+        // Processor
+        new Trigger(isDesiredAction(actions.PROCESSOR))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(RobotState.getInstance()::isInReefZone)
-                .whileTrue(new Dealgify());
+                .whileTrue(new SetPosition(Constants.processor));
 
-        new Trigger(isDesiredAction(actions.DEALGIFY))
+        new Trigger(isDesiredAction(actions.TURTLE))
                 .and(RobotState.getInstance()::isStandardMode)
-                .and(() -> !RobotState.getInstance().isInReefZone())
-                .onTrue(setDesiredAction(actions.NONE));
-
-        new Trigger(RobotState.getInstance()::isInClimbZone)
-                .and(RobotState.getInstance()::isStandardMode)
-                .onTrue(elevator.runOnce(() -> elevator.setPos(2)));
-    }
-
-    private void configureNoLimelightMode() {
-        new Trigger(isDesiredAction(actions.L4))
-                .and(RobotState.getInstance()::isNoLimelightMode)
-                .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.5, maxDriveSpeed * 0.5)))
-                .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
-
-        new Trigger(isDesiredAction(actions.L3))
-                .or(isDesiredAction(actions.L2))
-                .and(RobotState.getInstance()::isNoLimelightMode)
-                .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.75, maxTurnSpeed * 0.75)))
-                .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
-
-        // Drivetrain
-        new Trigger(isDesiredAction(actions.NONE))
-                .and(RobotState.getInstance()::isNoLimelightMode)
-                .onTrue(Commands.parallel(
-                        new TuckCommand(),
-                        intake.runVelocityCommand(0),
-                        Commands.runOnce(() -> drive.clearHeadingGoal())));
+                .whileTrue(new SetPosition(Constants.turtle));
     }
 
     private void configureManualMode() {
@@ -323,11 +274,23 @@ public class RobotContainer {
                 elevator.runVoltageCommand(
                         () -> MathUtil.applyDeadband(driver.getLeftTriggerAxis(), 0.1) * -6));
 
-        ManualMode.actuationUp.whileTrue(actuation.runVoltageCommand(1));
-        ManualMode.actuationDown.whileTrue(actuation.runVoltageCommand(-1));
+        ManualMode.actuationUp.whileTrue(actuation.runVoltageCommand(3));
+        ManualMode.actuationDown.whileTrue(actuation.runVoltageCommand(-3));
 
-        ManualMode.intakeIn.whileTrue(intake.runVelocityCommand(intakeVelocity.get()));
-        ManualMode.intakeOut.whileTrue(intake.runVelocityCommand(outtakeVelocity.get()));
+        ManualMode.intakeIn.whileTrue(intake.runVelocityCommand(intakeVelocity));
+        // ManualMode.intakeIn.whileTrue(Commands.startEnd(() -> intake.runVoltage(-12),
+        // () -> intake.runVoltage(0), intake));
+        ManualMode.intakeOut.whileTrue(intake.runVelocityCommand(outtakeVelocity));
+
+        // driver.x().onTrue(elevator.runOnce(() -> elevator.setPos(15)));
+        // driver.y().onTrue(elevator.runOnce(() -> elevator.setPos(35)));
+        // driver.a().onTrue(actuation.runOnce(() -> actuation.setPos(-20)));
+        // driver.y().onTrue(actuation.runOnce(() -> actuation.setPos(20)));
+        // driver.pov(90).whileTrue(Commands.startEnd(() -> intake.runVoltage(-1.0), ()
+        // -> intake.runVoltage(0), intake));
+
+        // driver.a().whileTrue(Commands.startEnd(() -> intake.runVoltage(-1.0), () ->
+        // intake.runVoltage(0), intake));
 
         ManualMode.winchIn.whileTrue(winch.runVoltageCommand(12));
         ManualMode.winchOut.whileTrue(winch.runVoltageCommand(-12));

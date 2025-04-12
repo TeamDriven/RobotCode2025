@@ -34,7 +34,7 @@ public final class Constants {
 
   public static final double loopPeriodSecs = 0.02;
   private static RobotType robotType = RobotType.COMPBOT;
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
 
   public static RobotType getRobot() {
     if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {
@@ -86,12 +86,13 @@ public final class Constants {
   public static record setLevel(DoubleSupplier elevatorHeight, DoubleSupplier angle, double outtakeSpeed) {}
 
   public static setLevel l4 = new setLevel(ElevatorConstants.L4Pos::get, ActuationConstants.L4Pos::get, IntakeConstants.L4Speed);
-  public static setLevel l3 = new setLevel(ElevatorConstants.L3Pos::get, ActuationConstants.L3Pos::get, IntakeConstants.L3Speed);
-  public static setLevel l2 = new setLevel(ElevatorConstants.L2Pos::get, ActuationConstants.L2Pos::get, IntakeConstants.L2Speed);
-  public static setLevel l1 = new setLevel(ElevatorConstants.L1Pos::get, ActuationConstants.L1Pos::get, IntakeConstants.L1Speed);
 
   public static setLevel barge = new setLevel(ElevatorConstants.bargePos::get, ActuationConstants.bargePos::get, IntakeConstants.outtakeVelocity.getAsDouble());
-  public static setLevel lowAlgae = new setLevel(() -> ElevatorConstants.lowDealgifyPos, ActuationConstants.pickUpPos::get, IntakeConstants.intakeVelocity.getAsDouble());
-  public static setLevel highAlgae = new setLevel(() -> ElevatorConstants.highDealgifyPos, ActuationConstants.pickUpPos::get, IntakeConstants.intakeVelocity.getAsDouble());
+  public static setLevel processor = new setLevel(ElevatorConstants.processorPos::get, ActuationConstants.processorPos::get, IntakeConstants.outtakeVelocity.getAsDouble());
+  public static setLevel pickup = new setLevel(ElevatorConstants.pickUpPos::get, ActuationConstants.pickUpPos::get, IntakeConstants.intakeVelocity.getAsDouble());
+  public static setLevel lowAlgae = new setLevel(ElevatorConstants.lowDealgifyPos::get, ActuationConstants.dealgifyPos::get, IntakeConstants.intakeVelocity.getAsDouble());
+  public static setLevel highAlgae = new setLevel(ElevatorConstants.highDealgifyPos::get, ActuationConstants.dealgifyPos::get, IntakeConstants.intakeVelocity.getAsDouble());
+
+  public static setLevel turtle = new setLevel(ElevatorConstants.turtlePos::get, ActuationConstants.turtlePos::get, IntakeConstants.intakeVelocity.getAsDouble());
 
 }

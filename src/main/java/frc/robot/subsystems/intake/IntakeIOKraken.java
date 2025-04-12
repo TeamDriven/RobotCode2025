@@ -23,9 +23,9 @@ public class IntakeIOKraken implements IntakeIO {
         motorFactory = new MotorFactory("Intake", motorID);
 
         motorFactory.setBrakeMode(true);
-        motorFactory.setInverted(false);
+        motorFactory.setInverted(true);
         motorFactory.setCurrentLimits(40);
-        motorFactory.setVoltageLimits(8);
+        motorFactory.setVoltageLimits(12);
         motorFactory.setSlot0(0.15, 0, 0.0025);
         motorFactory.setSlot0(0.5);
 
@@ -41,8 +41,9 @@ public class IntakeIOKraken implements IntakeIO {
         inputs.motorVel = intakeMotor.getVelocity().getValueAsDouble();
         inputs.motorVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
         inputs.motorAccel = intakeMotor.getAcceleration().getValueAsDouble();
+        inputs.motorTemp = intakeMotor.getDeviceTemp().getValueAsDouble();
 
-        inputs.gamePieceSensor = !gamePieceSensor.get();
+        inputs.gamePieceSensor = gamePieceSensor.get();
 
         // motorFactory.checkForUpdates();
     }

@@ -26,16 +26,16 @@ public class ActuationIOKraken implements ActuationIO {
     public ActuationIOKraken(int motorID, int encoderChannel) {
         motorFactory = new MotorFactory("Actuation", motorID);
 
-        motorFactory.setInverted(false);
+        motorFactory.setInverted(true);
         motorFactory.setBrakeMode(true);
         motorFactory.setVoltageLimits(8);
         motorFactory.setCurrentLimits(40);
         
-        motorFactory.setSlot0(45, 0.5, 1.5);
-        motorFactory.setSlot0(0, 0.13, GravityTypeValue.Arm_Cosine);
+        motorFactory.setSlot0(50, 5, 8);
+        motorFactory.setSlot0(7, 0, GravityTypeValue.Arm_Cosine);
 
-        motorFactory.setSlot1(80, 3, 9);
-        motorFactory.setSlot1(6, 0.18, GravityTypeValue.Arm_Cosine);
+        motorFactory.setSlot1(65, 8, 8);
+        motorFactory.setSlot1(5, 0.3, GravityTypeValue.Arm_Cosine);
 
         motorFactory.setSensorToOutputRatio(ActuationConstants.gearRatio);
 
@@ -46,7 +46,7 @@ public class ActuationIOKraken implements ActuationIO {
         encoder = new DutyCycleEncoder(encoderChannel);
         encoder.setInverted(false);
 
-        seedMotor(Rotation2d.fromRotations(encoder.get()).minus(new Rotation2d(offset)));
+        seedMotor(Rotation2d.fromRotations(encoder.get()).minus(new Rotation2d(offset)).unaryMinus());
 
         positionControl = new PositionVoltage(0).withEnableFOC(true);
         voltageOut = new VoltageOut(0).withEnableFOC(true);
@@ -63,7 +63,7 @@ public class ActuationIOKraken implements ActuationIO {
         inputs.encoderConnected = encoder.isConnected();
 
         inputs.absoluteEncoderPos = Rotation2d.fromRotations(encoder.get());
-        inputs.relativeEncoderPos = inputs.absoluteEncoderPos.minus(new Rotation2d(offset));
+        inputs.relativeEncoderPos = inputs.absoluteEncoderPos.minus(new Rotation2d(offset)).unaryMinus();
 
         // motorFactory.checkForUpdates();
     }
@@ -71,7 +71,8 @@ public class ActuationIOKraken implements ActuationIO {
     @Override
     public void moveToPos(double pos) {
         pos = Units.degreesToRotations(pos);
-        actuationMotor.setControl(positionControl.withPosition(pos).withSlot(RobotState.getInstance().hasCoral() ? 1 : 0));
+        // actuationMotor.setControl(positionControl.withPosition(pos).withSlot(1));
+        actuationMotor.setControl(positionControl.withPosition(pos).withSlot(RobotState.getInstance().hasAlgae() ? 1 : 0));
     }
 
     @Override

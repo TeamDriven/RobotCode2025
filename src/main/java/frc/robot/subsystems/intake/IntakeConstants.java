@@ -12,7 +12,7 @@ public class IntakeConstants {
     public static final double L2Speed = 40;
     public static final double L1Speed = 40;
 
-    public static final LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("Intake/intakeVelocity", -40);
-    public static final LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("Intake/outtakeVelocity", 40);
+    public static final LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("Intake/intakeVelocity", -70);
+    public static final LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("Intake/outtakeVelocity", 70);
     public static final LoggedTunableNumber tuningVoltage = new LoggedTunableNumber("Intake/tuningVoltage", -2);
 }

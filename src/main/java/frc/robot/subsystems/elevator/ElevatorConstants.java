@@ -15,16 +15,14 @@ public class ElevatorConstants {
     public static final double topPos = 63.5;
 
     public static final double startPos = 0;
-    public static final double tuckPos = 21;
-    public static final LoggedTunableNumber pickUpPos = new LoggedTunableNumber("Elevator/PickUp", 14.75);
-    public static final LoggedTunableNumber L1Pos = new LoggedTunableNumber("Elevator/L1", 3.8);
-    public static final LoggedTunableNumber L2Pos = new LoggedTunableNumber("Elevator/L2", 21);
-    public static final LoggedTunableNumber L3Pos = new LoggedTunableNumber("Elevator/L3", 36);
-    public static final LoggedTunableNumber L4Pos = new LoggedTunableNumber("Elevator/L4", 63.75);
-    public static final LoggedTunableNumber bargePos = new LoggedTunableNumber("Elevator/Barge", 0);
-    public static final double lowDealgifyPos = 20;
-    public static final double highDealgifyPos = 36;
-    public static final double processorPos = 4;
+    public static final double tuckPos = 13;
+    public static final LoggedTunableNumber pickUpPos = new LoggedTunableNumber("Elevator/PickUp", 2);
+    public static final LoggedTunableNumber L4Pos = new LoggedTunableNumber("Elevator/L4", 44);
+    public static final LoggedTunableNumber bargePos = new LoggedTunableNumber("Elevator/Barge", 52);
+    public static final LoggedTunableNumber processorPos = new LoggedTunableNumber("Elevator/Processor", 1);
+    public static final LoggedTunableNumber turtlePos = new LoggedTunableNumber("Elevator/Turtle", 2);
+    public static final LoggedTunableNumber lowDealgifyPos = new LoggedTunableNumber("Elevator/lowDealigfy", 24);
+    public static final LoggedTunableNumber highDealgifyPos = new LoggedTunableNumber("Elevator/highDealgify", 40);
 
     public static final LoggedTunableNumber elevatorTuningVoltage = new LoggedTunableNumber("Elevator/TuningVoltage", 4);
     public static final LoggedTunableNumber elevatorTuningVelocity = new LoggedTunableNumber("Elevator/TuningVelocity", 65);

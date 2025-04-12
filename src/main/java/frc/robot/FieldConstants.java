@@ -108,11 +108,12 @@ public class FieldConstants {
             Pose2d nearestFacePose = robotPose.nearest(facePoses);
             // Streams are too slow for this purpose
             // return Arrays.stream(reefFaces)
-            //         .filter((ReefFace face) -> nearestFacePose.equals(face.facePos))
-            //         .findFirst()
-            //         .get();
+            // .filter((ReefFace face) -> nearestFacePose.equals(face.facePos))
+            // .findFirst()
+            // .get();
             for (ReefFace face : reefFaces) {
-                if (nearestFacePose.equals(face.facePos)) return face;
+                if (nearestFacePose.equals(face.facePos))
+                    return face;
             }
             return null;
         }
@@ -297,7 +298,9 @@ public class FieldConstants {
 
         public static PolygonZone climbZone;
 
-        public static CircleZone reefZone;
+        public static CircleZone OurReefZone;
+
+        public static CircleZone theirReefZone;
 
         public static PolygonZone leftPickupZone;
         public static PolygonZone rightPickupZone;
@@ -331,8 +334,11 @@ public class FieldConstants {
         static {
             climbZone = new PolygonZone(climbZoneCorners);
 
-            reefZone = new CircleZone(
+            OurReefZone = new CircleZone(
                     Reef.center,
+                    Units.inchesToMeters(67));
+
+            theirReefZone = new CircleZone(new Translation2d(fieldLength - Reef.center.getX(), fieldWidth - Reef.center.getY()),
                     Units.inchesToMeters(67));
 
             leftPickupZone = new PolygonZone(

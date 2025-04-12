@@ -36,9 +36,9 @@ public class ElevatorIOKraken implements ElevatorIO {
     motorFactory.setVoltageLimits(12);
     motorFactory.setCurrentLimits(80);
     
-    motorFactory.setSlot0(13, 0.5, 0.065);
-    motorFactory.setSlot0(1.8, 0.4, GravityTypeValue.Elevator_Static);
-    motorFactory.setMotionMagic(10000, 6000, 12000);
+    motorFactory.setSlot0(5, 0.0, 0.0);
+    motorFactory.setSlot0(0.5, 0.35, GravityTypeValue.Elevator_Static);
+    motorFactory.setMotionMagic(600, 300, 1000);
 
     motorFactory.setSlot1(0.5, 0, 0.001);
     motorFactory.setSlot1(0.135, 0.4, GravityTypeValue.Elevator_Static);
@@ -84,7 +84,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightMotorVoltage = elevatorRightMotor.getMotorVoltage().getValueAsDouble();
     inputs.rightMotorAccel = elevatorRightMotor.getAcceleration().getValueAsDouble();
     inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
-    inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
+    inputs.rightTemp = elevatorRightMotor.getDeviceTemp().getValueAsDouble();
 
     inputs.absoluteEncoderPos = encoder.getAbsolutePosition().getValueAsDouble();
     inputs.relativeEncoderPos = encoder.getPosition().getValueAsDouble();

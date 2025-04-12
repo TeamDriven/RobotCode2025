@@ -211,9 +211,19 @@ public class RobotState {
         return odometryPose;
     }
 
-    @AutoLogOutput(key = "RobotState/ReefZone")
-    public boolean isInReefZone() {
-        return Zones.reefZone.isRobotInZone(estimatedPose);
+    @AutoLogOutput(key = "RobotState/OurReefZone")
+    public boolean isInOurReefZone() {
+        return Zones.OurReefZone.isRobotInZone(estimatedPose);
+    }
+    
+    @AutoLogOutput(key = "RobotState/TheirReefZone")
+    public boolean isInTheirReefZone() {
+        return Zones.theirReefZone.isRobotInZone(estimatedPose);
+    }
+
+    @AutoLogOutput(key = "RobotState/InAReefZone")
+    public boolean isInAReefZone() {
+        return isInTheirReefZone() || isInOurReefZone();
     }
 
     @AutoLogOutput(key = "RobotState/LeftPickupZone")
@@ -235,25 +245,31 @@ public class RobotState {
         return Zones.climbZone.isRobotInZone(estimatedPose);
     }
 
-    private boolean hasCoral = false;
+    private boolean hasAlgae = false;
 
-    @AutoLogOutput(key = "RobotState/hasCoral")
-    public boolean hasCoral() {
-        return hasCoral;
+    @AutoLogOutput(key = "RobotState/hasAlgae")
+    public boolean hasAlgae() {
+        return hasAlgae;
     }
 
     public void setGamePiece(boolean sensorTripped) {
-        hasCoral = sensorTripped;
+        hasAlgae = sensorTripped;
     }
 
     public static enum actions {
-        L4,
-        L3,
-        L2,
-        L1,
-        PICKUP_CORAL,
-        DEALGIFY,
+        AUTO,
+        // L4,
+        // L3,
+        // L2,
+        // L1,
+        // PICKUP_CORAL,
+        PLACE_ALGAE,
+        FLOOR_PICKUP,
+        DEALGIFY_HIGH,
+        DEALGIFY_LOW,
+        PROCESSOR,
         CLIMB,
+        TURTLE,
         NONE
     }
 
@@ -275,14 +291,6 @@ public class RobotState {
     }
 
     private static controlMode currentMode = controlMode.STANDARD;
-
-    public void setNoLimelightMode() {
-        if (isNoLimelightMode()) {
-            currentMode = controlMode.STANDARD;
-        } else {
-            currentMode = controlMode.NO_LIMELIGHT;
-        }
-    }
 
     public void setManualMode() {
         if (isManualMode()) {
