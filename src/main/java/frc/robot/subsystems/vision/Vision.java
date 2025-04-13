@@ -9,14 +9,18 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionObservation;
+import frc.robot.subsystems.drive.Drive;
 
 public class Vision extends SubsystemBase {
     private final String visionName;
     private final int visionNum;
+
+    private final Timer enabledTimer = new Timer();
 
     private final VisionIO visionIO;
     private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
@@ -28,6 +32,8 @@ public class Vision extends SubsystemBase {
         this.visionNum = visionNum;
         this.visionIO = visionIO;
         this.chassisSpeedsSupplier = chassisSpeedsSuppier;
+
+        enabledTimer.start();
     }
 
     @Override
@@ -45,6 +51,12 @@ public class Vision extends SubsystemBase {
 
         visionIO.updateInputs(visionInputs);
         Logger.processInputs(visionName, visionInputs);
+
+        if (DriverStation.isDisabled()) {
+            enabledTimer.reset();
+        };
+
+        if (!enabledTimer.hasElapsed(0.5)) return;
 
         final ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
         if (Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 9.42478 || (Math.abs(chassisSpeeds.vxMetersPerSecond) > 2.0

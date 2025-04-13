@@ -3,7 +3,7 @@ package frc.robot.subsystems.actuation;
 import frc.robot.util.LoggedTunableNumber;
 
 public class ActuationConstants {
-    public static final double gearRatio = (32 / 16) * (10) * (10);
+    public static final double gearRatio = (32 / 16) * (9) * (7);
 
     public static final double offset = 4.112;
 

@@ -56,6 +56,8 @@ public class AutoDriveController {
       sample.omega + headingController.calculate(curRot.getRadians(), sample.heading)
     );
 
+    Logger.recordOutput("AutoDrive/FieldRelativeSpeeds", fieldRelativeSpeeds);
+
     return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, curRot);
   }
 }

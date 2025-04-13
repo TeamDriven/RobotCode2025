@@ -45,7 +45,7 @@ import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.commands.automation.Dealgify;
 import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
-import frc.robot.commands.autos.Coral1Algae4;
+import frc.robot.commands.autos.Coral1Algae2Left;
 import frc.robot.commands.autos.Mobility;
 import frc.robot.commands.autos.Place1;
 import frc.robot.commands.drivetrain.TeleAutoTurn;
@@ -105,7 +105,7 @@ public class RobotContainer {
     }
 
     private void setupAutos() {
-        autoChooser.setDefaultOption("Coral 1 Algae 4", new Coral1Algae4().getAuto().cmd());
+        autoChooser.setDefaultOption("Coral 1 Algae 2 Left", new Coral1Algae2Left().getAuto().cmd());
         autoChooser.addOption("Mobility", new Mobility().getAuto().cmd());
         autoChooser.addOption("Place 1", new Place1().getAuto().cmd());
 
