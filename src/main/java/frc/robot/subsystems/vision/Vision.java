@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.VisionObservation;
-import frc.robot.subsystems.drive.Drive;
 
 public class Vision extends SubsystemBase {
     private final String visionName;

@@ -34,7 +34,7 @@ public final class Constants {
 
   public static final double loopPeriodSecs = 0.02;
   private static RobotType robotType = RobotType.COMPBOT;
-  public static final boolean tuningMode = true;
+  public static final boolean tuningMode = false;
 
   public static RobotType getRobot() {
     if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {
@@ -87,7 +87,7 @@ public final class Constants {
 
   public static setLevel l4 = new setLevel(ElevatorConstants.L4Pos::get, ActuationConstants.L4Pos::get, IntakeConstants.L4Speed);
 
-  public static setLevel barge = new setLevel(ElevatorConstants.bargePos::get, ActuationConstants.bargePos::get, IntakeConstants.outtakeVelocity.getAsDouble());
+  public static setLevel barge = new setLevel(ElevatorConstants.bargePos::get, () -> {return 70;}, IntakeConstants.outtakeVelocity.getAsDouble());
   public static setLevel processor = new setLevel(ElevatorConstants.processorPos::get, ActuationConstants.processorPos::get, IntakeConstants.outtakeVelocity.getAsDouble());
   public static setLevel pickup = new setLevel(ElevatorConstants.pickUpPos::get, ActuationConstants.pickUpPos::get, IntakeConstants.intakeVelocity.getAsDouble());
   public static setLevel lowAlgae = new setLevel(ElevatorConstants.lowDealgifyPos::get, ActuationConstants.dealgifyPos::get, IntakeConstants.intakeVelocity.getAsDouble());

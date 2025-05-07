@@ -67,10 +67,10 @@ public final class DriveConstants {
   // Module Constants
   public static final ModuleConfig[] moduleConfigs = switch (Constants.getRobot()) {
     case COMPBOT -> new ModuleConfig[] {
-        new ModuleConfig(1, 2, 3, new Rotation2d(-1.205709), true),
-        new ModuleConfig(4, 5, 6, new Rotation2d(-1.940486), true),
-        new ModuleConfig(7, 8, 9, new Rotation2d(-0.119651), true),
-        new ModuleConfig(10, 11, 12, new Rotation2d(-1.552389), true)
+        new ModuleConfig(1, 2, 3, new Rotation2d(-1.245592), true),
+        new ModuleConfig(4, 5, 6, new Rotation2d(-1.983437), true),
+        new ModuleConfig(7, 8, 9, new Rotation2d(-0.134990), true),
+        new ModuleConfig(10, 11, 12, new Rotation2d(-1.576932), true)
     };
     case DEVBOT -> new ModuleConfig[] {
         new ModuleConfig(1, 2, 3, new Rotation2d(0.038350), true),

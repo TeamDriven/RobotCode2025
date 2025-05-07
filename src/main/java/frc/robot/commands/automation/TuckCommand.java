@@ -5,7 +5,6 @@ import static frc.robot.Subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotState;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;

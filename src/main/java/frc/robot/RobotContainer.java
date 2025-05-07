@@ -8,12 +8,8 @@
 package frc.robot;
 
 import static frc.robot.Subsystems.*;
-import static frc.robot.subsystems.actuation.ActuationConstants.dealgifyPos;
-import static frc.robot.subsystems.elevator.ElevatorConstants.highDealgifyPos;
-import static frc.robot.subsystems.elevator.ElevatorConstants.lowDealgifyPos;
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.BooleanSupplier;
 
 import static frc.robot.Constants.*;
@@ -38,22 +34,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Controls.ManualMode;
 import frc.robot.Controls.StandardMode;
-import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotState.actions;
-import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.WheelRadiusCharacterization;
-import frc.robot.commands.automation.Dealgify;
 import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
 import frc.robot.commands.autos.Coral1Algae2Left;
 import frc.robot.commands.autos.Mobility;
 import frc.robot.commands.autos.Place1;
-import frc.robot.commands.drivetrain.TeleAutoTurn;
-import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.climber.climberController;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.util.*;
 import frc.robot.util.Alert.AlertType;
 
@@ -192,6 +179,7 @@ public class RobotContainer {
                 .and(RobotState.getInstance()::isStandardMode)
                 .onTrue(Commands.runOnce(() -> setDriveMults(maxDriveSpeed * 0.5, maxTurnSpeed * 0.5)))
                 .onFalse(Commands.runOnce(() -> setDriveMults(maxDriveSpeed, maxTurnSpeed)));
+        
         // Drivetrain
         new Trigger(isDesiredAction(actions.NONE))
                 .and(RobotState.getInstance()::isStandardMode)
@@ -291,7 +279,6 @@ public class RobotContainer {
 
         // driver.a().whileTrue(Commands.startEnd(() -> intake.runVoltage(-1.0), () ->
         // intake.runVoltage(0), intake));
-
         ManualMode.winchIn.whileTrue(winch.runVoltageCommand(12));
         ManualMode.winchOut.whileTrue(winch.runVoltageCommand(-12));
 

@@ -1,64 +1,43 @@
 package frc.robot.commands.autos;
 
-import static frc.robot.Constants.barge;
-import static frc.robot.Constants.highAlgae;
-import static frc.robot.Constants.l4;
-import static frc.robot.Constants.lowAlgae;
 import static frc.robot.subsystems.intake.IntakeConstants.intakeVelocity;
 import static frc.robot.subsystems.intake.IntakeConstants.outtakeVelocity;
 import static frc.robot.Subsystems.actuation;
 import static frc.robot.Subsystems.drive;
 import static frc.robot.Subsystems.elevator;
 import static frc.robot.Subsystems.intake;
-import static frc.robot.subsystems.actuation.ActuationConstants.L4Pos;
-import static frc.robot.subsystems.actuation.ActuationConstants.tuckPos;
 
 import choreo.auto.AutoRoutine;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.FieldConstants.CoralStations;
-import frc.robot.FieldConstants.Reef;
-import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.controllers.AutoAlignController.allignmentMode;
 import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.util.AllianceFlipUtil;
-import frc.robot.RobotState;
 
 public class Coral1Algae2Left implements AutoBase {
     @Override
     public AutoRoutine getAuto() {
         AutoRoutine routine = drive.autoFactory.newRoutine("Coral1Algae2Left");
 
-        Transform2d coral1Offset = new Transform2d(
-                new Translation2d(Units.inchesToMeters(-15), Units.inchesToMeters(-1)),
-                new Rotation2d());
-        Transform2d pickup1Offset = new Transform2d(
-                new Translation2d(Units.inchesToMeters(-15), Units.inchesToMeters(0)),
-                new Rotation2d());
-        Transform2d pickup2Offset = new Transform2d(
-                new Translation2d(Units.inchesToMeters(-13), Units.inchesToMeters(-7.5)),
-                new Rotation2d());
-        Transform2d pickup3Offset = new Transform2d(
-                new Translation2d(Units.inchesToMeters(-13), Units.inchesToMeters(7.5)),
-                new Rotation2d());
-        Transform2d pickup4Offset = new Transform2d(
-                new Translation2d(Units.inchesToMeters(13), Units.inchesToMeters(7.5)),
-                new Rotation2d());
+        // Transform2d coral1Offset = new Transform2d(
+        //         new Translation2d(Units.inchesToMeters(-15), Units.inchesToMeters(-1)),
+        //         new Rotation2d());
+        // Transform2d pickup1Offset = new Transform2d(
+        //         new Translation2d(Units.inchesToMeters(-15), Units.inchesToMeters(0)),
+        //         new Rotation2d());
+        // Transform2d pickup2Offset = new Transform2d(
+        //         new Translation2d(Units.inchesToMeters(-13), Units.inchesToMeters(-7.5)),
+        //         new Rotation2d());
+        // Transform2d pickup3Offset = new Transform2d(
+        //         new Translation2d(Units.inchesToMeters(-13), Units.inchesToMeters(7.5)),
+        //         new Rotation2d());
+        // Transform2d pickup4Offset = new Transform2d(
+        //         new Translation2d(Units.inchesToMeters(13), Units.inchesToMeters(7.5)),
+        //         new Rotation2d());
 
-        double waitTimePickup1 = 1;
+        // double waitTimePickup1 = 1;
         double waitTimePlace1 = 1;
-        double waitTimePickup2 = 1;
+        // double waitTimePickup2 = 1;
         // double waitTimePlace2 = 0.5;
         // double waitTimePickup3 = 0.5;
         // double waitTimePlace3 = 0.5;
@@ -97,7 +76,13 @@ public class Coral1Algae2Left implements AutoBase {
             drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
             elevator.runOnce(() -> elevator.setPos(ElevatorConstants.bargePos.get())),
             Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.bargePos.get(), 0.25)),
+            drive.runOnce(() -> drive.acceptSimpleInput(1.0, 0, 0, false)),
+            Commands.waitSeconds(0.2),
+            drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
             intake.runVelocityCommand(outtakeVelocity).withTimeout(0.25),
+            drive.runOnce(() -> drive.acceptSimpleInput(-1.5, 0, 0, false)),
+            Commands.waitSeconds(0.2),
+            drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
             elevator.runOnce(() -> elevator.setPos(ElevatorConstants.highDealgifyPos.get())),
             Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.highDealgifyPos.get(), 0.25)),
             actuation.runOnce(() -> actuation.setPos(ActuationConstants.dealgifyPos.get())),
@@ -107,22 +92,33 @@ public class Coral1Algae2Left implements AutoBase {
         ));
 
         pickup2.done().onTrue(Commands.sequence(
-            drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
-            Commands.parallel(
-                place2.cmd(),
-                Commands.waitSeconds(0.5).andThen(actuation.runOnce(() -> actuation.setPos(ActuationConstants.bargePos.get())))
-            )
+            drive.runOnce(() -> drive.acceptSimpleInput(-1.5, 0, 0, true)),
+            Commands.waitSeconds(1),
+            drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, true)),
+            new TuckCommand()
+
+            // Commands.parallel(
+            //     place2.cmd(),
+            //     Commands.waitSeconds(0.5).andThen(actuation.runOnce(() -> actuation.setPos(ActuationConstants.bargePos.get())))
+            // )
         ));
 
-        place2.done().onTrue(Commands.sequence(
-            drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
-            elevator.runOnce(() -> elevator.setPos(ElevatorConstants.bargePos.get())),
-            Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.bargePos.get(), 0.25)),
-            intake.runVelocityCommand(outtakeVelocity).withTimeout(0.25),
-            elevator.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos)),
-            Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.tuckPos, 0.25)),
-            actuation.runOnce(() -> actuation.setPos(ActuationConstants.tuckPos))
-        ));
+        // place2.done().onTrue(Commands.sequence(
+        //     drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
+        //     elevator.runOnce(() -> elevator.setPos(ElevatorConstants.bargePos.get())),
+        //     Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.bargePos.get(), 0.25)),
+        //     drive.runOnce(() -> drive.acceptSimpleInput(1.0, 0, 0, false)),
+        //     Commands.waitSeconds(0.2),
+        //     drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false)),
+        //     intake.runVelocityCommand(outtakeVelocity).withTimeout(0.25),
+        //     drive.runOnce(() -> drive.acceptSimpleInput(-2, 0, 0, false)),
+        //     Commands.waitSeconds(0.1),
+        //     elevator.runOnce(() -> elevator.setPos(ElevatorConstants.tuckPos)),
+        //     Commands.waitUntil(() -> elevator.isAtHeight(ElevatorConstants.tuckPos, 0.25)),
+        //     actuation.runOnce(() -> actuation.setPos(ActuationConstants.tuckPos)),
+        //     Commands.waitSeconds(1),
+        //     drive.runOnce(() -> drive.acceptSimpleInput(0, 0, 0, false))
+        // ));
 
         // Commands.runOnce(() -> System.out.println(DriverStation.getMatchTime()))));
         // pickup1.atTime("Pick up Algae 1").onTrue(
