@@ -43,8 +43,6 @@ import frc.robot.commands.automation.SetPosition;
 import frc.robot.commands.automation.TuckCommand;
 import frc.robot.commands.autos.Mobility;
 import frc.robot.commands.autos.Place1;
-import frc.robot.commands.autos.Place3LeftSide;
-import frc.robot.commands.autos.Place3RightSide;
 import frc.robot.commands.drivetrain.TeleAutoTurn;
 import frc.robot.subsystems.actuation.ActuationConstants;
 import frc.robot.subsystems.climber.climberController;
@@ -101,8 +99,6 @@ public class RobotContainer {
     }
 
     private void setupAutos() {
-        autoChooser.setDefaultOption("Place 3 Left Side", new Place3LeftSide().getAuto().cmd());
-        autoChooser.addOption("Place 3 Right Side", new Place3RightSide().getAuto().cmd());
         autoChooser.addOption("Mobility", new Mobility().getAuto().cmd());
         autoChooser.addOption("Place 1", new Place1().getAuto().cmd());
 
