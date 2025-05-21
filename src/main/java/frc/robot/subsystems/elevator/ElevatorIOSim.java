@@ -28,21 +28,30 @@ public class ElevatorIOSim implements ElevatorIO {
             LinearSystemId.createDCMotorSystem(rightMotorModel, 0.004, ElevatorConstants.gearRatio),
             rightMotorModel);
 
-    private PIDController posPid = new PIDController(6.5, 0, 0.02);
+    private PIDController pid = new PIDController(6.5, 0, 0.02);
 
-    private double LeftAppliedVolts = 0.0;
-    private double RightAppliedVolts = 0.0;
+    private double leftAppliedVolts = 0.0;
+    private double rightAppliedVolts = 0.0;
+    private double leftFFVolts = 0.0;
+    private double rightFFVolts = 0.0;
+
+    public ElevatorIOSim() {
+
+    }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         if (DriverStation.isDisabled()) {
         }
 
+        leftAppliedVolts = leftFFVolts + pid.calculate(leftMotorSim.getAngularVelocityRadPerSec());
+        rightAppliedVolts = rightFFVolts + pid.calculate(leftMotorSim.getAngularVelocityRadPerSec());
+
         leftMotorSim.update(Constants.loopPeriodSecs);
         rightMotorSim.update(Constants.loopPeriodSecs);
 
         inputs.leftMotorPos = leftMotorSim.getAngularPositionRotations() * gearRatio;
-        inputs.leftMotorVoltage = LeftAppliedVolts;
+        inputs.leftMotorVoltage = leftAppliedVolts;
         inputs.leftMotorCurrent = Math.abs(leftMotorSim.getCurrentDrawAmps());
         inputs.leftMotorVel = leftMotorSim.getAngularVelocityRPM() / gearRatio;
         inputs.leftMotorAccel = leftMotorSim.getAngularAccelerationRadPerSecSq() / gearRatio;
@@ -50,7 +59,7 @@ public class ElevatorIOSim implements ElevatorIO {
         // inputs.leftIsMotionMagic = false;
 
         inputs.rightMotorPos = leftMotorSim.getAngularPositionRotations() * gearRatio;
-        inputs.rightMotorVoltage = LeftAppliedVolts;
+        inputs.rightMotorVoltage = leftAppliedVolts;
         inputs.rightMotorCurrent = Math.abs(leftMotorSim.getCurrentDrawAmps());
         inputs.rightMotorVel = leftMotorSim.getAngularVelocityRPM() / gearRatio;
         inputs.rightMotorAccel = leftMotorSim.getAngularAccelerationRadPerSecSq() / gearRatio;
@@ -59,11 +68,22 @@ public class ElevatorIOSim implements ElevatorIO {
 
         // inputs.absoluteEncoderPos = 0;
         // inputs.relativeEncoderPos = 0;
+
+        leftMotorSim.setInputVoltage(MathUtil.clamp(leftAppliedVolts, -12.0, 12.0));
+        rightMotorSim.setInputVoltage(MathUtil.clamp(rightAppliedVolts, -12.0, 12.0));
+
+        leftMotorSim.update(Constants.loopPeriodSecs);
+        rightMotorSim.update(Constants.loopPeriodSecs);
     }
 
     @Override
     public void moveToPos(double pos) {
-        posPid.setSetpoint(pos);
+        pid.setSetpoint(pos);
+    }
+
+    @Override
+    public void runVelocity(double speed) {
+        pid.setSetpoint(speed);
     }
 
 }
