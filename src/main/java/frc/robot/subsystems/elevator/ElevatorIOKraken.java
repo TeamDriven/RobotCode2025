@@ -35,7 +35,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     motorFactory.setBrakeMode(true);
     motorFactory.setVoltageLimits(12);
     motorFactory.setCurrentLimits(80);
-    
+
     motorFactory.setSlot0(13, 0.5, 0.065);
     motorFactory.setSlot0(1.8, 0.4, GravityTypeValue.Elevator_Static);
     motorFactory.setMotionMagic(10000, 6000, 12000);
@@ -58,7 +58,7 @@ public class ElevatorIOKraken implements ElevatorIO {
     encoder = new CANcoder(encoderID);
     CancoderUtil.applySettings(encoder, cancoderFactory.getConfig());
 
-    if(!tuningMode) {
+    if (!tuningMode) {
       resetPosition();
     }
 
@@ -75,7 +75,8 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.leftMotorVel = elevatorLeftMotor.getVelocity().getValueAsDouble();
     inputs.leftMotorVoltage = elevatorLeftMotor.getMotorVoltage().getValueAsDouble();
     inputs.leftMotorAccel = elevatorLeftMotor.getAcceleration().getValueAsDouble();
-    inputs.leftIsMotionMagic = elevatorLeftMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
+    inputs.leftIsMotionMagic = elevatorLeftMotor.getMotionMagicIsRunning()
+        .getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
     inputs.rightMotorPos = elevatorRightMotor.getPosition().getValueAsDouble();
@@ -83,7 +84,8 @@ public class ElevatorIOKraken implements ElevatorIO {
     inputs.rightMotorVel = elevatorRightMotor.getVelocity().getValueAsDouble();
     inputs.rightMotorVoltage = elevatorRightMotor.getMotorVoltage().getValueAsDouble();
     inputs.rightMotorAccel = elevatorRightMotor.getAcceleration().getValueAsDouble();
-    inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning().getValue() == MotionMagicIsRunningValue.Enabled;
+    inputs.rightIsMotionMagic = elevatorRightMotor.getMotionMagicIsRunning()
+        .getValue() == MotionMagicIsRunningValue.Enabled;
     inputs.leftTemp = elevatorLeftMotor.getDeviceTemp().getValueAsDouble();
 
     inputs.absoluteEncoderPos = encoder.getAbsolutePosition().getValueAsDouble();
@@ -123,5 +125,4 @@ public class ElevatorIOKraken implements ElevatorIO {
     encoder.setPosition(0);
   }
 
-  
 }

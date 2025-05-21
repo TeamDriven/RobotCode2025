@@ -11,6 +11,7 @@ import static frc.robot.subsystems.elevator.ElevatorConstants.gearRatio;
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.NumericalIntegration;
@@ -27,7 +28,7 @@ public class ElevatorIOSim implements ElevatorIO {
             LinearSystemId.createDCMotorSystem(rightMotorModel, 0.004, ElevatorConstants.gearRatio),
             rightMotorModel);
 
-    private PIDController posPid = new PIDController(0, 0, 0);
+    private PIDController posPid = new PIDController(6.5, 0, 0.02);
 
     private double LeftAppliedVolts = 0.0;
     private double RightAppliedVolts = 0.0;
@@ -35,7 +36,6 @@ public class ElevatorIOSim implements ElevatorIO {
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         if (DriverStation.isDisabled()) {
-            runVolts(0.0);
         }
 
         leftMotorSim.update(Constants.loopPeriodSecs);
@@ -61,5 +61,9 @@ public class ElevatorIOSim implements ElevatorIO {
         // inputs.relativeEncoderPos = 0;
     }
 
-    
+    @Override
+    public void moveToPos(double pos) {
+        posPid.setSetpoint(pos);
+    }
+
 }
