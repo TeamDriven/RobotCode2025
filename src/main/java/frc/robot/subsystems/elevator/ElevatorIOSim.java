@@ -36,7 +36,6 @@ public class ElevatorIOSim implements ElevatorIO {
     private double rightFFVolts = 0.0;
 
     public ElevatorIOSim() {
-
     }
 
     @Override
@@ -86,4 +85,22 @@ public class ElevatorIOSim implements ElevatorIO {
         pid.setSetpoint(speed);
     }
 
+    @Override
+    public void runVoltage(double volts) {
+        leftAppliedVolts = MathUtil.clamp(volts, -12, 12);
+        leftMotorSim.setInputVoltage(leftAppliedVolts);
+
+        rightAppliedVolts = MathUtil.clamp(volts, -12, 12);
+        rightMotorSim.setInputVoltage(rightAppliedVolts);
+    }
+
+    @Override
+    public void stopMotors() {
+        runVoltage(0.0);
+    }
+
+    @Override
+    public void resetPosition() {
+        pid.setSetpoint(0);
+    }
 }
