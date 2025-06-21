@@ -10,9 +10,11 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOKrakenFOC;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOKraken;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOKraken;
@@ -125,7 +127,25 @@ public final class Subsystems {
                     // leds = new LED(new LEDIOCANdle(60));
                 }
                 case SIMBOT -> {
-                    throw new IllegalStateException("SIMBOT is not currently implemented on this robot");
+                    drive = new Drive(
+                        new GyroIO() {},
+                        new ModuleIOSim(DriveConstants.moduleConfigs[0]),
+                        new ModuleIOSim(DriveConstants.moduleConfigs[1]),
+                        new ModuleIOSim(DriveConstants.moduleConfigs[2]),
+                        new ModuleIOSim(DriveConstants.moduleConfigs[3]));
+                    elevator = new Elevator(new ElevatorIOSim());
+
+                    bottomVision = new Vision("Bottom Vision", new VisionIO() {}, drive::getSpeeds);
+                    backVision = new Vision("Back Vision", new VisionIO() {}, drive::getSpeeds);
+                    topVision = new Vision("Top Vision", new VisionIO() {}, drive::getSpeeds);
+                    // rightVision = new Vision("Right Vision", new VisionIO() {},
+                    // drive::getSpeeds);
+        
+                    intake = new Intake(new IntakeIO() {});
+                    actuation = new Actuation(new ActuationIO() {});
+                    winch = new Winch(new WinchIO() {});
+                    footer = new Footer(new FooterIO() {});
+                    // throw new IllegalStateException("SIMBOT is not currently completely implemented on this robot");
                 }
                 default -> {
                     throw new IllegalStateException("Robot type not selected");

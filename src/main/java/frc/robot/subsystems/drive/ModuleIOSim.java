@@ -6,121 +6,126 @@ package frc.robot.subsystems.drive;
 // // license that can be found in the LICENSE file at
 // // the root directory of this project.
 
-// package frc.robot.subsystems.drive;
+import static frc.robot.subsystems.drive.DriveConstants.*;
 
-// import static frc.robot.subsystems.drive.DriveConstants.*;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
+import frc.robot.subsystems.drive.DriveConstants.ModuleConfig;
 
-// import edu.wpi.first.math.MathUtil;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.math.filter.SlewRateLimiter;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.system.plant.DCMotor;
-// import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-// import frc.robot.Constants;
-// import frc.robot.subsystems.drive.DriveConstants.ModuleConfig;
+public class ModuleIOSim implements ModuleIO {
+    // private final DCMotorSim driveSim =
+    // new DCMotorSim(DCMotor.getKrakenX60Foc(1), moduleConstants.driveReduction(),
+    // 0.025);
+    // private final DCMotorSim turnSim =
+    // new DCMotorSim(DCMotor.getKrakenX60Foc(1), moduleConstants.turnReduction(),
+    // 0.004);
+    private static final DCMotor driveModel = DCMotor.getKrakenX60Foc(1);
+    private static final DCMotor turnModel = DCMotor.getKrakenX60Foc(1);
 
-// public class ModuleIOSim implements ModuleIO {
-//   private final DCMotorSim driveSim =
-//       new DCMotorSim(DCMotor.getKrakenX60Foc(1), moduleConstants.driveReduction(), 0.025);
-//   private final DCMotorSim turnSim =
-//       new DCMotorSim(DCMotor.getKrakenX60Foc(1), moduleConstants.turnReduction(), 0.004);
+    private final DCMotorSim driveSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(driveModel, 0.025, moduleConstants.driveReduction()), driveModel);
 
-//   private final PIDController driveFeedback =
-//       new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
-//   private final PIDController turnFeedback =
-//       new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
+    private final DCMotorSim turnSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(turnModel, 0.025, moduleConstants.driveReduction()), turnModel);
 
-//   private double driveAppliedVolts = 0.0;
-//   private double turnAppliedVolts = 0.0;
-//   private final Rotation2d turnAbsoluteInitPosition;
+    private final PIDController driveFeedback = new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
+    private final PIDController turnFeedback = new PIDController(0.0, 0.0, 0.0, Constants.loopPeriodSecs);
 
-//   private boolean driveCoast = false;
-//   private SlewRateLimiter driveVoltsLimiter = new SlewRateLimiter(2.5);
+    private double driveAppliedVolts = 0.0;
+    private double turnAppliedVolts = 0.0;
+    private final Rotation2d turnAbsoluteInitPosition;
 
-//   public ModuleIOSim(ModuleConfig config) {
-//     turnAbsoluteInitPosition = config.absoluteEncoderOffset();
-//     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
-//   }
+    private boolean driveCoast = false;
+    private SlewRateLimiter driveVoltsLimiter = new SlewRateLimiter(2.5);
 
-//   @Override
-//   public void updateInputs(ModuleIOInputs inputs) {
-//     if (DriverStation.isDisabled()) {
-//       stop();
-//     }
+    public ModuleIOSim(ModuleConfig config) {
+        turnAbsoluteInitPosition = config.absoluteEncoderOffset();
+        turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
+    }
 
-//     if (driveCoast && DriverStation.isDisabled()) {
-//       runDriveVolts(driveVoltsLimiter.calculate(driveAppliedVolts));
-//     } else {
-//       driveVoltsLimiter.reset(driveAppliedVolts);
-//     }
+    @Override
+    public void updateInputs(ModuleIOInputs inputs) {
+        if (DriverStation.isDisabled()) {
+            stop();
+        }
 
-//     driveSim.update(Constants.loopPeriodSecs);
-//     turnSim.update(Constants.loopPeriodSecs);
+        if (driveCoast && DriverStation.isDisabled()) {
+            runDriveVolts(driveVoltsLimiter.calculate(driveAppliedVolts));
+        } else {
+            driveVoltsLimiter.reset(driveAppliedVolts);
+        }
 
-//     inputs.drivePositionRads = driveSim.getAngularPositionRad();
-//     inputs.driveVelocityRadsPerSec = driveSim.getAngularVelocityRadPerSec();
-//     inputs.driveAppliedVolts = driveAppliedVolts;
-//     inputs.driveSupplyCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
+        driveSim.update(Constants.loopPeriodSecs);
+        turnSim.update(Constants.loopPeriodSecs);
 
-//     inputs.turnAbsolutePosition =
-//         new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
-//     inputs.turnPosition = Rotation2d.fromRadians(turnSim.getAngularPositionRad());
-//     inputs.turnVelocityRadsPerSec = turnSim.getAngularVelocityRadPerSec();
-//     inputs.turnAppliedVolts = turnAppliedVolts;
-//     inputs.turnSupplyCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
+        inputs.drivePositionRads = driveSim.getAngularPositionRad();
+        inputs.driveVelocityRadsPerSec = driveSim.getAngularVelocityRadPerSec();
+        inputs.driveAppliedVolts = driveAppliedVolts;
+        inputs.driveSupplyCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
 
-//     inputs.odometryDrivePositionsMeters =
-//         new double[] {driveSim.getAngularPositionRad() * driveConfig.wheelRadius()};
-//     inputs.odometryTurnPositions =
-//         new Rotation2d[] {Rotation2d.fromRadians(turnSim.getAngularPositionRad())};
-//   }
+        inputs.turnAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
+        inputs.turnPosition = Rotation2d.fromRadians(turnSim.getAngularPositionRad());
+        inputs.turnVelocityRadsPerSec = turnSim.getAngularVelocityRadPerSec();
+        inputs.turnAppliedVolts = turnAppliedVolts;
+        inputs.turnSupplyCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
 
-//   public void runDriveVolts(double volts) {
-//     driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-//     driveSim.setInputVoltage(driveAppliedVolts);
-//   }
+        inputs.odometryDrivePositionsMeters = new double[] {
+                driveSim.getAngularPositionRad() * driveConfig.wheelRadius() };
+        inputs.odometryTurnPositions = new Rotation2d[] { Rotation2d.fromRadians(turnSim.getAngularPositionRad()) };
+    }
 
-//   public void runTurnVolts(double volts) {
-//     turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-//     turnSim.setInputVoltage(turnAppliedVolts);
-//   }
+    public void runDriveVolts(double volts) {
+        driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+        driveSim.setInputVoltage(driveAppliedVolts);
+    }
 
-//   @Override
-//   public void runCharacterization(double input) {
-//     runDriveVolts(input);
-//   }
+    public void runTurnVolts(double volts) {
+        turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+        turnSim.setInputVoltage(turnAppliedVolts);
+    }
 
-//   @Override
-//   public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
-//     runDriveVolts(
-//         driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
-//             + feedForward);
-//   }
+    @Override
+    public void runCharacterization(double input) {
+        runDriveVolts(input);
+    }
 
-//   @Override
-//   public void runTurnPositionSetpoint(double angleRads) {
-//     runTurnVolts(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
-//   }
+    @Override
+    public void runDriveVelocitySetpoint(double velocityRadsPerSec, double feedForward) {
+        runDriveVolts(
+                driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadsPerSec)
+                        + feedForward);
+    }
 
-//   @Override
-//   public void setDrivePID(double kP, double kI, double kD) {
-//     driveFeedback.setPID(kP, kI, kD);
-//   }
+    @Override
+    public void runTurnPositionSetpoint(double angleRads) {
+        runTurnVolts(turnFeedback.calculate(turnSim.getAngularPositionRad(), angleRads));
+    }
 
-//   @Override
-//   public void setTurnPID(double kP, double kI, double kD) {
-//     turnFeedback.setPID(kP, kI, kD);
-//   }
+    @Override
+    public void setDrivePID(double kP, double kI, double kD) {
+        driveFeedback.setPID(kP, kI, kD);
+    }
 
-//   @Override
-//   public void setDriveBrakeMode(boolean enable) {
-//     driveCoast = !enable;
-//   }
+    @Override
+    public void setTurnPID(double kP, double kI, double kD) {
+        turnFeedback.setPID(kP, kI, kD);
+    }
 
-//   @Override
-//   public void stop() {
-//     runDriveVolts(0.0);
-//     runTurnVolts(0.0);
-//   }
-// }
+    @Override
+    public void setDriveBrakeMode(boolean enable) {
+        driveCoast = !enable;
+    }
+
+    @Override
+    public void stop() {
+        runDriveVolts(0.0);
+        runTurnVolts(0.0);
+    }
+}

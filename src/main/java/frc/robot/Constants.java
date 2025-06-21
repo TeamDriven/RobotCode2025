@@ -37,11 +37,11 @@ public final class Constants {
   public static final boolean tuningMode = false;
 
   public static RobotType getRobot() {
-    if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {
-      new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-          .set(true);
-      robotType = RobotType.COMPBOT;
-    }
+    // if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {
+    //   new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
+    //       .set(true);
+    //   robotType = RobotType.COMPBOT;
+    // }
     return robotType;
   }
 
