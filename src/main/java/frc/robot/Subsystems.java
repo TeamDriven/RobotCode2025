@@ -16,11 +16,17 @@ import frc.robot.subsystems.elevator.ElevatorIOKraken;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOKraken;
+import frc.robot.subsystems.photonVision.VisionPhotonIO;
+import frc.robot.subsystems.photonVision.VisionPhotonIOObject;
+import frc.robot.subsystems.photonVision.VisionPhotonTemplate;
+import frc.robot.subsystems.photonVision.VisionPhoton;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.climber.winch.WinchIO;
 import frc.robot.subsystems.climber.winch.WinchIOKraken;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.actuation.Actuation;
 import frc.robot.subsystems.actuation.ActuationIO;
 import frc.robot.subsystems.actuation.ActuationIOKraken;
@@ -41,6 +47,8 @@ public final class Subsystems {
     public static final Vision backVision;
     public static final Vision topVision;
     // public static final Vision rightVision;
+
+    public static final VisionPhotonTemplate testVision;
 
     public static final Intake intake;
     public static final Actuation actuation;
@@ -66,11 +74,9 @@ public final class Subsystems {
                             drive::getSpeeds);
                     backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
                     topVision = new Vision("Top Vision", new VisionIOLimelight("limelight-top"), drive::getSpeeds);
-                    // bottomVision = new Vision("v1", new VisionIO() {}, drive::getSpeeds);
-                    // backVision = new Vision("v2", new VisionIO() {}, drive::getSpeeds);
-                    // topVision = new Vision("v3", new VisionIO() {}, drive::getSpeeds);
-                    // rightVision = new Vision("Right Vision", new
-                    // VisionIOLimelight("limelight-right"), drive::getSpeeds);
+
+                    // testVision = new VisionPhoton(new VisionPhotonIOObject("testCamera"), new Transform3d(0,0,0, new Rotation3d(0, 0, 0)));
+                    testVision = new VisionPhotonTemplate("testCamera", null);
 
                     intake = new Intake(new IntakeIOKraken(13, 0));
                     actuation = new Actuation(new ActuationIOKraken(14, 2));
@@ -110,9 +116,9 @@ public final class Subsystems {
                             drive::getSpeeds);
                     backVision = new Vision("Back Vision", new VisionIOLimelight("limelight-back"), drive::getSpeeds);
                     topVision = new Vision("Top Vision", new VisionIOLimelight("limelight-top"), drive::getSpeeds);
-
-                    // rightVision = new Vision("Right Vision", new
-                    // VisionIOLimelight("limelight-right"), drive::getSpeeds);
+                    
+                    // testVision = new VisionPhoton(new VisionPhotonIOObject("testCamera"), new Transform3d(0,0,0, new Rotation3d(0, 0, 0)));
+                    testVision = new VisionPhotonTemplate("testCamera", null);
 
                     intake = new Intake(new IntakeIO() {
                     });
@@ -152,6 +158,9 @@ public final class Subsystems {
             }, drive::getSpeeds);
             // rightVision = new Vision("Right Vision", new VisionIO() {},
             // drive::getSpeeds);
+            
+            // testVision = new VisionPhoton(new VisionPhotonIO() {}, new Transform3d());
+            testVision = null;
 
             intake = new Intake(new IntakeIO() {
             });
