@@ -10,14 +10,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
-public interface VisionPhotonIO {
+public interface PhotonIO {
     @AutoLog
-    class VisionPhotonIOInputs {
+    class PhotonIOInputs {
         public boolean hasTargets = false;
+        public double targetYaw = -9999;
+        public double targetDistance = -9999;
         // public List<PhotonPipelineResult> targets = null;
     }
 
-    default void updateInputs(VisionPhotonIOInputs inputs) {}
+    default void updateInputs(PhotonIOInputs inputs) {}
 
-    default Transform3d GamePieceToCamera() {return new Transform3d();}
+    default double getYaw() {return 0;}
+    default double getDistance() {return 0;}
+    default boolean targetVisable() {return false;}
 }

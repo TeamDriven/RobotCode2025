@@ -272,9 +272,4 @@ public class RobotState {
   public boolean isManualMode() {
     return currentMode == controlMode.MANUAL;
   }
-
-//   @AutoLogOutput(key = "RobotState/closestGamePiece")
-//   public Pose2d closestGamePiece() {
-//     return Subsystems.testVision.getGamePiecePose(estimatedPose);
-//   }
 }
