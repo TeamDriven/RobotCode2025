@@ -1,17 +1,19 @@
 package frc.robot.subsystems.elevator;
 
-import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
-
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.subsystems.elevator.ElevatorConstants.maxStableVelocity;
 import frc.robot.util.LoggedTunableNumber;
 
 public class Elevator extends SubsystemBase{
@@ -54,6 +56,8 @@ public class Elevator extends SubsystemBase{
 
         Logger.recordOutput("Elevator/mode", currentMode);
         Logger.recordOutput("Elevator/value", value);
+
+        Logger.recordOutput("Elevator/Pos", new Pose3d(new Translation3d(0, 0, elevatorInputs.leftMotorPos), new Rotation3d()));
 
         LoggedTunableNumber.ifChanged(hashCode(), this::setUpPID, kP, kI, kD, tolerance);
 

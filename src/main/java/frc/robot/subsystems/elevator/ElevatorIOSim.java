@@ -1,21 +1,13 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
-
 import static frc.robot.subsystems.elevator.ElevatorConstants.gearRatio;
-
-import edu.wpi.first.math.*;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.NumericalIntegration;
-import edu.wpi.first.math.system.plant.DCMotor;
 
 public class ElevatorIOSim implements ElevatorIO {
     private static final DCMotor leftMotorModel = DCMotor.getKrakenX60Foc(1);
@@ -64,7 +56,6 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.rightMotorAccel = leftMotorSim.getAngularAccelerationRadPerSecSq() / gearRatio;
         inputs.rightTemp = 0;
         // inputs.rightIsMotionMagic = false;
-
         // inputs.absoluteEncoderPos = 0;
         // inputs.relativeEncoderPos = 0;
 
