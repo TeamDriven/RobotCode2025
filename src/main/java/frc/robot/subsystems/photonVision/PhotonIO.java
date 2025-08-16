@@ -21,7 +21,5 @@ public interface PhotonIO {
 
     default void updateInputs(PhotonIOInputs inputs) {}
 
-    default double getYaw() {return 0;}
-    default double getDistance() {return 0;}
-    default boolean targetVisable() {return false;}
+    default targetInfo getTargetInfo() {return new targetInfo(false, 0, 0);}
 }

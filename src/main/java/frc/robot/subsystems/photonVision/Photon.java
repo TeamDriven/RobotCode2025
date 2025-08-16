@@ -23,12 +23,12 @@ public class Photon extends SubsystemBase {
     }
 
     public double getYaw() {
-        return photonVisionIO.getYaw();
+        return inputs.targetYaw;
     }
     public double getDistance() {
-        return photonVisionIO.getDistance();
+        return inputs.targetDistance;
     }
     public boolean targetVisable() {
-        return photonVisionIO.targetVisable();
+        return inputs.hasTargets;
     }
 }
